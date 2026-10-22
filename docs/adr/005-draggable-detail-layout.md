@@ -2,6 +2,8 @@
 
 Status: accepted, 2026-10-23
 
+Gesture presentation and update timing are superseded by [ADR 006](006-full-card-live-reordering.md): full original cards follow the pointer and surrounding cards reflow during the gesture. The persistence and editing decisions below remain active.
+
 ## Context
 
 The user wants to reposition the detail information cards. The existing content-sized masonry should remain responsive, and moving cards must not trigger printer actions or lose camera/reminder state.

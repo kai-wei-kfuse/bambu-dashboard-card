@@ -33,6 +33,7 @@ export class BambuDetailLayout extends LitElement {
   private _error = '';
   private _notice = '';
   private generation = 0;
+  private gesture?: { generation: number; order: string[]; notice: string; error: string };
   private context?: { connection: object; printerId: string };
 
   // Light DOM lets the workspace's single stylesheet style both the cards and layout controls.
@@ -49,6 +50,7 @@ export class BambuDetailLayout extends LitElement {
     this._editing = false;
     this._saving = false;
     this._notice = '';
+    this.gesture = undefined;
     void this.load(++this.generation);
   }
 
@@ -78,7 +80,20 @@ export class BambuDetailLayout extends LitElement {
     this._notice = '';
   }
 
-  private cancel(): void { this._editing = false; this._error = ''; this._notice = ''; }
+  private cancel(): void { this.gesture = undefined; this._editing = false; this._error = ''; this._notice = ''; }
+
+  private startGesture(): void {
+    this.gesture = { generation: this.generation, order: [...this._draft], notice: this._notice, error: this._error };
+  }
+
+  private endGesture(cancelled: boolean): void {
+    const gesture = this.gesture;
+    this.gesture = undefined;
+    if (!cancelled || !gesture || gesture.generation !== this.generation || !this._editing) return;
+    this._draft = gesture.order;
+    this._notice = gesture.notice;
+    this._error = gesture.error;
+  }
 
   private move(move: LayoutMove): void {
     if (!this._editing || this._saving) return;
@@ -124,10 +139,12 @@ export class BambuDetailLayout extends LitElement {
     </div></div>
     ${this._editing ? html`<p class="layout-help">${this.t('layoutDragHelp')}</p>` : nothing}
     ${this._error ? html`<div class="banner error" role="alert"><div class="copy">${this.t('layoutError')}: ${this._error}</div>${this._saved === undefined ? html`<button class="button small" ?disabled=${this._loading} @click=${() => void this.load()}>${this.t('retry')}</button>` : nothing}</div>` : nothing}
-    <bambu-detail-masonry class="detail-grid ${this._editing ? 'layout-editing' : ''}" .editing=${editing} @layout-move=${(event: CustomEvent<LayoutMove>) => this.move(event.detail)}>
+    <bambu-detail-masonry class="detail-grid ${this._editing ? 'layout-editing' : ''}" .editing=${editing} @layout-drag-start=${() => this.startGesture()} @layout-drag-end=${() => this.endGesture(false)} @layout-drag-cancel=${() => this.endGesture(true)} @layout-move=${(event: CustomEvent<LayoutMove>) => this.move(event.detail)}>
       ${repeat(this.cards, (card) => card.id, (card) => html`<div class="layout-item" data-layout-id=${card.id} data-layout-label=${card.label} style=${styleMap({ order: ranks.get(card.id) })}>
+        <div class="layout-card">
         ${this._editing ? html`<div class="layout-handlebar"><button class="layout-grip" data-layout-handle aria-label=${`${this.t('layoutDrag')} ${card.label}`} ?disabled=${this._saving}>${icon('grip')}<span>${card.label}</span></button><button class="layout-step" aria-label=${`${this.t('layoutEarlier')} ${card.label}`} ?disabled=${this._saving || ranks.get(card.id) === 0} @click=${() => this.step(card.id, -1)}>↑</button><button class="layout-step" aria-label=${`${this.t('layoutLater')} ${card.label}`} ?disabled=${this._saving || ranks.get(card.id) === order.length - 1} @click=${() => this.step(card.id, 1)}>↓</button></div>` : nothing}
         <div class="layout-card-content" ?inert=${this._editing}>${card.content}</div>
+        </div>
       </div>`)}
     </bambu-detail-masonry>`;
   }

@@ -126,18 +126,15 @@ bambu-detail-layout { display: block; }
 .layout-item { position: relative; }
 .layout-card-content { min-width: 0; }
 .layout-card-content > bambu-completion-notifications { margin: 0; }
-.layout-editing .layout-item { padding: 6px; border: 1px dashed color-mix(in srgb, var(--bd-accent) 40%, transparent); border-radius: calc(var(--bd-card-radius) + 6px); background: var(--bd-accent-soft); }
+.layout-editing .layout-card { padding: 6px; border: 1px dashed color-mix(in srgb, var(--bd-accent) 40%, transparent); border-radius: calc(var(--bd-card-radius) + 6px); background: var(--bd-accent-soft); }
 .layout-handlebar { display: flex; gap: 4px; align-items: center; margin: 0 0 6px; }
 .layout-grip { display: flex; align-items: center; gap: 7px; min-width: 0; flex: 1; padding: 7px; border: 0; background: none; color: var(--bd-text); cursor: grab; touch-action: none; user-select: none; font-size: 12px; text-align: left; }
 .layout-grip span { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .layout-step { flex-shrink: 0; width: 30px; height: 30px; border: 0; border-radius: 9px; background: var(--bd-surface); }
 .layout-editing .layout-card-content { pointer-events: none; }
-.layout-item[data-layout-dragging] { opacity: .4; }
-.layout-item[data-layout-drop] { outline: 2px solid var(--bd-accent); outline-offset: 2px; }
-.layout-item[data-layout-drop]::after { content: ''; position: absolute; height: 4px; left: 12px; right: 12px; border-radius: 4px; background: var(--bd-accent); pointer-events: none; }
-.layout-item[data-layout-drop="before"]::after { top: -6px; }
-.layout-item[data-layout-drop="after"]::after { bottom: -6px; }
-.layout-drag-ghost { position: fixed; left: 0; top: 0; z-index: 20; pointer-events: none; max-width: calc(100vw - 32px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 12px 16px; border: 1px solid var(--bd-accent); border-radius: 14px; background: var(--bd-panel); color: var(--bd-text); box-shadow: var(--bd-shadow); font-size: 13px; font-weight: 600; }
+.layout-item[data-layout-dragging] { border-radius: calc(var(--bd-card-radius) + 6px); outline: 2px dashed var(--bd-accent); outline-offset: -2px; background: var(--bd-accent-soft); }
+.layout-card:popover-open { position: fixed; inset: auto; margin: 0; max-width: none; max-height: none; overflow: visible; pointer-events: none; color: var(--bd-text); background: var(--bd-panel); box-shadow: 0 18px 48px #183c3038; }
+.layout-card:popover-open .layout-grip { cursor: grabbing; }
 .detail-grid .panel-head { padding: 12px 14px; }
 .detail-grid .panel-head h2 { display: flex; align-items: center; gap: 7px; font-size: 13px; }
 .detail-grid .panel-body { padding: 14px; }

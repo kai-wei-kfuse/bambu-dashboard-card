@@ -39,7 +39,81 @@ function order(element: Element): string[] {
 }
 function earlier(element: Element, label: string): void { element.querySelector<HTMLButtonElement>(`button[aria-label="Move earlier ${label}"]`)!.click(); }
 
+function gestureGeometry(element: Element) {
+  const masonry = element.querySelector<HTMLElement>('bambu-detail-masonry')!;
+  vi.spyOn(masonry, 'getBoundingClientRect').mockReturnValue(new DOMRect(0, 0, 660, 700));
+  for (const item of element.querySelectorAll<HTMLElement>('[data-layout-id]')) {
+    const card = item.querySelector<HTMLElement>('.layout-card')!;
+    const rect = () => new DOMRect(Number(item.style.order) * 220, 0, 200, 300);
+    vi.spyOn(item, 'getBoundingClientRect').mockImplementation(rect);
+    vi.spyOn(card, 'getBoundingClientRect').mockImplementation(() => card.hasAttribute('popover')
+      ? new DOMRect(Number.parseFloat(card.style.left), Number.parseFloat(card.style.top), 200, 300) : rect());
+    card.showPopover = vi.fn();
+    card.hidePopover = vi.fn();
+    card.animate = vi.fn().mockReturnValue({ cancel: vi.fn() });
+  }
+  const pointer = (target: EventTarget, type: string, x: number, y: number) => target.dispatchEvent(new PointerEvent(type, { bubbles: true, cancelable: true, pointerId: 1, isPrimary: true, button: 0, clientX: x, clientY: y }));
+  return { pointer };
+}
+
 describe('detail layout editing', () => {
+  it('reflows the draft during a full-card drag, restores the preceding draft on Escape, then saves a completed drag', async () => {
+    const api = backend();
+    const element = await api.mount();
+    const input = element.querySelector<HTMLInputElement>('input')!;
+    input.value = 'Live camera form';
+    button(element, 'Edit layout').click();
+    await element.updateComplete;
+    earlier(element, 'Controls');
+    await element.updateComplete;
+    const { pointer } = gestureGeometry(element);
+    const handle = element.querySelector<HTMLButtonElement>('[aria-label="Drag Job"]')!;
+    const card = handle.closest('.layout-card')!;
+    pointer(handle, 'pointerdown', 460, 20);
+    pointer(window, 'pointermove', 30, 25);
+    await element.updateComplete;
+    expect(order(element)).toEqual(['job', 'camera', 'controls']);
+    expect(card.hasAttribute('popover')).toBe(true);
+    expect(element.querySelector('input')).toBe(input);
+    expect(input.value).toBe('Live camera form');
+    expect(api.stored.size).toBe(0);
+    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+    await element.updateComplete;
+    expect(order(element)).toEqual(['camera', 'controls', 'job']);
+    expect(card.hasAttribute('popover')).toBe(false);
+    expect(element.textContent).toContain('Layout changes not saved');
+    pointer(handle, 'pointerdown', 460, 20);
+    pointer(window, 'pointermove', 30, 25);
+    await element.updateComplete;
+    pointer(window, 'pointerup', 30, 25);
+    await element.updateComplete;
+    expect(order(element)).toEqual(['job', 'camera', 'controls']);
+    button(element, 'Save layout').click();
+    await vi.waitFor(() => expect(element.textContent).toContain('Layout saved'));
+    expect(api.stored.get('bambu_dashboard.detail_layout.v1.printer-one')).toEqual({ version: 1, order: ['job', 'camera', 'controls'] });
+    expect(api.hass.callService).not.toHaveBeenCalled();
+  });
+
+  it('cleans an active gesture on a printer switch without rolling its draft into the new printer', async () => {
+    const api = backend();
+    const element = await api.mount();
+    button(element, 'Edit layout').click();
+    await element.updateComplete;
+    const { pointer } = gestureGeometry(element);
+    const handle = element.querySelector<HTMLButtonElement>('[aria-label="Drag Job"]')!;
+    pointer(handle, 'pointerdown', 240, 20);
+    pointer(window, 'pointermove', 30, 25);
+    await element.updateComplete;
+    expect(order(element)[0]).toBe('job');
+    element.printerId = 'printer-two';
+    await element.updateComplete;
+    await vi.waitFor(() => expect(button(element, 'Edit layout').disabled).toBe(false));
+    expect(order(element)).toEqual(['camera', 'job', 'controls']);
+    expect(element.querySelector('[popover]')).toBeNull();
+    pointer(window, 'pointerup', 30, 25);
+    expect(api.stored.size).toBe(0);
+  });
+
   it('moves cards without recreating content, persists only on Save and restores the order in another view', async () => {
     const api = backend();
     const element = await api.mount();

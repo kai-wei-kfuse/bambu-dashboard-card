@@ -13,7 +13,7 @@ The deliverable includes both the custom frontend component and a complete dashb
 ## Implemented initial version
 
 - Multi-printer overview and a responsive masonry detail workspace with independent camera, job, control, parameter and filament cards.
-- Drag detail cards by their edit-mode handles, or move them with arrow buttons; save an independent layout for each printer in your HA account.
+- Drag complete detail cards by their edit-mode handles while neighboring cards make room in real time, or use arrow buttons; save an independent layout for each printer in your HA account.
 - Complete entity and attribute explorer.
 - Camera, light, speed, pause, resume, stop, and sliced-project printing.
 - AMS and external-spool visualization based on registered devices.

@@ -25,7 +25,7 @@ const messages = {
   layoutDrag: ['Drag', '拖动'],
   layoutEarlier: ['Move earlier', '前移'],
   layoutLater: ['Move later', '后移'],
-  layoutDragHelp: ['Drag a card by its title bar, or use the arrow buttons. Device controls are inactive while editing. Save to keep the new order.', '拖动卡片标题条，或点击箭头调整顺序。编辑期间卡片内的设备控制暂停操作，保存后记住新布局。'],
+  layoutDragHelp: ['Drag the full card by its title bar; other cards make room as you move. Use the arrows to reorder, or Escape to cancel a drag. Device controls are inactive while editing. Save to keep the new order.', '拖动标题条移动整张卡片，其他卡片会实时让位；也可用箭头排序，按 Esc 撤回本次拖动。编辑期间设备控制暂停操作，保存后记住布局。'],
   discover: ['Discovering your printers…', '正在发现打印机…'],
   noPrinters: ['No Bambu printers found. Add them through ha-bambulab, or check the selected devices.', '尚未发现拓竹打印机，请先通过 ha-bambulab 接入，或检查设备筛选。'],
   registryError: ['Device discovery failed', '设备发现失败'],

@@ -30,7 +30,9 @@ During printing/preparation, the overview and detail show **Estimated finish** b
 
 ## Reorder detail cards
 
-Open a printer's overview and choose **Edit layout**. Drag a card by its added title bar and release at the highlighted before/after position. Mouse, pen and touch use the same pointer interaction; dragging near the viewport edge scrolls toward offscreen cards. The **Move earlier/later** arrow buttons also work by touch or keyboard. Card contents are inactive during editing to prevent accidental device commands.
+Open a printer's overview and choose **Edit layout**. Drag a card by its added title bar: the complete original card follows the pointer while its grid placeholder and neighboring cards reflow immediately. Release to accept the preview; Escape, pointer cancellation, blur, resize or release outside the grid restores the order from before that gesture. Mouse, pen and touch use the same pointer interaction; dragging near the viewport edge scrolls toward offscreen cards. The **Move earlier/later** arrow buttons also work by touch or keyboard. Card contents are inactive during editing to prevent accidental device commands.
+
+Full-card dragging uses the standard HTML Popover API to display the original live card above HA's containers, without cloning or reparenting cameras/forms. Web Animations smooth the surrounding cards' movement and respect reduced-motion settings. This requires a modern browser supporting those APIs; the interaction has been verified in Edge. Physical touchscreen testing remains separate from automated touch-pointer coverage.
 
 Choose **Save layout** to persist the order, or **Cancel** to discard the draft. **Restore default** previews the original order; save to keep that reset. The responsive masonry still determines the number of columns and fills available space. Positions represent card order rather than fixed coordinates, so the same order adapts to desktop and phone widths.
 

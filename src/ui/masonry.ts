@@ -17,7 +17,12 @@ export class BambuMasonry extends HTMLElement {
   get editing(): boolean { return this._editing; }
 
   connectedCallback(): void {
-    this.reorder = new CardReorder(this, (move) => this.dispatchEvent(new CustomEvent('layout-move', { detail: move, bubbles: true, composed: true })));
+    const emit = (name: string, detail?: unknown) => this.dispatchEvent(new CustomEvent(name, { detail, bubbles: true, composed: true }));
+    this.reorder = new CardReorder(this, {
+      start: () => emit('layout-drag-start'),
+      move: (move) => emit('layout-move', move),
+      end: (cancelled) => emit(cancelled ? 'layout-drag-cancel' : 'layout-drag-end'),
+    });
     this.reorder.enabled = this._editing;
     this.resize = new ResizeObserver(() => this.schedule());
     this.mutation = new MutationObserver(() => this.syncChildren());
@@ -36,7 +41,7 @@ export class BambuMasonry extends HTMLElement {
 
   private syncChildren(): void {
     const next = new Set(Array.from(this.children).filter((child): child is HTMLElement => child instanceof HTMLElement));
-    if ([...this.items].some((item) => !next.has(item))) this.reorder?.cancel();
+    if (next.size !== this.items.size || [...this.items].some((item) => !next.has(item))) this.reorder?.cancel();
     for (const item of this.items) if (!next.has(item)) this.resize!.unobserve(item);
     for (const item of next) if (!this.items.has(item)) this.resize!.observe(item);
     this.items = next;
