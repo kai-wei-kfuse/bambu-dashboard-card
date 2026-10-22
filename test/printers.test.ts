@@ -1,8 +1,27 @@
 import { describe, expect, it } from 'vitest';
-import { discoverPrinters, filamentRemaining, findEntity, parameterAttributes } from '../src/domain/printers';
+import { discoverPrinters, filamentRemaining, findEntity, parameterAttributes, speedPercentage } from '../src/domain/printers';
 import { fixtureHass, fixtureRegistry } from './fixtures';
 
 describe('dynamic printer directory', () => {
+  it('uses the reported speed modifier, preserving custom percentages without mapping mode names', () => {
+    const registry = fixtureRegistry();
+    registry.entities.push({ entity_id: 'sensor.one_speed_profile', device_id: 'printer-one', platform: 'bambu_lab', translation_key: 'speed_profile' });
+    const hass = fixtureHass();
+    hass.states['sensor.one_speed_profile'] = { entity_id: 'sensor.one_speed_profile', state: 'standard', attributes: { modifier: 124 } };
+    const printer = discoverPrinters(registry, hass, { type: 'custom:bambu-dashboard-card' }).find((item) => item.id === 'printer-one')!;
+    for (const modifier of [100, 124, 150, 55, 0, 166]) {
+      hass.states['sensor.one_speed_profile'].attributes.modifier = modifier;
+      expect(speedPercentage(printer)).toBe(modifier);
+    }
+    for (const modifier of [undefined, '100', -1, Number.NaN, Infinity]) {
+      hass.states['sensor.one_speed_profile'].attributes.modifier = modifier;
+      expect(speedPercentage(printer)).toBeNull();
+    }
+    hass.states['sensor.one_speed_profile'].attributes.modifier = 100;
+    hass.states['sensor.one_speed_profile'].state = 'unavailable';
+    expect(speedPercentage(printer)).toBeNull();
+  });
+
   it('separates the printer-reported name from a renamed HA device without changing identity', () => {
     const registry = fixtureRegistry();
     registry.devices[0].name = 'A1_HA_IDENTIFIER';

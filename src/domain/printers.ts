@@ -66,6 +66,13 @@ export function numeric(entity?: EntityBinding): number | null {
   return Number.isFinite(number) ? number : null;
 }
 
+export function speedPercentage(printer: Printer): number | null {
+  const profile = findEntity(printer.entities, 'speed_profile');
+  if (!profile || scalar(profile) === null) return null;
+  const modifier = profile.state!.attributes.modifier;
+  return typeof modifier === 'number' && Number.isFinite(modifier) && modifier >= 0 ? modifier : null;
+}
+
 export function entityName(entity: EntityBinding): string {
   return entity.entry.name || entity.entry.original_name || String(entity.state?.attributes.friendly_name || entity.entry.translation_key || entity.entry.entity_id);
 }

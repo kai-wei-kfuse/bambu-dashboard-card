@@ -5,6 +5,30 @@ import { fixtureHass, fixtureRegistry, project, slicedProject } from './fixtures
 afterEach(() => { document.body.replaceChildren(); vi.useRealTimers(); });
 
 describe('complete dashboard', () => {
+  it('shows each overview speed percentage and updates it from HA without sending a command', async () => {
+    const registry = fixtureRegistry();
+    registry.entities.push({ entity_id: 'sensor.one_speed_profile', device_id: 'printer-one', platform: 'bambu_lab', translation_key: 'speed_profile' });
+    const hass = fixtureHass({
+      callWS: async <T>(message: Record<string, unknown>) => {
+        if (message.type === 'config/device_registry/list') return registry.devices as T;
+        if (message.type === 'config/entity_registry/list') return registry.entities as T;
+        throw new Error('Unexpected fixture request');
+      },
+      callService: vi.fn(),
+    });
+    hass.states['sensor.one_speed_profile'] = { entity_id: 'sensor.one_speed_profile', state: 'standard', attributes: { modifier: 124 } };
+    const card = new BambuDashboardCard();
+    card.hass = hass;
+    document.body.append(card);
+    await vi.waitFor(() => expect(card.shadowRoot!.querySelectorAll('.tile-speed')).toHaveLength(2));
+    expect([...card.shadowRoot!.querySelectorAll('.tile-speed strong')].map((item) => item.textContent)).toContain('124%');
+    hass.states['sensor.one_speed_profile'] = { ...hass.states['sensor.one_speed_profile'], attributes: { modifier: 55 } };
+    card.hass = { ...hass, states: { ...hass.states } };
+    await card.updateComplete;
+    expect([...card.shadowRoot!.querySelectorAll('.tile-speed strong')].map((item) => item.textContent)).toContain('55%');
+    expect(hass.callService).not.toHaveBeenCalled();
+  });
+
   it('uses printer/HA title hierarchy and renders an ETA below remaining time in the HA timezone', async () => {
     vi.spyOn(Date, 'now').mockReturnValue(Date.parse('2026-01-01T15:30:00Z'));
     const registry = fixtureRegistry();

@@ -70,3 +70,9 @@ Primary names now come from each device's registered `printer_name` sensor, whil
 Both overview and detail show current time plus remaining duration under remaining time, using HA's timezone and including the date. A connected minute clock and incoming HA state refresh the calculation; it is removed when the card detaches. Paused/nonprinting/invalid values do not produce an active completion estimate. The accent is now `#00AE42`, directly verified in the official Bambu store's public page.
 
 All 76 tests pass, including 22 new identity, unit conversion, status, midnight/timezone and clock lifecycle cases. Type checks and production build pass. Real HA verification confirmed both printer-name sensors drive labels, the HA name appears below the large detail title, computed progress color is RGB(0, 174, 66), and ETA appears below remaining time in both views. The narrow layout retained both names and ETA without horizontal overflow. No registry rename, printer command or notification configuration change was made. Real screenshots remain local.
+
+## Overview speed percentage — 2026-10-22
+
+Each overview tile now includes print speed as a percentage using `sensor.*_speed_profile`'s `modifier` attribute. Installed ha-bambulab code exposes the printer's `spd_mag` report there; no fixed percentage is inferred from mode names. Missing, unavailable or malformed reports remain explicit instead of becoming 100%. The four metrics wrap responsively.
+
+All 78 tests, type checks and production build pass. Added tests preserve reported 100/124/150/55/0/166 values, reject invalid reports and verify HA-driven UI updates without commands. Real HA showed both printers reporting 100%, and a 312-CSS-pixel viewport had no main-content horizontal overflow. No speed or other physical command was sent. Screenshots remain local.

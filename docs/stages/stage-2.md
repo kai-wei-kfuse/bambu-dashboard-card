@@ -1,8 +1,8 @@
 # Stage 2 — completion notifications and release validation
 
-Version: 1.7
+Version: 1.8
 
-## Current Plan (v1.7)
+## Current Plan (v1.8)
 
 The prior Stage 2 release-validation-only scope in development order v1.0 is superseded by the user-requested notification scope in [change proposal 002](../initial-changes/002-completion-notifications.md) and [ADR 002](../adr/002-native-completion-notifications.md). Existing release checks remain required.
 
@@ -15,6 +15,7 @@ The prior Stage 2 release-validation-only scope in development order v1.0 is sup
 - [x] Place each overview camera on the left and its project thumbnail on the right; use a 256px square detail preview (v1.5), scaling only when the available width is smaller, and verify desktop/narrow-screen rendering without content overflow.
 - [x] Reorganize detail information as independent content-sized masonry cards, preserving the 256px preview and every existing control/data module. See [ADR 003](../adr/003-detail-masonry.md). Verify four/two/single-column rendering, settings expansion and stable offscreen camera space.
 - [x] Add current-time-plus-remaining ETA, separate printer/HA display names and use the official-store green reference. See [ADR 004](../adr/004-printer-identity-and-completion-estimate.md). Verify actual HA labels, `#00AE42`, timezone display and narrow-screen layout.
+- [x] Show the reported speed percentage on every overview tile from the speed-profile sensor's `modifier` attribute, without guessing from speed mode names. Verify live HA readings and narrow-screen layout.
 - [ ] Verify phone delivery during a real print with the user's chosen destination.
 - [ ] Validate physical print/light/speed controls with an operator.
 - [ ] Check broader model compatibility, accessibility and clean HACS installation.
@@ -32,3 +33,4 @@ The prior Stage 2 release-validation-only scope in development order v1.0 is sup
 | 1.5 | 2026-10-22 | User revised the detail preview size to 256px square; allow the project title to wrap below and scale the square only for narrower containers. Supersedes v1.4's 96px detail size. |
 | 1.6 | 2026-10-22 | Implement dense detail masonry per ADR 003, compact reminder settings and readable hour/minute estimates. Real HA four/two/single-column checks pass; 54 tests, types and build pass. The paired camera/control layout is superseded. |
 | 1.7 | 2026-10-22 | Implement the requested printer/HA-name hierarchy, current-time completion estimate and `#00AE42` green per ADR 004. All 76 tests, typing, build and real HA desktop/narrow checks pass. |
+| 1.8 | 2026-10-22 | Implement overview speed percentage from the installed integration's modifier. All 78 tests, typing/build and real HA desktop/narrow checks pass; no control or backend changes. |

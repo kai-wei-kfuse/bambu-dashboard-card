@@ -99,7 +99,7 @@ p { margin: 0; }
 .progress-label strong { color: var(--bd-accent); font-size: 13px; }
 .progress-track { height: 5px; background: var(--bd-line); border-radius: 4px; overflow: hidden; }
 .progress-fill { height: 100%; width: var(--progress, 0%); background: var(--bd-accent); border-radius: inherit; transition: width .3s; }
-.tile-metrics { display: grid; grid-template-columns: repeat(3, 1fr); margin: 18px 0 14px; gap: 10px; }
+.tile-metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100px, 100%), 1fr)); margin: 18px 0 14px; gap: 10px; }
 .tile-metrics span { display: block; font-size: 10px; color: var(--bd-muted); }
 .tile-metrics strong { display: block; margin-top: 3px; font-size: 13px; font-weight: 600; }
 .tile-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--bd-line); padding-top: 12px; gap: 10px; }

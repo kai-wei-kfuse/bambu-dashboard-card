@@ -5,7 +5,7 @@ import { catalogFor, asError } from './ha/catalog';
 import type { CatalogState } from './ha/catalog';
 import type { CardConfig, HomeAssistant, Unsubscribe } from './ha/types';
 import { BambuClient } from './ha/client';
-import { canStart, discoverPrinters, domainOf, entityName, filamentColor, filamentRemaining, findEntity, isAvailable, numeric, parameterAttributes, scalar } from './domain/printers';
+import { canStart, discoverPrinters, domainOf, entityName, filamentColor, filamentRemaining, findEntity, isAvailable, numeric, parameterAttributes, scalar, speedPercentage } from './domain/printers';
 import type { AmsUnit, EntityBinding, Printer } from './domain/printers';
 import { estimateCompletion, remainingDuration } from './domain/timing';
 import { inspectProject, projectCompatibility, validatePrintOptions } from './domain/projects';
@@ -319,10 +319,13 @@ export class BambuDashboardCard extends LitElement {
   }
   private renderTile(printer: Printer) {
     const task = scalar(findEntity(printer.entities, 'subtask_name'));
+    const speed = speedPercentage(printer);
+    const profile = findEntity(printer.entities, 'speed_profile');
+    const speedText = speed === null ? (scalar(profile) === null ? this.value(profile) : this.t('unknown')) : `${speed}%`;
     return html`<article class="panel printer-card"><button class="card-heading" @click=${() => this.selectPrinter(printer.id)}><span class="machine-badge">${icon('printer')}</span><span class="heading-copy"><b>${printer.name}</b><small>${printer.haName === printer.name ? printer.model : `${printer.model} · ${printer.haName}`}</small></span>${this.statusBadge(printer)}</button>
       <div class="tile-media"><div class="preview" aria-label=${this.t('camera')}>${printerIllustration()}${printer.camera && isAvailable(printer.camera) ? html`<bambu-dashboard-camera .hass=${this._hass} .entity=${printer.camera.entry.entity_id}></bambu-dashboard-camera>` : nothing}<span class="preview-caption">${printer.camera ? this.t('camera') : this.t('unsupported')}</span></div>
       <div class="project-preview" aria-label=${this.t('projectPreview')}>${printer.cover && scalar(printer.cover) ? html`<bambu-dashboard-file-image .hass=${this._hass} .entity=${printer.cover.entry.entity_id} .version=${scalar(printer.cover) || ''}></bambu-dashboard-file-image>` : html`<div class="preview-empty">${icon('folder')}<span>${this.t('noProjectPreview')}</span></div>`}<span class="preview-caption">${this.t('projectPreview')}</span></div></div>
-      <div class="tile-content"><div class="task-line">${icon('folder')}<span>${task || this.t('noTask')}</span></div>${this.progress(printer)}<div class="tile-metrics"><div><span>${this.t('remaining')}</span><strong>${this.remaining(printer)}</strong>${this.completionEstimate(printer)}</div><div><span>${this.t('nozzle')}</span><strong>${this.sensor(printer, 'nozzle_temp')}</strong></div><div><span>${this.t('bed')}</span><strong>${this.sensor(printer, 'bed_temp')}</strong></div></div>
+      <div class="tile-content"><div class="task-line">${icon('folder')}<span>${task || this.t('noTask')}</span></div>${this.progress(printer)}<div class="tile-metrics"><div><span>${this.t('remaining')}</span><strong>${this.remaining(printer)}</strong>${this.completionEstimate(printer)}</div><div><span>${this.t('nozzle')}</span><strong>${this.sensor(printer, 'nozzle_temp')}</strong></div><div><span>${this.t('bed')}</span><strong>${this.sensor(printer, 'bed_temp')}</strong></div><div class="tile-speed"><span>${this.t('speed')}</span><strong>${speedText}</strong></div></div>
       <div class="tile-footer"><div class="filament-dots">${printer.ams.flatMap((unit) => unit.slots).map(({ entity }) => html`<span title=${entityName(entity)} class="filament-dot ${entity.state?.attributes.active ? 'active' : ''}" style=${`--filament:${filamentColor(entity.state?.attributes.color) || 'transparent'}`}></span>`)}</div><button class="button small" @click=${() => this.selectPrinter(printer.id)}>${this.t('details')}${icon('arrow')}</button></div></div></article>`;
   }
 
