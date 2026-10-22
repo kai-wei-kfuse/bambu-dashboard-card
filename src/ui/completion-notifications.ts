@@ -24,8 +24,8 @@ export class CompletionNotifications extends LitElement {
   static styles = css`
     :host { display: block; margin-top: 18px; }
     * { box-sizing: border-box; }
-    section { background: var(--bd-panel); border: 1px solid var(--bd-line); border-radius: 13px; overflow: hidden; }
-    header { display: flex; gap: 12px; align-items: center; justify-content: space-between; padding: 18px 20px; border-bottom: 1px solid var(--bd-line); }
+    section { background: var(--bd-surface); border: 1px solid var(--bd-line); border-radius: var(--bd-card-radius); box-shadow: var(--bd-shadow); overflow: hidden; }
+    header { display: flex; gap: 12px; align-items: center; justify-content: space-between; padding: 18px 20px; background: linear-gradient(110deg, color-mix(in srgb, var(--bd-panel) 36%, transparent), transparent); border-bottom: 1px solid var(--bd-line); }
     h2 { font-size: 13px; font-weight: 650; margin: 0; }
     .body { padding: 18px 20px; }
     p { margin: 0 0 14px; color: var(--bd-muted); font-size: 12px; line-height: 1.6; }
@@ -33,9 +33,9 @@ export class CompletionNotifications extends LitElement {
     label { display: flex; flex-direction: column; gap: 7px; font-size: 11px; color: var(--bd-muted); min-width: 0; }
     .check { flex-direction: row; align-items: center; color: var(--bd-text); font-size: 13px; }
     input { accent-color: var(--bd-accent); width: 17px; height: 17px; }
-    select { width: 100%; min-width: 0; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--bd-line); background: var(--bd-bg); color: var(--bd-text); font: inherit; font-size: 12px; }
-    button { border: 1px solid var(--bd-line); background: var(--bd-raised); color: var(--bd-text); padding: 8px 13px; border-radius: 8px; cursor: pointer; font: inherit; font-size: 12px; }
-    button.primary { background: var(--bd-accent); color: #08291f; border-color: var(--bd-accent); font-weight: 650; }
+    select { width: 100%; min-width: 0; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--bd-line); background: var(--bd-inset); color: var(--bd-text); font: inherit; font-size: 12px; }
+    button { border: 1px solid var(--bd-line); background: var(--bd-inset); color: var(--bd-text); padding: 8px 13px; border-radius: 12px; box-shadow: 0 2px 6px #183c3005; cursor: pointer; font: inherit; font-size: 12px; }
+    button.primary { background: linear-gradient(145deg, var(--bd-accent), color-mix(in srgb, var(--bd-accent) 86%, #087a32)); color: #052b12; border-color: transparent; box-shadow: 0 4px 12px #00ae421c; font-weight: 650; }
     button:disabled, select:disabled, input:disabled { opacity: .5; cursor: not-allowed; }
     button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px solid var(--bd-accent); outline-offset: 3px; }
     .footer { display: flex; align-items: center; flex-wrap: wrap; gap: 14px; }

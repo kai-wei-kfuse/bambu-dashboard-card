@@ -63,7 +63,7 @@ const messages = {
   live: ['Live stream', '视频流'],
   cameraHelp: ['Camera transport is provided by Home Assistant.', '使用 Home Assistant 提供的摄像头连接。'],
   loading: ['Loading…', '加载中…'],
-  external: ['External spool', '外置料盘'],
+  external: ['External spool', '外挂料盘'],
   active: ['In use', '使用中'],
   empty: ['Empty', '空槽'],
   humidity: ['Humidity', '湿度'],

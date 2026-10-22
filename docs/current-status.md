@@ -76,3 +76,11 @@ All 76 tests pass, including 22 new identity, unit conversion, status, midnight/
 Each overview tile now includes print speed as a percentage using `sensor.*_speed_profile`'s `modifier` attribute. Installed ha-bambulab code exposes the printer's `spd_mag` report there; no fixed percentage is inferred from mode names. Missing, unavailable or malformed reports remain explicit instead of becoming 100%. The four metrics wrap responsively.
 
 All 78 tests, type checks and production build pass. Added tests preserve reported 100/124/150/55/0/166 values, reject invalid reports and verify HA-driven UI updates without commands. Real HA showed both printers reporting 100%, and a 312-CSS-pixel viewport had no main-content horizontal overflow. No speed or other physical command was sent. Screenshots remain local.
+
+## Soft card surfaces and filament source labels — 2026-10-23
+
+The user's visual reference is reflected in a subtle cool-to-warm workspace gradient, translucent theme-derived card surfaces, 22px card corners, diffuse shadows and softer nested fields/chips. Bambu green remains `#00AE42`. Overview, masonry cards, AMS slots and reminder settings share the surface/radius/shadow tokens; the existing media arrangement and 256px detail preview remain intact.
+
+Overview filament colors are grouped by each registered feeder rather than flattened across devices. Every group shows the actual AMS model, such as AMS Lite, or the localized external-spool label. A user-assigned feeder alias remains available as the group's tooltip instead of replacing its model label.
+
+All 79 tests, TypeScript checks and production build pass. A new behavior test verifies model labeling, color counts and correct printer/source ownership. Real HA showed one printer with separate AMS Lite (four colors) and external-spool groups, and the other with its own external spool. Desktop details retained a 256px preview and had no overlapping cards. Narrow overview and detail views had no main-content horizontal overflow. No physical printer or notification action was sent; real screenshots remain local.

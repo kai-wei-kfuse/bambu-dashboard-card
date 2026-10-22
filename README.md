@@ -16,6 +16,7 @@ The deliverable includes both the custom frontend component and a complete dashb
 - Complete entity and attribute explorer.
 - Camera, light, speed, pause, resume, stop, and sliced-project printing.
 - AMS and external-spool visualization based on registered devices.
+- Source-labeled filament color groups on overview tiles, with soft translucent card surfaces and theme-aware gradients.
 - Cached project browser, downloads, metadata checks, and reprinting through the integration's authenticated APIs.
 - Responsive layout, Home Assistant themes, and a visual configuration editor.
 - Per-printer completion reminders backed by native HA automations, including Android alarm-stream alerts and standard notification destinations.

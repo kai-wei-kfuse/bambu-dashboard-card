@@ -5,6 +5,31 @@ import { fixtureHass, fixtureRegistry, project, slicedProject } from './fixtures
 afterEach(() => { document.body.replaceChildren(); vi.useRealTimers(); });
 
 describe('complete dashboard', () => {
+  it('labels filament groups by the actual AMS model and keeps external-spool colors with their printer', async () => {
+    const registry = fixtureRegistry();
+    Object.assign(registry.devices.find((device) => device.id === 'ams-one')!, { name_by_user: 'My feeder', model: 'AMS Lite' });
+    const hass = fixtureHass({
+      callWS: async <T>(message: Record<string, unknown>) => {
+        if (message.type === 'config/device_registry/list') return registry.devices as T;
+        if (message.type === 'config/entity_registry/list') return registry.entities as T;
+        throw new Error('Unexpected fixture request');
+      },
+    });
+    const card = new BambuDashboardCard();
+    card.hass = hass;
+    document.body.append(card);
+    await vi.waitFor(() => expect(card.shadowRoot!.querySelectorAll('.printer-card')).toHaveLength(2));
+    const tiles = [...card.shadowRoot!.querySelectorAll<HTMLElement>('.printer-card')];
+    const workshop = tiles.find((tile) => tile.querySelector('.heading-copy')!.textContent!.includes('Workshop'))!;
+    const studio = tiles.find((tile) => tile.querySelector('.heading-copy')!.textContent!.includes('Studio'))!;
+    expect(workshop.querySelector('.filament-source')!.textContent).toContain('AMS Lite');
+    expect(workshop.querySelector('.filament-group')!.getAttribute('title')).toBe('My feeder');
+    expect(workshop.querySelectorAll('.filament-dot')).toHaveLength(4);
+    expect(studio.querySelector('.filament-source')!.textContent).toContain('External spool');
+    expect(studio.querySelectorAll('.filament-dot')).toHaveLength(1);
+    expect(studio.querySelector('.filament-source')!.textContent).not.toContain('AMS Lite');
+  });
+
   it('shows each overview speed percentage and updates it from HA without sending a command', async () => {
     const registry = fixtureRegistry();
     registry.entities.push({ entity_id: 'sensor.one_speed_profile', device_id: 'printer-one', platform: 'bambu_lab', translation_key: 'speed_profile' });
