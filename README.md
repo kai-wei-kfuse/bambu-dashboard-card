@@ -16,6 +16,7 @@ The deliverable includes both the custom frontend component and a complete dashb
 - Drag complete detail cards by their edit-mode handles while neighboring cards make room in real time, or use arrow buttons; save an independent layout for each printer in your HA account.
 - Complete entity and attribute explorer.
 - Camera, light, speed, pause, resume, stop, and sliced-project printing.
+- Per-printer external HA camera selection from the overview or detail, with source labels and explicit offline/missing states. Connect the camera to HA first; no direct stream credentials are stored in the card.
 - AMS and external-spool visualization based on registered devices.
 - Source-labeled filament color groups on overview tiles, with soft translucent card surfaces and theme-aware gradients.
 - Cached project browser, downloads, metadata checks, and reprinting through the integration's authenticated APIs.

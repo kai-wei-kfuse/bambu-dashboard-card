@@ -5,6 +5,7 @@
 - [ ] Verify completion notification sound on the selected phone during a real print, including alarm volume, channel permissions and Do Not Disturb behavior. Configuration persistence is already verified without sending a notification.
 - [ ] Validate start/pause/resume/stop, light behavior and speed changes on physical hardware with an operator present.
 - [ ] Verify camera and capability rendering on models beyond A1 / AMS Lite.
+- [ ] Validate a real external HA camera's live/image playback, latency and quality once hardware is connected. Discovery, preference persistence, error states and native stream/image mode selection are covered by synthetic tests; the real HA empty picker has been verified.
 - [ ] Verify a clean HACS installation and publish an installable release after validation.
 
 ## Stage 3

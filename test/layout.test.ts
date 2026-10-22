@@ -46,7 +46,7 @@ describe('HA per-user layout storage', () => {
   it('exposes unsupported responses and backend write failures', async () => {
     const callWS = vi.fn().mockResolvedValueOnce({}).mockResolvedValueOnce({ value: { version: 2, order: [] } }).mockRejectedValueOnce(new Error('Storage unavailable'));
     const client = new LayoutClient(fixtureHass({ callWS }));
-    await expect(client.load('one')).rejects.toThrow('invalid layout storage');
+    await expect(client.load('one')).rejects.toThrow('invalid frontend user-data');
     await expect(client.load('one')).rejects.toThrow('unsupported detail layout');
     await expect(client.save('one', { version: 1, order: [] })).rejects.toThrow('Storage unavailable');
   });

@@ -28,6 +28,16 @@ The main printer label uses ha-bambulab's **Printer name** sensor. Its HA device
 
 During printing/preparation, the overview and detail show **Estimated finish** below remaining time, calculated from the current clock plus the remaining duration. Dates/times use HA's configured timezone. A paused print needs resuming before a running estimate is shown. This is a changing estimate, not a completed-print timestamp.
 
+## External HA cameras
+
+Each overview camera has an **External camera** entry; the detail camera header provides the same picker. First connect the external camera through a Home Assistant integration and verify that HA exposes a `camera.*` entity. Open the picker for the desired printer, choose the external entity and select **Save camera**. The overview and detail then use that same entity and label the source as external. Select **Built-in camera** and save to restore the printer's original source.
+
+The list uses camera states accessible to the current HA session, with entity-registry names/status. ha-bambulab's own cameras are excluded from the external list. Newly added entities appear as HA updates arrive. With no external entities, the picker explains how to connect one and links to HA integrations; it does not invent an external source or scan the network.
+
+Selections are saved per printer and authenticated HA user with native frontend user data, restored on opening or refreshing another client. Selection needs no administrator role; installing/configuring an HA camera integration may require an HA administrator. Already-open tabs are not subscribed to live preference changes. Cancel never saves, failed saves keep the draft, and storage errors remain visible. An unavailable, unknown, disabled or removed selected source is shown explicitly, without silently switching back to the built-in camera.
+
+Authentication and image/video transport remain HA-native. The existing picture-entity renderer uses HA's reported live-stream capability or automatic image mode. No camera URL, username, password or additional streaming backend is configured in this card. Synthetic tests cover live/image selection and persistence; real external hardware playback, latency and quality remain unverified until a camera is connected.
+
 ## Reorder detail cards
 
 Open a printer's overview and choose **Edit layout**. Drag a card by its added title bar: the complete original card follows the pointer while its grid placeholder and neighboring cards reflow immediately. Release to accept the preview; Escape, pointer cancellation, blur, resize or release outside the grid restores the order from before that gesture. Mouse, pen and touch use the same pointer interaction; dragging near the viewport edge scrolls toward offscreen cards. The **Move earlier/later** arrow buttons also work by touch or keyboard. Card contents are inactive during editing to prevent accidental device commands.

@@ -29,7 +29,7 @@ var e = globalThis, t = e.ShadowRoot && (e.ShadyCSS === void 0 || e.ShadyCSS.nat
 	let t = "";
 	for (let n of e.cssRules) t += n.cssText;
 	return a(t);
-})(e) : e, { is: l, defineProperty: u, getOwnPropertyDescriptor: d, getOwnPropertyNames: f, getOwnPropertySymbols: p, getPrototypeOf: m } = Object, h = globalThis, g = h.trustedTypes, _ = g ? g.emptyScript : "", ee = h.reactiveElementPolyfillSupport, v = (e, t) => e, te = {
+})(e) : e, { is: l, defineProperty: u, getOwnPropertyDescriptor: d, getOwnPropertyNames: f, getOwnPropertySymbols: p, getPrototypeOf: m } = Object, h = globalThis, g = h.trustedTypes, _ = g ? g.emptyScript : "", ee = h.reactiveElementPolyfillSupport, v = (e, t) => e, y = {
 	toAttribute(e, t) {
 		switch (t) {
 			case Boolean:
@@ -58,23 +58,23 @@ var e = globalThis, t = e.ShadowRoot && (e.ShadyCSS === void 0 || e.ShadyCSS.nat
 		}
 		return n;
 	}
-}, ne = (e, t) => !l(e, t), re = {
+}, te = (e, t) => !l(e, t), ne = {
 	attribute: !0,
 	type: String,
-	converter: te,
+	converter: y,
 	reflect: !1,
 	useDefault: !1,
-	hasChanged: ne
+	hasChanged: te
 };
 Symbol.metadata ??= Symbol("metadata"), h.litPropertyMetadata ??= /* @__PURE__ */ new WeakMap();
-var y = class extends HTMLElement {
+var b = class extends HTMLElement {
 	static addInitializer(e) {
 		this._$Ei(), (this.l ??= []).push(e);
 	}
 	static get observedAttributes() {
 		return this.finalize(), this._$Eh && [...this._$Eh.keys()];
 	}
-	static createProperty(e, t = re) {
+	static createProperty(e, t = ne) {
 		if (t.state && (t.attribute = !1), this._$Ei(), this.prototype.hasOwnProperty(e) && ((t = Object.create(t)).wrapped = !0), this.elementProperties.set(e, t), !t.noAccessor) {
 			let n = Symbol(), r = this.getPropertyDescriptor(e, n, t);
 			r !== void 0 && u(this.prototype, e, r);
@@ -100,7 +100,7 @@ var y = class extends HTMLElement {
 		};
 	}
 	static getPropertyOptions(e) {
-		return this.elementProperties.get(e) ?? re;
+		return this.elementProperties.get(e) ?? ne;
 	}
 	static _$Ei() {
 		if (this.hasOwnProperty(v("elementProperties"))) return;
@@ -171,14 +171,14 @@ var y = class extends HTMLElement {
 	_$ET(e, t) {
 		let n = this.constructor.elementProperties.get(e), r = this.constructor._$Eu(e, n);
 		if (r !== void 0 && !0 === n.reflect) {
-			let i = (n.converter?.toAttribute === void 0 ? te : n.converter).toAttribute(t, n.type);
+			let i = (n.converter?.toAttribute === void 0 ? y : n.converter).toAttribute(t, n.type);
 			this._$Em = e, i == null ? this.removeAttribute(r) : this.setAttribute(r, i), this._$Em = null;
 		}
 	}
 	_$AK(e, t) {
 		let n = this.constructor, r = n._$Eh.get(e);
 		if (r !== void 0 && this._$Em !== r) {
-			let e = n.getPropertyOptions(r), i = typeof e.converter == "function" ? { fromAttribute: e.converter } : e.converter?.fromAttribute === void 0 ? te : e.converter;
+			let e = n.getPropertyOptions(r), i = typeof e.converter == "function" ? { fromAttribute: e.converter } : e.converter?.fromAttribute === void 0 ? y : e.converter;
 			this._$Em = r;
 			let a = i.fromAttribute(t, e.type);
 			this[r] = a ?? this._$Ej?.get(r) ?? a, this._$Em = null;
@@ -187,7 +187,7 @@ var y = class extends HTMLElement {
 	requestUpdate(e, t, n, r = !1, i) {
 		if (e !== void 0) {
 			let a = this.constructor;
-			if (!1 === r && (i = this[e]), n ??= a.getPropertyOptions(e), !((n.hasChanged ?? ne)(i, t) || n.useDefault && n.reflect && i === this._$Ej?.get(e) && !this.hasAttribute(a._$Eu(e, n)))) return;
+			if (!1 === r && (i = this[e]), n ??= a.getPropertyOptions(e), !((n.hasChanged ?? te)(i, t) || n.useDefault && n.reflect && i === this._$Ej?.get(e) && !this.hasAttribute(a._$Eu(e, n)))) return;
 			this.C(e, t, n);
 		}
 		!1 === this.isUpdatePending && (this._$ES = this._$EP());
@@ -251,88 +251,88 @@ var y = class extends HTMLElement {
 	updated(e) {}
 	firstUpdated(e) {}
 };
-y.elementStyles = [], y.shadowRootOptions = { mode: "open" }, y[v("elementProperties")] = /* @__PURE__ */ new Map(), y[v("finalized")] = /* @__PURE__ */ new Map(), ee?.({ ReactiveElement: y }), (h.reactiveElementVersions ??= []).push("2.1.2");
+b.elementStyles = [], b.shadowRootOptions = { mode: "open" }, b[v("elementProperties")] = /* @__PURE__ */ new Map(), b[v("finalized")] = /* @__PURE__ */ new Map(), ee?.({ ReactiveElement: b }), (h.reactiveElementVersions ??= []).push("2.1.2");
 // node_modules/lit-html/lit-html.js
-var ie = globalThis, b = (e) => e, x = ie.trustedTypes, S = x ? x.createPolicy("lit-html", { createHTML: (e) => e }) : void 0, ae = "$lit$", C = `lit$${Math.random().toFixed(9).slice(2)}$`, oe = "?" + C, se = `<${oe}>`, w = document, T = () => w.createComment(""), E = (e) => e === null || typeof e != "object" && typeof e != "function", D = Array.isArray, ce = (e) => D(e) || typeof e?.[Symbol.iterator] == "function", le = "[ 	\n\f\r]", O = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, k = /-->/g, ue = />/g, A = RegExp(`>|${le}(?:([^\\s"'>=/]+)(${le}*=${le}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`, "g"), de = /'/g, fe = /"/g, pe = /^(?:script|style|textarea|title)$/i, me = (e) => (t, ...n) => ({
+var re = globalThis, x = (e) => e, S = re.trustedTypes, C = S ? S.createPolicy("lit-html", { createHTML: (e) => e }) : void 0, ie = "$lit$", w = `lit$${Math.random().toFixed(9).slice(2)}$`, ae = "?" + w, oe = `<${ae}>`, T = document, E = () => T.createComment(""), D = (e) => e === null || typeof e != "object" && typeof e != "function", O = Array.isArray, se = (e) => O(e) || typeof e?.[Symbol.iterator] == "function", ce = "[ 	\n\f\r]", k = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, A = /-->/g, le = />/g, j = RegExp(`>|${ce}(?:([^\\s"'>=/]+)(${ce}*=${ce}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`, "g"), ue = /'/g, de = /"/g, fe = /^(?:script|style|textarea|title)$/i, pe = (e) => (t, ...n) => ({
 	_$litType$: e,
 	strings: t,
 	values: n
-}), j = me(1), he = me(2), M = Symbol.for("lit-noChange"), N = Symbol.for("lit-nothing"), ge = /* @__PURE__ */ new WeakMap(), P = w.createTreeWalker(w, 129);
-function _e(e, t) {
-	if (!D(e) || !e.hasOwnProperty("raw")) throw Error("invalid template strings array");
-	return S === void 0 ? t : S.createHTML(t);
+}), M = pe(1), me = pe(2), N = Symbol.for("lit-noChange"), P = Symbol.for("lit-nothing"), he = /* @__PURE__ */ new WeakMap(), F = T.createTreeWalker(T, 129);
+function ge(e, t) {
+	if (!O(e) || !e.hasOwnProperty("raw")) throw Error("invalid template strings array");
+	return C === void 0 ? t : C.createHTML(t);
 }
-var ve = (e, t) => {
-	let n = e.length - 1, r = [], i, a = t === 2 ? "<svg>" : t === 3 ? "<math>" : "", o = O;
+var _e = (e, t) => {
+	let n = e.length - 1, r = [], i, a = t === 2 ? "<svg>" : t === 3 ? "<math>" : "", o = k;
 	for (let t = 0; t < n; t++) {
 		let n = e[t], s, c, l = -1, u = 0;
-		for (; u < n.length && (o.lastIndex = u, c = o.exec(n), c !== null);) u = o.lastIndex, o === O ? c[1] === "!--" ? o = k : c[1] === void 0 ? c[2] === void 0 ? c[3] !== void 0 && (o = A) : (pe.test(c[2]) && (i = RegExp("</" + c[2], "g")), o = A) : o = ue : o === A ? c[0] === ">" ? (o = i ?? O, l = -1) : c[1] === void 0 ? l = -2 : (l = o.lastIndex - c[2].length, s = c[1], o = c[3] === void 0 ? A : c[3] === "\"" ? fe : de) : o === fe || o === de ? o = A : o === k || o === ue ? o = O : (o = A, i = void 0);
-		let d = o === A && e[t + 1].startsWith("/>") ? " " : "";
-		a += o === O ? n + se : l >= 0 ? (r.push(s), n.slice(0, l) + ae + n.slice(l) + C + d) : n + C + (l === -2 ? t : d);
+		for (; u < n.length && (o.lastIndex = u, c = o.exec(n), c !== null);) u = o.lastIndex, o === k ? c[1] === "!--" ? o = A : c[1] === void 0 ? c[2] === void 0 ? c[3] !== void 0 && (o = j) : (fe.test(c[2]) && (i = RegExp("</" + c[2], "g")), o = j) : o = le : o === j ? c[0] === ">" ? (o = i ?? k, l = -1) : c[1] === void 0 ? l = -2 : (l = o.lastIndex - c[2].length, s = c[1], o = c[3] === void 0 ? j : c[3] === "\"" ? de : ue) : o === de || o === ue ? o = j : o === A || o === le ? o = k : (o = j, i = void 0);
+		let d = o === j && e[t + 1].startsWith("/>") ? " " : "";
+		a += o === k ? n + oe : l >= 0 ? (r.push(s), n.slice(0, l) + ie + n.slice(l) + w + d) : n + w + (l === -2 ? t : d);
 	}
-	return [_e(e, a + (e[n] || "<?>") + (t === 2 ? "</svg>" : t === 3 ? "</math>" : "")), r];
-}, ye = class e {
+	return [ge(e, a + (e[n] || "<?>") + (t === 2 ? "</svg>" : t === 3 ? "</math>" : "")), r];
+}, ve = class e {
 	constructor({ strings: t, _$litType$: n }, r) {
 		let i;
 		this.parts = [];
-		let a = 0, o = 0, s = t.length - 1, c = this.parts, [l, u] = ve(t, n);
-		if (this.el = e.createElement(l, r), P.currentNode = this.el.content, n === 2 || n === 3) {
+		let a = 0, o = 0, s = t.length - 1, c = this.parts, [l, u] = _e(t, n);
+		if (this.el = e.createElement(l, r), F.currentNode = this.el.content, n === 2 || n === 3) {
 			let e = this.el.content.firstChild;
 			e.replaceWith(...e.childNodes);
 		}
-		for (; (i = P.nextNode()) !== null && c.length < s;) {
+		for (; (i = F.nextNode()) !== null && c.length < s;) {
 			if (i.nodeType === 1) {
-				if (i.hasAttributes()) for (let e of i.getAttributeNames()) if (e.endsWith(ae)) {
-					let t = u[o++], n = i.getAttribute(e).split(C), r = /([.?@])?(.*)/.exec(t);
+				if (i.hasAttributes()) for (let e of i.getAttributeNames()) if (e.endsWith(ie)) {
+					let t = u[o++], n = i.getAttribute(e).split(w), r = /([.?@])?(.*)/.exec(t);
 					c.push({
 						type: 1,
 						index: a,
 						name: r[2],
 						strings: n,
-						ctor: r[1] === "." ? Ce : r[1] === "?" ? we : r[1] === "@" ? Te : Se
+						ctor: r[1] === "." ? Se : r[1] === "?" ? Ce : r[1] === "@" ? we : xe
 					}), i.removeAttribute(e);
-				} else e.startsWith(C) && (c.push({
+				} else e.startsWith(w) && (c.push({
 					type: 6,
 					index: a
 				}), i.removeAttribute(e));
-				if (pe.test(i.tagName)) {
-					let e = i.textContent.split(C), t = e.length - 1;
+				if (fe.test(i.tagName)) {
+					let e = i.textContent.split(w), t = e.length - 1;
 					if (t > 0) {
-						i.textContent = x ? x.emptyScript : "";
-						for (let n = 0; n < t; n++) i.append(e[n], T()), P.nextNode(), c.push({
+						i.textContent = S ? S.emptyScript : "";
+						for (let n = 0; n < t; n++) i.append(e[n], E()), F.nextNode(), c.push({
 							type: 2,
 							index: ++a
 						});
-						i.append(e[t], T());
+						i.append(e[t], E());
 					}
 				}
 			} else if (i.nodeType === 8) {
-				if (i.data === oe) c.push({
+				if (i.data === ae) c.push({
 					type: 2,
 					index: a
 				});
 				else {
 					let e = -1;
-					for (; (e = i.data.indexOf(C, e + 1)) !== -1;) c.push({
+					for (; (e = i.data.indexOf(w, e + 1)) !== -1;) c.push({
 						type: 7,
 						index: a
-					}), e += C.length - 1;
+					}), e += w.length - 1;
 				}
 			}
 			a++;
 		}
 	}
 	static createElement(e, t) {
-		let n = w.createElement("template");
+		let n = T.createElement("template");
 		return n.innerHTML = e, n;
 	}
 };
-function F(e, t, n = e, r) {
-	if (t === M) return t;
-	let i = r === void 0 ? n._$Cl : n._$Co?.[r], a = E(t) ? void 0 : t._$litDirective$;
-	return i?.constructor !== a && (i?._$AO?.(!1), a === void 0 ? i = void 0 : (i = new a(e), i._$AT(e, n, r)), r === void 0 ? n._$Cl = i : (n._$Co ??= [])[r] = i), i !== void 0 && (t = F(e, i._$AS(e, t.values), i, r)), t;
+function I(e, t, n = e, r) {
+	if (t === N) return t;
+	let i = r === void 0 ? n._$Cl : n._$Co?.[r], a = D(t) ? void 0 : t._$litDirective$;
+	return i?.constructor !== a && (i?._$AO?.(!1), a === void 0 ? i = void 0 : (i = new a(e), i._$AT(e, n, r)), r === void 0 ? n._$Cl = i : (n._$Co ??= [])[r] = i), i !== void 0 && (t = I(e, i._$AS(e, t.values), i, r)), t;
 }
-var be = class {
+var ye = class {
 	constructor(e, t) {
 		this._$AV = [], this._$AN = void 0, this._$AD = e, this._$AM = t;
 	}
@@ -343,28 +343,28 @@ var be = class {
 		return this._$AM._$AU;
 	}
 	u(e) {
-		let { el: { content: t }, parts: n } = this._$AD, r = (e?.creationScope ?? w).importNode(t, !0);
-		P.currentNode = r;
-		let i = P.nextNode(), a = 0, o = 0, s = n[0];
+		let { el: { content: t }, parts: n } = this._$AD, r = (e?.creationScope ?? T).importNode(t, !0);
+		F.currentNode = r;
+		let i = F.nextNode(), a = 0, o = 0, s = n[0];
 		for (; s !== void 0;) {
 			if (a === s.index) {
 				let t;
-				s.type === 2 ? t = new xe(i, i.nextSibling, this, e) : s.type === 1 ? t = new s.ctor(i, s.name, s.strings, this, e) : s.type === 6 && (t = new Ee(i, this, e)), this._$AV.push(t), s = n[++o];
+				s.type === 2 ? t = new be(i, i.nextSibling, this, e) : s.type === 1 ? t = new s.ctor(i, s.name, s.strings, this, e) : s.type === 6 && (t = new Te(i, this, e)), this._$AV.push(t), s = n[++o];
 			}
-			a !== s?.index && (i = P.nextNode(), a++);
+			a !== s?.index && (i = F.nextNode(), a++);
 		}
-		return P.currentNode = w, r;
+		return F.currentNode = T, r;
 	}
 	p(e) {
 		let t = 0;
 		for (let n of this._$AV) n !== void 0 && (n.strings === void 0 ? n._$AI(e[t]) : (n._$AI(e, n, t), t += n.strings.length - 2)), t++;
 	}
-}, xe = class e {
+}, be = class e {
 	get _$AU() {
 		return this._$AM?._$AU ?? this._$Cv;
 	}
 	constructor(e, t, n, r) {
-		this.type = 2, this._$AH = N, this._$AN = void 0, this._$AA = e, this._$AB = t, this._$AM = n, this.options = r, this._$Cv = r?.isConnected ?? !0;
+		this.type = 2, this._$AH = P, this._$AN = void 0, this._$AA = e, this._$AB = t, this._$AM = n, this.options = r, this._$Cv = r?.isConnected ?? !0;
 	}
 	get parentNode() {
 		let e = this._$AA.parentNode, t = this._$AM;
@@ -377,7 +377,7 @@ var be = class {
 		return this._$AB;
 	}
 	_$AI(e, t = this) {
-		e = F(this, e, t), E(e) ? e === N || e == null || e === "" ? (this._$AH !== N && this._$AR(), this._$AH = N) : e !== this._$AH && e !== M && this._(e) : e._$litType$ === void 0 ? e.nodeType === void 0 ? ce(e) ? this.k(e) : this._(e) : this.T(e) : this.$(e);
+		e = I(this, e, t), D(e) ? e === P || e == null || e === "" ? (this._$AH !== P && this._$AR(), this._$AH = P) : e !== this._$AH && e !== N && this._(e) : e._$litType$ === void 0 ? e.nodeType === void 0 ? se(e) ? this.k(e) : this._(e) : this.T(e) : this.$(e);
 	}
 	O(e) {
 		return this._$AA.parentNode.insertBefore(e, this._$AB);
@@ -386,36 +386,36 @@ var be = class {
 		this._$AH !== e && (this._$AR(), this._$AH = this.O(e));
 	}
 	_(e) {
-		this._$AH !== N && E(this._$AH) ? this._$AA.nextSibling.data = e : this.T(w.createTextNode(e)), this._$AH = e;
+		this._$AH !== P && D(this._$AH) ? this._$AA.nextSibling.data = e : this.T(T.createTextNode(e)), this._$AH = e;
 	}
 	$(e) {
-		let { values: t, _$litType$: n } = e, r = typeof n == "number" ? this._$AC(e) : (n.el === void 0 && (n.el = ye.createElement(_e(n.h, n.h[0]), this.options)), n);
+		let { values: t, _$litType$: n } = e, r = typeof n == "number" ? this._$AC(e) : (n.el === void 0 && (n.el = ve.createElement(ge(n.h, n.h[0]), this.options)), n);
 		if (this._$AH?._$AD === r) this._$AH.p(t);
 		else {
-			let e = new be(r, this), n = e.u(this.options);
+			let e = new ye(r, this), n = e.u(this.options);
 			e.p(t), this.T(n), this._$AH = e;
 		}
 	}
 	_$AC(e) {
-		let t = ge.get(e.strings);
-		return t === void 0 && ge.set(e.strings, t = new ye(e)), t;
+		let t = he.get(e.strings);
+		return t === void 0 && he.set(e.strings, t = new ve(e)), t;
 	}
 	k(t) {
-		D(this._$AH) || (this._$AH = [], this._$AR());
+		O(this._$AH) || (this._$AH = [], this._$AR());
 		let n = this._$AH, r, i = 0;
-		for (let a of t) i === n.length ? n.push(r = new e(this.O(T()), this.O(T()), this, this.options)) : r = n[i], r._$AI(a), i++;
+		for (let a of t) i === n.length ? n.push(r = new e(this.O(E()), this.O(E()), this, this.options)) : r = n[i], r._$AI(a), i++;
 		i < n.length && (this._$AR(r && r._$AB.nextSibling, i), n.length = i);
 	}
 	_$AR(e = this._$AA.nextSibling, t) {
 		for (this._$AP?.(!1, !0, t); e !== this._$AB;) {
-			let t = b(e).nextSibling;
-			b(e).remove(), e = t;
+			let t = x(e).nextSibling;
+			x(e).remove(), e = t;
 		}
 	}
 	setConnected(e) {
 		this._$AM === void 0 && (this._$Cv = e, this._$AP?.(e));
 	}
-}, Se = class {
+}, xe = class {
 	get tagName() {
 		return this.element.tagName;
 	}
@@ -423,47 +423,47 @@ var be = class {
 		return this._$AM._$AU;
 	}
 	constructor(e, t, n, r, i) {
-		this.type = 1, this._$AH = N, this._$AN = void 0, this.element = e, this.name = t, this._$AM = r, this.options = i, n.length > 2 || n[0] !== "" || n[1] !== "" ? (this._$AH = Array(n.length - 1).fill(/* @__PURE__ */ new String()), this.strings = n) : this._$AH = N;
+		this.type = 1, this._$AH = P, this._$AN = void 0, this.element = e, this.name = t, this._$AM = r, this.options = i, n.length > 2 || n[0] !== "" || n[1] !== "" ? (this._$AH = Array(n.length - 1).fill(/* @__PURE__ */ new String()), this.strings = n) : this._$AH = P;
 	}
 	_$AI(e, t = this, n, r) {
 		let i = this.strings, a = !1;
-		if (i === void 0) e = F(this, e, t, 0), a = !E(e) || e !== this._$AH && e !== M, a && (this._$AH = e);
+		if (i === void 0) e = I(this, e, t, 0), a = !D(e) || e !== this._$AH && e !== N, a && (this._$AH = e);
 		else {
 			let r = e, o, s;
-			for (e = i[0], o = 0; o < i.length - 1; o++) s = F(this, r[n + o], t, o), s === M && (s = this._$AH[o]), a ||= !E(s) || s !== this._$AH[o], s === N ? e = N : e !== N && (e += (s ?? "") + i[o + 1]), this._$AH[o] = s;
+			for (e = i[0], o = 0; o < i.length - 1; o++) s = I(this, r[n + o], t, o), s === N && (s = this._$AH[o]), a ||= !D(s) || s !== this._$AH[o], s === P ? e = P : e !== P && (e += (s ?? "") + i[o + 1]), this._$AH[o] = s;
 		}
 		a && !r && this.j(e);
 	}
 	j(e) {
-		e === N ? this.element.removeAttribute(this.name) : this.element.setAttribute(this.name, e ?? "");
+		e === P ? this.element.removeAttribute(this.name) : this.element.setAttribute(this.name, e ?? "");
 	}
-}, Ce = class extends Se {
+}, Se = class extends xe {
 	constructor() {
 		super(...arguments), this.type = 3;
 	}
 	j(e) {
-		this.element[this.name] = e === N ? void 0 : e;
+		this.element[this.name] = e === P ? void 0 : e;
 	}
-}, we = class extends Se {
+}, Ce = class extends xe {
 	constructor() {
 		super(...arguments), this.type = 4;
 	}
 	j(e) {
-		this.element.toggleAttribute(this.name, !!e && e !== N);
+		this.element.toggleAttribute(this.name, !!e && e !== P);
 	}
-}, Te = class extends Se {
+}, we = class extends xe {
 	constructor(e, t, n, r, i) {
 		super(e, t, n, r, i), this.type = 5;
 	}
 	_$AI(e, t = this) {
-		if ((e = F(this, e, t, 0) ?? N) === M) return;
-		let n = this._$AH, r = e === N && n !== N || e.capture !== n.capture || e.once !== n.once || e.passive !== n.passive, i = e !== N && (n === N || r);
+		if ((e = I(this, e, t, 0) ?? P) === N) return;
+		let n = this._$AH, r = e === P && n !== P || e.capture !== n.capture || e.once !== n.once || e.passive !== n.passive, i = e !== P && (n === P || r);
 		r && this.element.removeEventListener(this.name, this, n), i && this.element.addEventListener(this.name, this, e), this._$AH = e;
 	}
 	handleEvent(e) {
 		typeof this._$AH == "function" ? this._$AH.call(this.options?.host ?? this.element, e) : this._$AH.handleEvent(e);
 	}
-}, Ee = class {
+}, Te = class {
 	constructor(e, t, n) {
 		this.element = e, this.type = 6, this._$AN = void 0, this._$AM = t, this.options = n;
 	}
@@ -471,33 +471,33 @@ var be = class {
 		return this._$AM._$AU;
 	}
 	_$AI(e) {
-		F(this, e);
+		I(this, e);
 	}
-}, De = {
-	M: ae,
-	P: C,
-	A: oe,
+}, Ee = {
+	M: ie,
+	P: w,
+	A: ae,
 	C: 1,
-	L: ve,
-	R: be,
-	D: ce,
-	V: F,
-	I: xe,
-	H: Se,
-	N: we,
-	U: Te,
-	B: Ce,
-	F: Ee
-}, Oe = ie.litHtmlPolyfillSupport;
-Oe?.(ye, xe), (ie.litHtmlVersions ??= []).push("3.3.3");
-var ke = (e, t, n) => {
+	L: _e,
+	R: ye,
+	D: se,
+	V: I,
+	I: be,
+	H: xe,
+	N: Ce,
+	U: we,
+	B: Se,
+	F: Te
+}, De = re.litHtmlPolyfillSupport;
+De?.(ve, be), (re.litHtmlVersions ??= []).push("3.3.3");
+var Oe = (e, t, n) => {
 	let r = n?.renderBefore ?? t, i = r._$litPart$;
 	if (i === void 0) {
 		let e = n?.renderBefore ?? null;
-		r._$litPart$ = i = new xe(t.insertBefore(T(), e), e, void 0, n ?? {});
+		r._$litPart$ = i = new be(t.insertBefore(E(), e), e, void 0, n ?? {});
 	}
 	return i._$AI(e), i;
-}, Ae = globalThis, I = class extends y {
+}, ke = globalThis, L = class extends b {
 	constructor() {
 		super(...arguments), this.renderOptions = { host: this }, this._$Do = void 0;
 	}
@@ -507,7 +507,7 @@ var ke = (e, t, n) => {
 	}
 	update(e) {
 		let t = this.render();
-		this.hasUpdated || (this.renderOptions.isConnected = this.isConnected), super.update(e), this._$Do = ke(t, this.renderRoot, this.renderOptions);
+		this.hasUpdated || (this.renderOptions.isConnected = this.isConnected), super.update(e), this._$Do = Oe(t, this.renderRoot, this.renderOptions);
 	}
 	connectedCallback() {
 		super.connectedCallback(), this._$Do?.setConnected(!0);
@@ -516,24 +516,24 @@ var ke = (e, t, n) => {
 		super.disconnectedCallback(), this._$Do?.setConnected(!1);
 	}
 	render() {
-		return M;
+		return N;
 	}
 };
-I._$litElement$ = !0, I.finalized = !0, Ae.litElementHydrateSupport?.({ LitElement: I });
-var je = Ae.litElementPolyfillSupport;
-je?.({ LitElement: I }), (Ae.litElementVersions ??= []).push("4.2.2");
+L._$litElement$ = !0, L.finalized = !0, ke.litElementHydrateSupport?.({ LitElement: L });
+var Ae = ke.litElementPolyfillSupport;
+Ae?.({ LitElement: L }), (ke.litElementVersions ??= []).push("4.2.2");
 // node_modules/lit-html/directive.js
-var Me = {
+var je = {
 	ATTRIBUTE: 1,
 	CHILD: 2,
 	PROPERTY: 3,
 	BOOLEAN_ATTRIBUTE: 4,
 	EVENT: 5,
 	ELEMENT: 6
-}, Ne = (e) => (...t) => ({
+}, Me = (e) => (...t) => ({
 	_$litDirective$: e,
 	values: t
-}), Pe = class {
+}), Ne = class {
 	constructor(e) {}
 	get _$AU() {
 		return this._$AM._$AU;
@@ -547,9 +547,9 @@ var Me = {
 	update(e, t) {
 		return this.render(...t);
 	}
-}, { I: Fe } = De, Ie = (e) => e, Le = () => document.createComment(""), Re = (e, t, n) => {
+}, { I: Pe } = Ee, Fe = (e) => e, Ie = () => document.createComment(""), Le = (e, t, n) => {
 	let r = e._$AA.parentNode, i = t === void 0 ? e._$AB : t._$AA;
-	if (n === void 0) n = new Fe(r.insertBefore(Le(), i), r.insertBefore(Le(), i), e, e.options);
+	if (n === void 0) n = new Pe(r.insertBefore(Ie(), i), r.insertBefore(Ie(), i), e, e.options);
 	else {
 		let t = n._$AB.nextSibling, a = n._$AM, o = a !== e;
 		if (o) {
@@ -559,21 +559,21 @@ var Me = {
 		if (t !== i || o) {
 			let e = n._$AA;
 			for (; e !== t;) {
-				let t = Ie(e).nextSibling;
-				Ie(r).insertBefore(e, i), e = t;
+				let t = Fe(e).nextSibling;
+				Fe(r).insertBefore(e, i), e = t;
 			}
 		}
 	}
 	return n;
-}, L = (e, t, n = e) => (e._$AI(t, n), e), ze = {}, Be = (e, t = ze) => e._$AH = t, Ve = (e) => e._$AH, He = (e) => {
+}, R = (e, t, n = e) => (e._$AI(t, n), e), Re = {}, ze = (e, t = Re) => e._$AH = t, Be = (e) => e._$AH, Ve = (e) => {
 	e._$AR(), e._$AA.remove();
-}, Ue = (e, t, n) => {
+}, He = (e, t, n) => {
 	let r = /* @__PURE__ */ new Map();
 	for (let i = t; i <= n; i++) r.set(e[i], i);
 	return r;
-}, We = Ne(class extends Pe {
+}, Ue = Me(class extends Ne {
 	constructor(e) {
-		if (super(e), e.type !== Me.CHILD) throw Error("repeat() can only be used in text expressions");
+		if (super(e), e.type !== je.CHILD) throw Error("repeat() can only be used in text expressions");
 	}
 	dt(e, t, n) {
 		let r;
@@ -589,36 +589,36 @@ var Me = {
 		return this.dt(e, t, n).values;
 	}
 	update(e, [t, n, r]) {
-		let i = Ve(e), { values: a, keys: o } = this.dt(t, n, r);
+		let i = Be(e), { values: a, keys: o } = this.dt(t, n, r);
 		if (!Array.isArray(i)) return this.ut = o, a;
 		let s = this.ut ??= [], c = [], l, u, d = 0, f = i.length - 1, p = 0, m = a.length - 1;
 		for (; d <= f && p <= m;) if (i[d] === null) d++;
 		else if (i[f] === null) f--;
-		else if (s[d] === o[p]) c[p] = L(i[d], a[p]), d++, p++;
-		else if (s[f] === o[m]) c[m] = L(i[f], a[m]), f--, m--;
-		else if (s[d] === o[m]) c[m] = L(i[d], a[m]), Re(e, c[m + 1], i[d]), d++, m--;
-		else if (s[f] === o[p]) c[p] = L(i[f], a[p]), Re(e, i[d], i[f]), f--, p++;
-		else if (l === void 0 && (l = Ue(o, p, m), u = Ue(s, d, f)), l.has(s[d])) {
+		else if (s[d] === o[p]) c[p] = R(i[d], a[p]), d++, p++;
+		else if (s[f] === o[m]) c[m] = R(i[f], a[m]), f--, m--;
+		else if (s[d] === o[m]) c[m] = R(i[d], a[m]), Le(e, c[m + 1], i[d]), d++, m--;
+		else if (s[f] === o[p]) c[p] = R(i[f], a[p]), Le(e, i[d], i[f]), f--, p++;
+		else if (l === void 0 && (l = He(o, p, m), u = He(s, d, f)), l.has(s[d])) {
 			if (l.has(s[f])) {
 				let t = u.get(o[p]), n = t === void 0 ? null : i[t];
 				if (n === null) {
-					let t = Re(e, i[d]);
-					L(t, a[p]), c[p] = t;
-				} else c[p] = L(n, a[p]), Re(e, i[d], n), i[t] = null;
+					let t = Le(e, i[d]);
+					R(t, a[p]), c[p] = t;
+				} else c[p] = R(n, a[p]), Le(e, i[d], n), i[t] = null;
 				p++;
-			} else He(i[f]), f--;
-		} else He(i[d]), d++;
+			} else Ve(i[f]), f--;
+		} else Ve(i[d]), d++;
 		for (; p <= m;) {
-			let t = Re(e, c[m + 1]);
-			L(t, a[p]), c[p++] = t;
+			let t = Le(e, c[m + 1]);
+			R(t, a[p]), c[p++] = t;
 		}
 		for (; d <= f;) {
 			let e = i[d++];
-			e !== null && He(e);
+			e !== null && Ve(e);
 		}
-		return this.ut = o, Be(e, c), M;
+		return this.ut = o, ze(e, c), N;
 	}
-}), Ge = class {
+}), We = class {
 	constructor(e) {
 		this.listeners = /* @__PURE__ */ new Set(), this.subscriptions = [], this.generation = 0, this.requestSequence = 0, this.state = { loading: !0 }, this.hass = e;
 	}
@@ -650,7 +650,7 @@ var Me = {
 			e === this.generation && this.emit({
 				...this.state,
 				loading: !1,
-				error: R(t)
+				error: z(t)
 			});
 		}
 	}
@@ -675,59 +675,59 @@ var Me = {
 			e === this.generation && t === this.requestSequence && this.emit({
 				...this.state,
 				loading: !1,
-				error: R(n)
+				error: z(n)
 			});
 		}
 	}
-}, Ke = /* @__PURE__ */ new WeakMap();
-function qe(e) {
-	let t = Ke.get(e.connection);
-	return t || (t = new Ge(e), Ke.set(e.connection, t)), t.updateHass(e), t;
+}, Ge = /* @__PURE__ */ new WeakMap();
+function Ke(e) {
+	let t = Ge.get(e.connection);
+	return t || (t = new We(e), Ge.set(e.connection, t)), t.updateHass(e), t;
 }
-function R(e) {
+function z(e) {
 	return e instanceof Error ? e : typeof e == "object" && e && "message" in e ? Error(String(e.message)) : Error(String(e));
 }
 // src/domain/printers.ts
-function Je(e) {
+function qe(e) {
 	return e.split(".")[0];
 }
-function Ye(e, t) {
+function Je(e, t) {
 	if (e.translation_key === t) return !0;
 	let n = e.unique_id?.toLowerCase();
 	return t === "printing_speed" ? n?.endsWith("_speed") === !0 : n?.endsWith(`_${t.toLowerCase()}`) === !0;
 }
-function z(e, t, n = "sensor") {
-	return e.find(({ entry: e }) => !e.disabled_by && Je(e.entity_id) === n && Ye(e, t));
-}
-function B(e) {
-	return !(!e?.state || e.entry.disabled_by || e.state.state === "unavailable");
+function B(e, t, n = "sensor") {
+	return e.find(({ entry: e }) => !e.disabled_by && qe(e.entity_id) === n && Je(e, t));
 }
 function V(e) {
+	return !(!e?.state || e.entry.disabled_by || e.state.state === "unavailable");
+}
+function H(e) {
 	let t = e?.state?.state;
 	return t === void 0 || t === "unknown" || t === "unavailable" ? null : t;
 }
-function Xe(e) {
-	let t = V(e);
+function Ye(e) {
+	let t = H(e);
 	if (t === null || t.trim() === "") return null;
 	let n = Number(t);
 	return Number.isFinite(n) ? n : null;
 }
-function Ze(e) {
-	let t = z(e.entities, "speed_profile");
-	if (!t || V(t) === null) return null;
+function Xe(e) {
+	let t = B(e.entities, "speed_profile");
+	if (!t || H(t) === null) return null;
 	let n = t.state.attributes.modifier;
 	return typeof n == "number" && Number.isFinite(n) && n >= 0 ? n : null;
 }
-function Qe(e) {
+function Ze(e) {
 	return e.entry.name || e.entry.original_name || String(e.state?.attributes.friendly_name || e.entry.translation_key || e.entry.entity_id);
 }
-function $e(e) {
+function Qe(e) {
 	let t = e.entry.unique_id?.match(/_tray_(\d+)$/i);
 	if (t) return Number(t[1]);
 	let n = e.state?.attributes.slot;
 	return typeof n == "number" && Number.isInteger(n) ? n + 1 : void 0;
 }
-function et(e, t) {
+function $e(e, t) {
 	let n = [e], r = /* @__PURE__ */ new Set([e]), i = [];
 	for (; n.length;) {
 		let e = n.shift();
@@ -735,7 +735,7 @@ function et(e, t) {
 	}
 	return i;
 }
-function tt(e, t, n) {
+function et(e, t, n) {
 	let r = /* @__PURE__ */ new Map();
 	for (let n of e.entities) {
 		if (n.platform !== "bambu_lab" || !n.device_id) continue;
@@ -746,14 +746,14 @@ function tt(e, t, n) {
 		}), r.set(n.device_id, e);
 	}
 	let i = n.devices || [];
-	return e.devices.filter((e) => !e.disabled_by && z(r.get(e.id) || [], "print_status")).filter((e) => n.discovery !== "selected" || i.includes(e.id)).map((t) => {
-		let n = r.get(t.id) || [], i = et(t.id, e.devices), a = i.filter((e) => /ams|external spool/i.test(e.model || "")).map((e) => {
-			let t = r.get(e.id) || [], n = /external spool/i.test(e.model || ""), i = t.filter(({ entry: e }) => Je(e.entity_id) === "sensor").map((e) => ({
+	return e.devices.filter((e) => !e.disabled_by && B(r.get(e.id) || [], "print_status")).filter((e) => n.discovery !== "selected" || i.includes(e.id)).map((t) => {
+		let n = r.get(t.id) || [], i = $e(t.id, e.devices), a = i.filter((e) => /ams|external spool/i.test(e.model || "")).map((e) => {
+			let t = r.get(e.id) || [], n = /external spool/i.test(e.model || ""), i = t.filter(({ entry: e }) => qe(e.entity_id) === "sensor").map((e) => ({
 				entity: e,
-				index: $e(e)
+				index: Qe(e)
 			})).filter((e) => e.index !== void 0).sort((e, t) => e.index - t.index);
 			if (n) {
-				let e = t.find(({ entry: e }) => Je(e.entity_id) === "sensor");
+				let e = t.find(({ entry: e }) => qe(e.entity_id) === "sensor");
 				e && i.push({
 					index: 1,
 					entity: e
@@ -765,11 +765,11 @@ function tt(e, t, n) {
 				slots: i,
 				external: n
 			};
-		}), o = V(z(n, "print_status"))?.toLowerCase() || z(n, "print_status")?.state?.state || "unknown", s = t.name_by_user || t.name || t.model || "Bambu Lab";
+		}), o = H(B(n, "print_status"))?.toLowerCase() || B(n, "print_status")?.state?.state || "unknown", s = t.name_by_user || t.name || t.model || "Bambu Lab";
 		return {
 			id: t.id,
 			device: t,
-			name: V(z(n, "printer_name"))?.trim() || s,
+			name: H(B(n, "printer_name"))?.trim() || s,
 			haName: s,
 			model: t.model || "Unknown",
 			serial: t.identifiers?.find(([e]) => e === "bambu_lab")?.[1] || t.serial_number || void 0,
@@ -777,15 +777,15 @@ function tt(e, t, n) {
 			allEntities: [...n, ...i.flatMap((e) => r.get(e.id) || [])],
 			ams: a,
 			status: o,
-			stage: z(n, "stage"),
-			progress: Xe(z(n, "print_progress")),
-			camera: z(n, "camera", "camera"),
-			light: z(n, "chamber_light", "light") || z(n, "camera_light", "light"),
-			speed: z(n, "printing_speed", "select"),
-			cover: z(n, "cover_image", "image"),
-			pause: z(n, "pause", "button"),
-			resume: z(n, "resume", "button"),
-			stop: z(n, "stop", "button")
+			stage: B(n, "stage"),
+			progress: Ye(B(n, "print_progress")),
+			camera: B(n, "camera", "camera"),
+			light: B(n, "chamber_light", "light") || B(n, "camera_light", "light"),
+			speed: B(n, "printing_speed", "select"),
+			cover: B(n, "cover_image", "image"),
+			pause: B(n, "pause", "button"),
+			resume: B(n, "resume", "button"),
+			stop: B(n, "stop", "button")
 		};
 	}).sort((e, t) => {
 		if (i.length) {
@@ -795,7 +795,7 @@ function tt(e, t, n) {
 		return e.name.localeCompare(t.name);
 	});
 }
-function H(e) {
+function U(e) {
 	return [
 		"idle",
 		"finish",
@@ -803,24 +803,24 @@ function H(e) {
 		"failed"
 	].includes(e.status);
 }
-function nt(e) {
-	return Object.fromEntries(Object.entries(e.state?.attributes || {}).filter(([e]) => !rt(e)).map(([e, t]) => [e, it(t)]));
+function tt(e) {
+	return Object.fromEntries(Object.entries(e.state?.attributes || {}).filter(([e]) => !nt(e)).map(([e, t]) => [e, rt(t)]));
 }
-function rt(e) {
+function nt(e) {
 	return /token|password|secret|credential|authorization|api_key/i.test(e);
 }
-function it(e) {
-	return Array.isArray(e) ? e.map(it) : typeof e == "object" && e ? Object.fromEntries(Object.entries(e).filter(([e]) => !rt(e)).map(([e, t]) => [e, it(t)])) : typeof e == "string" && /^(https?:\/\/|\/)/i.test(e) ? e.replace(/([?&](?:[^=&]*(?:token|password|secret|credential|authorization|api_key)[^=&]*)=)[^&#]*/gi, "$1[redacted]") : e;
+function rt(e) {
+	return Array.isArray(e) ? e.map(rt) : typeof e == "object" && e ? Object.fromEntries(Object.entries(e).filter(([e]) => !nt(e)).map(([e, t]) => [e, rt(t)])) : typeof e == "string" && /^(https?:\/\/|\/)/i.test(e) ? e.replace(/([?&](?:[^=&]*(?:token|password|secret|credential|authorization|api_key)[^=&]*)=)[^&#]*/gi, "$1[redacted]") : e;
 }
-function at(e) {
+function it(e) {
 	return typeof e == "string" && /^#[\da-f]{6}([\da-f]{2})?$/i.test(e) ? e : void 0;
 }
-function ot(e) {
+function at(e) {
 	let t = e.state?.attributes;
 	return !t?.remain_enabled || typeof t.remain != "number" ? null : t.remain >= 0 && t.remain <= 100 ? t.remain : null;
 }
 // node_modules/fflate/esm/browser.js
-var U = Uint8Array, W = Uint16Array, st = Int32Array, ct = new U([
+var W = Uint8Array, ot = Uint16Array, st = Int32Array, ct = new W([
 	0,
 	0,
 	0,
@@ -853,7 +853,7 @@ var U = Uint8Array, W = Uint16Array, st = Int32Array, ct = new U([
 	0,
 	0,
 	0
-]), lt = new U([
+]), lt = new W([
 	0,
 	0,
 	0,
@@ -886,7 +886,7 @@ var U = Uint8Array, W = Uint16Array, st = Int32Array, ct = new U([
 	13,
 	0,
 	0
-]), ut = new U([
+]), ut = new W([
 	16,
 	17,
 	18,
@@ -907,7 +907,7 @@ var U = Uint8Array, W = Uint16Array, st = Int32Array, ct = new U([
 	1,
 	15
 ]), dt = function(e, t) {
-	for (var n = new W(31), r = 0; r < 31; ++r) n[r] = t += 1 << e[r - 1];
+	for (var n = new ot(31), r = 0; r < 31; ++r) n[r] = t += 1 << e[r - 1];
 	for (var i = new st(n[30]), r = 1; r < 30; ++r) for (var a = n[r]; a < n[r + 1]; ++a) i[a] = a - n[r] << 5 | r;
 	return {
 		b: n,
@@ -917,26 +917,26 @@ var U = Uint8Array, W = Uint16Array, st = Int32Array, ct = new U([
 pt[28] = 258, mt[258] = 28;
 var ht = dt(lt, 0), gt = ht.b;
 ht.r;
-for (var _t = new W(32768), G = 0; G < 32768; ++G) {
+for (var _t = new ot(32768), G = 0; G < 32768; ++G) {
 	var K = (G & 43690) >> 1 | (G & 21845) << 1;
 	K = (K & 52428) >> 2 | (K & 13107) << 2, K = (K & 61680) >> 4 | (K & 3855) << 4, _t[G] = ((K & 65280) >> 8 | (K & 255) << 8) >> 1;
 }
 for (var vt = (function(e, t, n) {
-	for (var r = e.length, i = 0, a = new W(t); i < r; ++i) e[i] && ++a[e[i] - 1];
-	var o = new W(t);
+	for (var r = e.length, i = 0, a = new ot(t); i < r; ++i) e[i] && ++a[e[i] - 1];
+	var o = new ot(t);
 	for (i = 1; i < t; ++i) o[i] = o[i - 1] + a[i - 1] << 1;
 	var s;
 	if (n) {
-		s = new W(1 << t);
+		s = new ot(1 << t);
 		var c = 15 - t;
 		for (i = 0; i < r; ++i) if (e[i]) for (var l = i << 4 | e[i], u = t - e[i], d = o[e[i] - 1]++ << u, f = d | (1 << u) - 1; d <= f; ++d) s[_t[d] >> c] = l;
-	} else for (s = new W(r), i = 0; i < r; ++i) e[i] && (s[i] = _t[o[e[i] - 1]++] >> 15 - e[i]);
+	} else for (s = new ot(r), i = 0; i < r; ++i) e[i] && (s[i] = _t[o[e[i] - 1]++] >> 15 - e[i]);
 	return s;
-}), yt = new U(288), G = 0; G < 144; ++G) yt[G] = 8;
+}), yt = new W(288), G = 0; G < 144; ++G) yt[G] = 8;
 for (var G = 144; G < 256; ++G) yt[G] = 9;
 for (var G = 256; G < 280; ++G) yt[G] = 7;
 for (var G = 280; G < 288; ++G) yt[G] = 8;
-for (var bt = new U(32), G = 0; G < 32; ++G) bt[G] = 5;
+for (var bt = new W(32), G = 0; G < 32; ++G) bt[G] = 5;
 var xt = /*#__PURE__*/ vt(yt, 9, 1), St = /*#__PURE__*/ vt(bt, 5, 1), Ct = function(e) {
 	for (var t = e[0], n = 1; n < e.length; ++n) e[n] > t && (t = e[n]);
 	return t;
@@ -949,7 +949,7 @@ var xt = /*#__PURE__*/ vt(yt, 9, 1), St = /*#__PURE__*/ vt(bt, 5, 1), Ct = funct
 }, Tt = function(e) {
 	return (e + 7) / 8 | 0;
 }, Et = function(e, t, n) {
-	return (t == null || t < 0) && (t = 0), (n == null || n > e.length) && (n = e.length), new U(e.subarray(t, n));
+	return (t == null || t < 0) && (t = 0), (n == null || n > e.length) && (n = e.length), new W(e.subarray(t, n));
 }, Dt = [
 	"unexpected EOF",
 	"invalid block type",
@@ -971,13 +971,13 @@ var xt = /*#__PURE__*/ vt(yt, 9, 1), St = /*#__PURE__*/ vt(bt, 5, 1), Ct = funct
 	return r;
 }, Ot = function(e, t, n, r) {
 	var i = e.length, a = r ? r.length : 0;
-	if (!i || t.f && !t.l) return n || new U(0);
+	if (!i || t.f && !t.l) return n || new W(0);
 	var o = !n, s = o || t.i != 2, c = t.i;
-	o && (n = new U(i * 3));
+	o && (n = new W(i * 3));
 	var l = function(e) {
 		var t = n.length;
 		if (e > t) {
-			var r = new U(Math.max(t * 2, e));
+			var r = new W(Math.max(t * 2, e));
 			r.set(n), n = r;
 		}
 	}, u = t.f || 0, d = t.p || 0, f = t.b || 0, p = t.l, m = t.d, h = t.m, g = t.n, _ = i * 8;
@@ -986,32 +986,32 @@ var xt = /*#__PURE__*/ vt(yt, 9, 1), St = /*#__PURE__*/ vt(bt, 5, 1), Ct = funct
 			u = q(e, d, 1);
 			var ee = q(e, d + 1, 3);
 			if (d += 3, !ee) {
-				var v = Tt(d) + 4, te = e[v - 4] | e[v - 3] << 8, ne = v + te;
-				if (ne > i) {
+				var v = Tt(d) + 4, y = e[v - 4] | e[v - 3] << 8, te = v + y;
+				if (te > i) {
 					c && J(0);
 					break;
 				}
-				s && l(f + te), n.set(e.subarray(v, ne), f), t.b = f += te, t.p = d = ne * 8, t.f = u;
+				s && l(f + y), n.set(e.subarray(v, te), f), t.b = f += y, t.p = d = te * 8, t.f = u;
 				continue;
 			}
 			if (ee == 1) p = xt, m = St, h = 9, g = 5;
 			else if (ee == 2) {
-				var re = q(e, d, 31) + 257, y = q(e, d + 10, 15) + 4, ie = re + q(e, d + 5, 31) + 1;
+				var ne = q(e, d, 31) + 257, b = q(e, d + 10, 15) + 4, re = ne + q(e, d + 5, 31) + 1;
 				d += 14;
-				for (var b = new U(ie), x = new U(19), S = 0; S < y; ++S) x[ut[S]] = q(e, d + S * 3, 7);
-				d += y * 3;
-				for (var ae = Ct(x), C = (1 << ae) - 1, oe = vt(x, ae, 1), S = 0; S < ie;) {
-					var se = oe[q(e, d, C)];
-					d += se & 15;
-					var v = se >> 4;
-					if (v < 16) b[S++] = v;
+				for (var x = new W(re), S = new W(19), C = 0; C < b; ++C) S[ut[C]] = q(e, d + C * 3, 7);
+				d += b * 3;
+				for (var ie = Ct(S), w = (1 << ie) - 1, ae = vt(S, ie, 1), C = 0; C < re;) {
+					var oe = ae[q(e, d, w)];
+					d += oe & 15;
+					var v = oe >> 4;
+					if (v < 16) x[C++] = v;
 					else {
-						var w = 0, T = 0;
-						for (v == 16 ? (T = 3 + q(e, d, 3), d += 2, w = b[S - 1]) : v == 17 ? (T = 3 + q(e, d, 7), d += 3) : v == 18 && (T = 11 + q(e, d, 127), d += 7); T--;) b[S++] = w;
+						var T = 0, E = 0;
+						for (v == 16 ? (E = 3 + q(e, d, 3), d += 2, T = x[C - 1]) : v == 17 ? (E = 3 + q(e, d, 7), d += 3) : v == 18 && (E = 11 + q(e, d, 127), d += 7); E--;) x[C++] = T;
 					}
 				}
-				var E = b.subarray(0, re), D = b.subarray(re);
-				h = Ct(E), g = Ct(D), p = vt(E, h, 1), m = vt(D, g, 1);
+				var D = x.subarray(0, ne), O = x.subarray(ne);
+				h = Ct(D), g = Ct(O), p = vt(D, h, 1), m = vt(O, g, 1);
 			} else J(1);
 			if (d > _) {
 				c && J(0);
@@ -1019,46 +1019,46 @@ var xt = /*#__PURE__*/ vt(yt, 9, 1), St = /*#__PURE__*/ vt(bt, 5, 1), Ct = funct
 			}
 		}
 		s && l(f + 131072);
-		for (var ce = (1 << h) - 1, le = (1 << g) - 1, O = d;; O = d) {
-			var w = p[wt(e, d) & ce], k = w >> 4;
-			if (d += w & 15, d > _) {
+		for (var se = (1 << h) - 1, ce = (1 << g) - 1, k = d;; k = d) {
+			var T = p[wt(e, d) & se], A = T >> 4;
+			if (d += T & 15, d > _) {
 				c && J(0);
 				break;
 			}
-			if (w || J(2), k < 256) n[f++] = k;
-			else if (k == 256) {
-				O = d, p = null;
+			if (T || J(2), A < 256) n[f++] = A;
+			else if (A == 256) {
+				k = d, p = null;
 				break;
 			} else {
-				var ue = k - 254;
-				if (k > 264) {
-					var S = k - 257, A = ct[S];
-					ue = q(e, d, (1 << A) - 1) + pt[S], d += A;
+				var le = A - 254;
+				if (A > 264) {
+					var C = A - 257, j = ct[C];
+					le = q(e, d, (1 << j) - 1) + pt[C], d += j;
 				}
-				var de = m[wt(e, d) & le], fe = de >> 4;
-				de || J(3), d += de & 15;
-				var D = gt[fe];
-				if (fe > 3) {
-					var A = lt[fe];
-					D += wt(e, d) & (1 << A) - 1, d += A;
+				var ue = m[wt(e, d) & ce], de = ue >> 4;
+				ue || J(3), d += ue & 15;
+				var O = gt[de];
+				if (de > 3) {
+					var j = lt[de];
+					O += wt(e, d) & (1 << j) - 1, d += j;
 				}
 				if (d > _) {
 					c && J(0);
 					break;
 				}
 				s && l(f + 131072);
-				var pe = f + ue;
-				if (f < D) {
-					var me = a - D, j = Math.min(D, pe);
-					for (me + f < 0 && J(3); f < j; ++f) n[f] = r[me + f];
+				var fe = f + le;
+				if (f < O) {
+					var pe = a - O, M = Math.min(O, fe);
+					for (pe + f < 0 && J(3); f < M; ++f) n[f] = r[pe + f];
 				}
-				for (; f < pe; ++f) n[f] = n[f - D];
+				for (; f < fe; ++f) n[f] = n[f - O];
 			}
 		}
-		t.l = p, t.p = O, t.b = f, t.f = u, p && (u = 1, t.m = h, t.d = m, t.n = g);
+		t.l = p, t.p = k, t.b = f, t.f = u, p && (u = 1, t.m = h, t.d = m, t.n = g);
 	} while (!u);
 	return f != n.length && o ? Et(n, 0, f) : n.subarray(0, f);
-}, kt = /*#__PURE__*/ new U(0), Y = function(e, t) {
+}, kt = /*#__PURE__*/ new W(0), Y = function(e, t) {
 	return e[t] | e[t + 1] << 8;
 }, X = function(e, t) {
 	return (e[t] | e[t + 1] << 8 | e[t + 2] << 16 | e[t + 3] << 24) >>> 0;
@@ -1137,7 +1137,7 @@ function Rt(e, t) {
 			size: f,
 			originalSize: p,
 			compression: d
-		})) && (d ? d == 8 ? n[m] = jt(e.subarray(_, _ + f), { out: new U(p) }) : J(14, "unknown compression type " + d) : n[m] = Et(e, _, _ + f));
+		})) && (d ? d == 8 ? n[m] = jt(e.subarray(_, _ + f), { out: new W(p) }) : J(14, "unknown compression type " + d) : n[m] = Et(e, _, _ + f));
 	}
 	return n;
 }
@@ -1252,7 +1252,7 @@ var Xt = class {
 		try {
 			return Vt(await this.hass.callApi("GET", "bambu_lab/print_history"));
 		} catch (e) {
-			let t = R(e).message;
+			let t = z(e).message;
 			throw Error(`Cannot load cached projects. This requires the ha-bambulab cached-file API. ${t}`);
 		}
 	}
@@ -1264,17 +1264,17 @@ var Xt = class {
 	}
 	async press(e, t) {
 		let n = t === "pause" ? e.status === "running" : t === "resume" ? e.status === "pause" : ["running", "pause"].includes(e.status), r = e[t];
-		if (!n || !B(r)) throw Error(`${t} is not available in the printer's current state.`);
+		if (!n || !V(r)) throw Error(`${t} is not available in the printer's current state.`);
 		this.assertOwner(e, r), await this.hass.callService("button", "press", { entity_id: r.entry.entity_id });
 	}
 	async light(e) {
 		let t = e.light;
-		if (!B(t) || !["on", "off"].includes(t.state.state)) throw Error("Light state is unavailable.");
+		if (!V(t) || !["on", "off"].includes(t.state.state)) throw Error("Light state is unavailable.");
 		this.assertOwner(e, t), await this.hass.callService("light", t.state.state === "on" ? "turn_off" : "turn_on", { entity_id: t.entry.entity_id });
 	}
 	async speed(e, t) {
 		let n = e.speed;
-		if (e.status !== "running" || !B(n)) throw Error("Speed control is available while printing.");
+		if (e.status !== "running" || !V(n)) throw Error("Speed control is available while printing.");
 		let r = n.state.attributes.options;
 		if (!Array.isArray(r) || !r.includes(t)) throw Error("This speed is not offered by the printer.");
 		this.assertOwner(e, n), await this.hass.callService("select", "select_option", {
@@ -1287,7 +1287,7 @@ var Xt = class {
 	}
 	async ensureFile(e, t, n) {
 		if (!e.serial) throw Error("The target printer serial is missing from the device registry.");
-		if (!H(e)) throw Error("The target printer is not idle.");
+		if (!U(e)) throw Error("The target printer is not idle.");
 		if (zt(t.path), !Number.isSafeInteger(t.size) || t.size <= 0) throw Error("Invalid cached-project size.");
 		let r = e.serial, i = await this.hass.connection.subscribeEvents((e) => {
 			let t = e.data;
@@ -1307,7 +1307,7 @@ var Xt = class {
 		}
 	}
 	async start(e, t, n) {
-		if (!H(e)) throw Error("The target printer is not idle.");
+		if (!U(e)) throw Error("The target printer is not idle.");
 		if (!t || t.startsWith("/") || t.split("/").some((e) => e === ".." || e === "." || !e) || /[\\\0]/.test(t)) throw Error("Enter a relative path to a sliced 3MF project on the printer SD card.");
 		if (!t.toLowerCase().endsWith(".3mf")) throw Error("Printing requires a sliced .3mf project.");
 		Jt(n), await this.hass.callService("bambu_lab", "print_project_file", {
@@ -1329,7 +1329,7 @@ var Xt = class {
 	s: 1e3
 };
 function Qt(e) {
-	let t = z(e.entities, "remaining_time"), n = Xe(t), r = t?.state?.attributes.unit_of_measurement;
+	let t = B(e.entities, "remaining_time"), n = Ye(t), r = t?.state?.attributes.unit_of_measurement;
 	if (n === null || n < 0 || typeof r != "string" || !Object.hasOwn(Zt, r)) return null;
 	let i = n * Zt[r];
 	return Number.isFinite(i) ? i : null;
@@ -1414,6 +1414,20 @@ var en = {
 	lightHelp: ["The integration exposes an on/off light. Verify its effect on your hardware.", "插件提供灯光开关，实际灯效需按硬件确认。"],
 	unsupported: ["Not provided by this device", "此设备未提供"],
 	camera: ["Camera", "摄像头"],
+	externalCamera: ["External camera", "外接摄像头"],
+	builtinCamera: ["Built-in camera", "自带摄像头"],
+	cameraChange: ["Change camera", "更换摄像头"],
+	cameraSource: ["Camera source", "摄像头来源"],
+	cameraSave: ["Save camera", "保存摄像头"],
+	cameraPickerHelp: ["Choose a camera already connected to Home Assistant for this printer. The overview and detail use the same source.", "为这台打印机选择已接入 Home Assistant 的摄像头，首页和详情使用同一来源。"],
+	cameraAccountHelp: ["Saved per printer in your HA account; other clients restore it when opening or refreshing this view.", "每台打印机独立保存到你的 HA 账号，其他设备打开或刷新后恢复。"],
+	cameraNone: ["No external HA cameras found", "未发现可选的外接摄像头"],
+	cameraSetupHelp: ["Connect the camera through an HA integration first. It will appear here when its camera entity is available. Built-in printer cameras are listed separately.", "请先通过 HA 集成接入摄像头，出现摄像头实体后即可在这里选择。打印机自带摄像头不计入外接列表。"],
+	cameraSetupLink: ["Open HA integrations", "打开 HA 集成设置"],
+	cameraMissing: ["Selected camera is missing or inaccessible", "所选摄像头已移除或当前账号不可访问"],
+	cameraBuiltinMissing: ["This printer has no camera available", "此打印机尚无可用的自带摄像头"],
+	cameraSelectionMissing: ["This camera is no longer selectable. Choose a current HA camera or the built-in source.", "该摄像头已不在可选列表中，请重新选择或使用自带摄像头。"],
+	cameraLoadError: ["Could not load camera preference", "摄像头设置读取失败"],
 	snapshot: ["Image camera", "图像摄像头"],
 	live: ["Live stream", "视频流"],
 	cameraHelp: ["Camera transport is provided by Home Assistant.", "使用 Home Assistant 提供的摄像头连接。"],
@@ -1536,30 +1550,17 @@ var nn = {
 	grip: "M8 5h.01M16 5h.01M8 12h.01M16 12h.01M8 19h.01M16 19h.01"
 };
 function Z(e) {
-	return he`<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d=${nn[e] || nn.printer}></path></svg>`;
-}
-function rn() {
-	return he`<svg viewBox="0 0 320 220" class="printer-art" fill="none" aria-hidden="true">
-    <ellipse cx="160" cy="193" rx="105" ry="13" fill="currentColor" opacity=".04"/>
-    <path d="M88 180V43h144v137M99 180V54h122v126" stroke="currentColor" stroke-width="5" opacity=".7"/>
-    <path d="M94 94h132M94 103h132" stroke="currentColor" stroke-width="4" opacity=".45"/>
-    <path d="M151 88h31v29h-31zM160 117h14l-7 11z" fill="var(--bd-accent)" fill-opacity=".8"/>
-    <path d="m101 155 79-7 42 17-80 8z" stroke="currentColor" stroke-width="3" fill="currentColor" fill-opacity=".08"/>
-    <path d="M142 173v9m80-17v9M101 155v10l41 17 80-8M72 184h175v10H72z" stroke="currentColor" stroke-width="3"/>
-    <path d="m151 151 0-22 19-6 14 8v19l-18 7z" fill="var(--bd-accent)" fill-opacity=".14" stroke="var(--bd-accent)" stroke-width="2"/>
-    <path d="m151 129 15 9 18-7m-18 7v19" stroke="var(--bd-accent)" stroke-width="2"/>
-    <path d="M199 43V21m-16 0h32M200 23c-23 0-40 15-33 65" stroke="currentColor" stroke-width="2" opacity=".35"/>
-  </svg>`;
+	return me`<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d=${nn[e] || nn.printer}></path></svg>`;
 }
 // src/ui/select-values.ts
-function an(e) {
+function rn(e) {
 	for (let t of e.querySelectorAll("select[data-value]")) {
 		let e = t.dataset.value;
 		t.value !== e && (t.value = e);
 	}
 }
 // src/ui/styles.css?inline
-var on = ":host{color:var(--primary-text-color,#e8eeec);--bd-accent:#00ae42;--bd-accent-soft:color-mix(in srgb, var(--bd-accent) 12%, transparent);--bd-bg:var(--primary-background-color,#101716);--bd-panel:var(--card-background-color,#19211f);--bd-raised:var(--secondary-background-color,#202a27);--bd-text:var(--primary-text-color,#e8eeec);--bd-muted:var(--secondary-text-color,#93a49d);--bd-line:color-mix(in srgb, var(--bd-text) 7%, transparent);--bd-surface:color-mix(in srgb, var(--bd-panel) 86%, transparent);--bd-inset:color-mix(in srgb, var(--bd-panel) 62%, var(--bd-raised));--bd-card-radius:22px;--bd-shadow:0 8px 28px #183c3010, 0 1px 3px #183c3006, inset 0 1px 0 #ffffff24;--bd-danger:var(--error-color,#db6e67);font-family:var(--paper-font-body1_-_font-family,Inter, ui-sans-serif, system-ui, sans-serif);font-size:14px;line-height:1.5;display:block}*{box-sizing:border-box}button,input,select{font:inherit}button{color:inherit;cursor:pointer}button:disabled{opacity:.42;cursor:not-allowed}button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--bd-accent);outline-offset:3px}button,input,select{-webkit-tap-highlight-color:transparent}a{color:var(--bd-accent)}.shell{background:radial-gradient(ellipse at 0% 0%, #b8dcea40, transparent 55%), radial-gradient(ellipse at 100% 100%, #ffd8b838, transparent 55%), radial-gradient(ellipse at 70% 0%, #c3ead529, transparent 45%), var(--bd-bg);border:1px solid var(--bd-line);border-radius:28px;min-height:460px;overflow:hidden}.topbar{background:color-mix(in srgb, var(--bd-panel) 58%, transparent);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border-bottom:1px solid var(--bd-line);justify-content:space-between;align-items:center;gap:20px;min-height:72px;padding:17px 28px;display:flex}.brand{align-items:center;gap:12px;display:flex}.brand-mark{background:linear-gradient(145deg, var(--bd-accent), color-mix(in srgb, var(--bd-accent) 80%, #07562b));color:#062b14;border-radius:13px;place-items:center;width:37px;height:37px;display:grid;box-shadow:0 5px 14px #00ae4224}.brand-title{letter-spacing:-.4px;font-size:16px;font-weight:750}.brand-subtitle,.eyebrow{color:var(--bd-muted);letter-spacing:1.6px;text-transform:uppercase;font-size:10px;font-weight:650}.top-actions{align-items:center;gap:12px;display:flex}.connection{color:var(--bd-muted);align-items:center;gap:7px;font-size:11px;display:flex}.dot{background:var(--bd-muted);border-radius:50%;flex-shrink:0;width:7px;height:7px}.dot.running,.dot.ready,.dot.finish{background:var(--bd-accent)}.dot.pause,.dot.prepare{background:#d8ac5b}.dot.failed{background:var(--bd-danger)}.workspace{grid-template-columns:216px minmax(0,1fr);display:grid}.sidebar{border-right:1px solid var(--bd-line);background:color-mix(in srgb, var(--bd-panel) 34%, transparent);padding:25px 13px}.sidebar-label{color:var(--bd-muted);letter-spacing:1.6px;text-transform:uppercase;margin:5px 12px 12px;font-size:10px;font-weight:700}.sidebar button{text-align:left;background:0 0;border:1px solid #0000;border-radius:15px;align-items:center;gap:10px;width:100%;padding:11px 12px;display:flex}.sidebar button:hover{background:var(--bd-line)}.sidebar button.selected{background:color-mix(in srgb, var(--bd-accent) 12%, var(--bd-surface));border-color:color-mix(in srgb, var(--bd-accent) 12%, transparent);color:var(--bd-accent);box-shadow:0 3px 10px #183c3005}.sidebar .icon{flex-shrink:0;width:18px;height:18px}.sidebar .printer-link{margin-top:5px}.sidebar .printer-link .dot{margin-left:auto}.sidebar .name{text-overflow:ellipsis;white-space:nowrap;overflow:hidden}.sidebar .model{color:var(--bd-muted);font-size:11px;display:block}.sidebar-rule{background:var(--bd-line);height:1px;margin:20px 10px}.sidebar-foot{color:var(--bd-muted);margin:28px 12px 0;font-size:11px}.main{min-width:0;padding:29px 30px 35px}.page-heading{justify-content:space-between;align-items:flex-start;gap:18px;margin-bottom:24px;display:flex}h1{letter-spacing:-1.1px;overflow-wrap:anywhere;margin:7px 0 8px;font-size:28px;font-weight:720;line-height:1.2}h2{letter-spacing:-.3px;margin:0;font-size:16px}h3{margin:0;font-size:13px}p{margin:0}.muted{color:var(--bd-muted)}.description{color:var(--bd-muted);font-size:12px}.ha-name{overflow-wrap:anywhere;margin-bottom:5px}.stats{flex-wrap:wrap;gap:8px;margin-top:4px;display:flex}.stat{border:1px solid var(--bd-line);background:var(--bd-surface);color:var(--bd-muted);white-space:nowrap;border-radius:14px;padding:8px 13px;font-size:11px;box-shadow:0 3px 12px #183c3005}.stat b{color:var(--bd-text);margin-right:4px;font-size:15px}.tabs{border:1px solid var(--bd-line);background:color-mix(in srgb, var(--bd-panel) 48%, transparent);border-radius:16px;gap:4px;width:-moz-fit-content;width:fit-content;max-width:100%;margin-bottom:22px;padding:5px;display:flex;overflow-x:auto}.tabs button{color:var(--bd-muted);white-space:nowrap;background:0 0;border:0;border-radius:11px;align-items:center;gap:7px;padding:9px 12px;font-size:12px;display:flex}.tabs button.active{background:var(--bd-accent-soft);color:var(--bd-accent)}.icon{vertical-align:middle;flex-shrink:0;width:19px;height:19px;display:inline-block}.icon-button{background:var(--bd-surface);border:1px solid var(--bd-line);border-radius:50%;place-items:center;width:35px;height:35px;display:inline-grid;box-shadow:0 3px 10px #183c3008}.icon-button:hover{background:var(--bd-line)}.button{border:1px solid var(--bd-line);background:var(--bd-inset);border-radius:12px;justify-content:center;align-items:center;gap:8px;padding:10px 14px;font-size:12px;font-weight:600;display:inline-flex;box-shadow:0 2px 6px #183c3005}.button.primary{background:linear-gradient(145deg, var(--bd-accent), color-mix(in srgb, var(--bd-accent) 86%, #087a32));color:#052b12;border-color:#0000;box-shadow:0 4px 12px #00ae421c}.button.danger{color:var(--bd-danger);background:color-mix(in srgb, var(--bd-danger) 8%, transparent);border-color:color-mix(in srgb, var(--bd-danger) 28%, transparent)}.button.small{padding:7px 10px;font-size:11px}.panel{background:var(--bd-surface);border:1px solid var(--bd-line);border-radius:var(--bd-card-radius);box-shadow:var(--bd-shadow);overflow:hidden}.panel-head{background:linear-gradient(110deg, color-mix(in srgb, var(--bd-panel) 36%, transparent), transparent);border-bottom:1px solid var(--bd-line);justify-content:space-between;align-items:center;gap:12px;padding:17px 20px;display:flex}.panel-body{padding:20px}.printer-grid{grid-template-columns:repeat(auto-fit,minmax(min(310px,100%),1fr));gap:18px;display:grid}.printer-card{transition:border-color .15s,box-shadow .15s}.printer-card:hover{border-color:color-mix(in srgb, var(--bd-accent) 24%, var(--bd-line));box-shadow:0 12px 32px #183c3016,inset 0 1px #ffffff24}.printer-card .card-heading{text-align:left;background:0 0;border:0;align-items:center;gap:10px;width:100%;padding:18px 20px 0;display:flex}.machine-badge{border:1px solid var(--bd-line);background:var(--bd-inset);width:36px;height:36px;color:var(--bd-muted);border-radius:12px;place-items:center;display:grid}.card-heading .heading-copy{flex:1;min-width:0}.card-heading .heading-copy b{text-overflow:ellipsis;white-space:nowrap;font-size:14px;display:block;overflow:hidden}.card-heading small{color:var(--bd-muted);font-size:10px}.status{border:1px solid var(--bd-line);white-space:nowrap;border-radius:999px;align-items:center;gap:6px;padding:5px 9px;font-size:10px;display:inline-flex}.status.running,.status.finish{color:var(--bd-accent);background:var(--bd-accent-soft);border-color:#0000}.status.pause,.status.prepare{color:#d8ac5b}.status.failed{color:var(--bd-danger)}.tile-media{grid-template-columns:minmax(0,3fr) minmax(0,2fr);gap:12px;padding:14px 14px 10px;display:grid}.preview{background:radial-gradient(ellipse at center, var(--bd-accent-soft), transparent 72%);border-radius:16px;place-items:center;height:208px;display:grid;position:relative;overflow:hidden}.preview bambu-dashboard-camera{width:100%;position:absolute;inset:0}.project-preview{border:1px solid var(--bd-line);background:linear-gradient(145deg, color-mix(in srgb, var(--bd-accent) 4%, var(--bd-panel)), color-mix(in srgb, #b8dcea 12%, var(--bd-panel)));border-radius:16px;grid-template-rows:minmax(0,1fr);place-items:center;min-width:0;height:208px;display:grid;position:relative;overflow:hidden}.project-preview bambu-dashboard-file-image{padding:8px 8px 32px}.preview-empty{color:var(--bd-muted);text-align:center;justify-items:center;gap:10px;padding:12px 12px 32px;font-size:11px;display:grid}.printer-art{width:90%;max-width:320px;height:100%;color:var(--bd-muted)}.preview-caption{background:var(--bd-surface);border:1px solid var(--bd-line);color:var(--bd-muted);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-radius:999px;padding:4px 8px;font-size:9px;position:absolute;bottom:9px;left:10px}.tile-content{padding:4px 20px 20px}.task-line{align-items:center;gap:9px;margin-bottom:15px;display:flex}.task-line .icon{color:var(--bd-muted);width:15px;height:15px}.task-line span{text-overflow:ellipsis;white-space:nowrap;font-size:12px;overflow:hidden}.progress-label{color:var(--bd-muted);justify-content:space-between;align-items:center;gap:12px;margin:8px 0;font-size:11px;display:flex}.progress-label strong{color:var(--bd-accent);font-size:13px}.progress-track{background:var(--bd-line);border-radius:4px;height:5px;overflow:hidden}.progress-fill{height:100%;width:var(--progress,0%);background:var(--bd-accent);border-radius:inherit;transition:width .3s}.tile-metrics{grid-template-columns:repeat(auto-fit,minmax(min(100px,100%),1fr));gap:10px;margin:18px 0 14px;display:grid}.tile-metrics span{color:var(--bd-muted);font-size:10px;display:block}.tile-metrics strong{margin-top:3px;font-size:13px;font-weight:600;display:block}.tile-footer{border-top:1px solid var(--bd-line);justify-content:space-between;align-items:flex-end;gap:12px;padding-top:14px;display:flex}.tile-footer>.button{flex-shrink:0}.filament-groups{flex-wrap:wrap;flex:1;gap:8px;min-width:0;display:flex}.filament-group{border:1px solid var(--bd-line);background:color-mix(in srgb, var(--bd-panel) 54%, transparent);border-radius:14px;flex-direction:column;gap:8px;max-width:100%;padding:9px 11px;display:flex}.filament-source{color:var(--bd-muted);overflow-wrap:anywhere;align-items:center;gap:5px;font-size:10px;font-weight:600;display:inline-flex}.filament-source .icon{width:13px;height:13px}.filament-dots{align-items:center;gap:5px;display:flex}.filament-dot{border:2px solid var(--bd-line);background:var(--filament,transparent);border-radius:50%;width:15px;height:15px;box-shadow:0 1px 3px #183c3012}.filament-dot.active{outline:1px solid var(--bd-accent);outline-offset:2px}.detail-grid{grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr));grid-auto-rows:1px;grid-auto-flow:dense;align-items:start;gap:14px;display:grid}.detail-grid>*{align-self:start;min-width:0;margin:0}bambu-detail-layout{display:block}.layout-toolbar{flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;margin:0 0 14px;display:flex}.layout-caption{gap:3px;min-width:0;font-size:12px;font-weight:600;display:grid}.layout-caption small{color:var(--bd-muted);font-size:10px;font-weight:400}.layout-actions{flex-wrap:wrap;gap:8px;display:flex}.layout-help{color:var(--bd-muted);margin:0 0 14px;font-size:12px}.layout-item{position:relative}.layout-card-content{min-width:0}.layout-card-content>bambu-completion-notifications{margin:0}.layout-editing .layout-card{border:1px dashed color-mix(in srgb, var(--bd-accent) 40%, transparent);border-radius:calc(var(--bd-card-radius) + 6px);background:var(--bd-accent-soft);padding:6px}.layout-handlebar{align-items:center;gap:4px;margin:0 0 6px;display:flex}.layout-grip{min-width:0;color:var(--bd-text);cursor:grab;touch-action:none;-webkit-user-select:none;user-select:none;text-align:left;background:0 0;border:0;flex:1;align-items:center;gap:7px;padding:7px;font-size:12px;display:flex}.layout-grip span{white-space:nowrap;text-overflow:ellipsis;overflow:hidden}.layout-step{background:var(--bd-surface);border:0;border-radius:9px;flex-shrink:0;width:30px;height:30px}.layout-editing .layout-card-content{pointer-events:none}.layout-item[data-layout-dragging]{border-radius:calc(var(--bd-card-radius) + 6px);outline:2px dashed var(--bd-accent);outline-offset:-2px;background:var(--bd-accent-soft)}.layout-card:popover-open{pointer-events:none;max-width:none;max-height:none;color:var(--bd-text);background:var(--bd-panel);margin:0;position:fixed;inset:auto;overflow:visible;box-shadow:0 18px 48px #183c3038}.layout-card:popover-open .layout-grip{cursor:grabbing}.detail-grid .panel-head{padding:12px 14px}.detail-grid .panel-head h2{align-items:center;gap:7px;font-size:13px;display:flex}.detail-grid .panel-body{padding:14px}.camera-large{background:radial-gradient(ellipse at center, var(--bd-accent-soft), transparent);position:relative}.camera-large bambu-dashboard-camera{width:100%;height:auto;min-height:120px}.camera-large>.printer-art{max-width:320px;height:200px;margin:auto;display:block}.detail-metrics{grid-template-columns:repeat(2,minmax(0,1fr));padding:6px;display:grid}.detail-metrics .metric{background:color-mix(in srgb, var(--bd-panel) 52%, transparent);border-radius:14px;margin:3px;padding:12px 10px}.detail-metrics .metric strong{font-size:20px}.detail-grid .control-divider{margin:12px 0}.detail-grid .control-row{margin:8px 0}.detail-grid .field{margin:10px 0}.detail-grid .ams-grid{grid-template-columns:repeat(auto-fit,minmax(min(130px,100%),1fr));gap:8px;padding:12px}.detail-grid .spool{padding:12px 10px}.detail-grid .spool-visual{width:52px;height:52px;margin:10px auto}.detail-grid .spool-visual:after{inset:12px}.detail-grid .ams-extra{padding:0 12px 12px}.layout-card-content>.ams-section{margin:0}.metric{padding:16px 18px}.metric .metric-top{color:var(--bd-muted);align-items:center;gap:7px;font-size:11px;display:flex}.metric strong{letter-spacing:-.6px;margin-top:7px;font-size:22px;font-weight:650;display:block}.metric small{color:var(--bd-muted);font-size:11px}.job-name{overflow-wrap:anywhere;margin:8px 0 18px;font-size:19px;font-weight:650;line-height:1.4}.job-top{justify-items:center;gap:12px;margin:0 0 14px;display:grid}.job-cover{aspect-ratio:1;border:1px solid var(--bd-line);background:linear-gradient(145deg, var(--bd-panel), color-mix(in srgb, #b8dcea 10%, var(--bd-panel)));border-radius:18px;flex-shrink:0;width:256px;max-width:100%;overflow:hidden}.current-job .job-name{width:100%;margin:0;font-size:17px}.current-job .job-summary{margin:12px 0 0}.current-job .job-summary b{overflow-wrap:anywhere}.job-summary{grid-template-columns:1fr 1fr;gap:14px;margin:18px 0;display:grid}.job-summary span{color:var(--bd-muted);font-size:11px;display:block}.job-summary b{margin-top:4px;font-size:15px;display:block}.completion-estimate{gap:4px;margin-top:10px;display:grid}.completion-estimate time{font-size:12px;font-weight:600}.completion-estimate small{color:var(--bd-muted);font-size:11px}.control-row{gap:8px;margin:12px 0;display:flex}.control-row .button{flex:1}.control-divider{background:var(--bd-line);height:1px;margin:19px 0}.field{flex-direction:column;gap:7px;margin:12px 0;font-size:12px;display:flex}.field label,.field>span{color:var(--bd-muted);font-size:11px}input,select{border:1px solid var(--bd-line);background:var(--bd-inset);width:100%;min-width:0;color:var(--bd-text);border-radius:12px;padding:10px 12px}input[type=checkbox]{width:16px;height:16px;accent-color:var(--bd-accent)}.check{align-items:flex-start;gap:9px;margin:12px 0;font-size:12px;display:flex}.check input{flex-shrink:0;margin-top:2px}.light-control{justify-content:space-between;align-items:center;gap:12px;font-size:12px;display:flex}.light-control .button.on{color:var(--bd-accent);border-color:var(--bd-accent)}.helper{color:var(--bd-muted);margin-top:8px;font-size:11px;line-height:1.6}.ams-section{margin-top:18px}.ams-grid{grid-template-columns:repeat(auto-fit,minmax(min(150px,100%),1fr));gap:12px;padding:20px;display:grid}.spool{border:1px solid var(--bd-line);background:color-mix(in srgb, var(--bd-panel) 64%, var(--bd-raised));border-radius:16px;min-width:0;padding:16px 13px 13px;position:relative;box-shadow:inset 0 1px #ffffff20}.spool.active{border-color:color-mix(in srgb, var(--bd-accent) 65%, transparent);background:var(--bd-accent-soft)}.spool-index{color:var(--bd-muted);font-size:10px}.spool-visual{background:repeating-radial-gradient(circle at center, transparent 0 3px, #0002 4px 5px),var(--filament,var(--bd-raised));border:5px solid color-mix(in srgb, var(--filament,var(--bd-muted)) 65%, var(--bd-line));border-radius:50%;width:64px;height:64px;margin:15px auto;position:relative;box-shadow:inset 0 0 0 1px #fff3}.spool-visual:after{content:\"\";background:var(--bd-bg);border:2px solid var(--bd-line);border-radius:50%;position:absolute;inset:18px}.spool h3{white-space:nowrap;text-overflow:ellipsis;overflow:hidden}.spool .material{color:var(--bd-muted);margin-top:4px;font-size:10px}.spool .remain{color:var(--bd-muted);margin-top:11px;font-size:11px}.spool .active-label{color:var(--bd-accent);font-size:9px;position:absolute;top:12px;right:9px}.ams-extra{color:var(--bd-muted);flex-wrap:wrap;gap:15px;padding:0 20px 17px;font-size:11px;display:flex}.file-list{margin-top:18px}.file-row{grid-template-columns:64px minmax(0,1fr) auto;align-items:center;gap:17px;padding:18px 20px;display:grid}.file-row+.file-row{border-top:1px solid var(--bd-line)}.file-preview{border:1px solid var(--bd-line);background:var(--bd-inset);width:64px;height:64px;color:var(--bd-muted);border-radius:16px;place-items:center;display:grid;overflow:hidden}.file-title{overflow-wrap:anywhere;font-size:13px;font-weight:600}.file-meta{color:var(--bd-muted);flex-wrap:wrap;gap:12px;margin-top:5px;font-size:10px;display:flex}.file-actions{gap:8px;display:flex}.section-heading{justify-content:space-between;align-items:flex-start;gap:20px;display:flex}.section-heading .description{max-width:700px;margin-top:6px}.search-box{border:1px solid var(--bd-line);background:var(--bd-surface);color:var(--bd-muted);border-radius:16px;align-items:center;gap:10px;margin:18px 0 13px;padding-left:12px;display:flex;box-shadow:0 3px 12px #183c3005}.search-box input{background:0 0;border:0}.parameter-table{border-collapse:collapse;width:100%;font-size:12px}.parameter-table th{text-align:left;color:var(--bd-muted);border-bottom:1px solid var(--bd-line);padding:13px 18px;font-size:10px;font-weight:500}.parameter-table td{vertical-align:top;border-bottom:1px solid var(--bd-line);padding:12px 18px}.parameter-table tr:last-child td{border-bottom:0}.entity-name{font-size:12px;font-weight:550}.entity-id{color:var(--bd-muted);overflow-wrap:anywhere;margin-top:4px;font-size:9px}.entity-value{word-break:break-word;font-weight:650}.parameter-table summary{cursor:pointer;color:var(--bd-muted);font-size:10px}.attribute-grid{grid-template-columns:minmax(80px,auto) minmax(0,1fr);gap:7px 12px;padding:12px 0 0;font-size:10px;display:grid}.attribute-grid dt{color:var(--bd-muted);overflow-wrap:anywhere}.attribute-grid dd{word-break:break-word;white-space:pre-wrap;margin:0}.banner{border:1px solid var(--bd-line);background:var(--bd-surface);border-radius:16px;align-items:flex-start;gap:10px;margin-bottom:18px;padding:13px 15px;font-size:12px;display:flex;box-shadow:0 3px 12px #183c3005}.banner.error{border-color:color-mix(in srgb,var(--bd-danger) 35%,transparent);color:var(--bd-danger)}.banner.notice{border-color:color-mix(in srgb,var(--bd-accent) 35%,transparent)}.banner .copy{overflow-wrap:anywhere;flex:1}.empty{text-align:center;color:var(--bd-muted);padding:48px 25px}.empty .icon{opacity:.7;width:30px;height:30px;margin-bottom:12px}.empty p{margin-bottom:15px;font-size:12px}.overlay{z-index:7;-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px);background:#0008;place-items:center;padding:20px;display:grid;position:fixed;inset:0}.dialog{background:var(--bd-panel);border:1px solid var(--bd-line);border-radius:24px;width:min(620px,100%);max-height:90vh;overflow-y:auto;box-shadow:0 20px 90px #0005}.dialog .dialog-body{padding:22px}.dialog-target{background:var(--bd-accent-soft);border:1px solid color-mix(in srgb,var(--bd-accent) 25%,transparent);border-radius:10px;justify-content:space-between;gap:16px;margin-bottom:17px;padding:13px 15px;display:flex}.dialog-target span{color:var(--bd-muted);font-size:10px}.dialog-target b{margin-top:3px;font-size:13px;display:block}.dialog-footer{border-top:1px solid var(--bd-line);justify-content:flex-end;gap:10px;padding:16px 22px;display:flex}.two-fields{grid-template-columns:1fr 1fr;gap:15px;display:grid}.progress-caption{color:var(--bd-accent);margin-top:12px;font-size:11px}.mobile-picker{display:none}@media (max-width:1100px){.workspace{grid-template-columns:180px minmax(0,1fr)}.main{padding:24px 20px}.stats{display:none}}@media (max-width:700px){.shell{border-radius:12px}.topbar{padding:14px 17px}.brand-subtitle{font-size:8px}.connection{display:none}.workspace{display:block}.sidebar{display:none}.main{padding:20px 15px}h1{font-size:24px}.page-heading{margin-bottom:16px}.mobile-picker{margin-bottom:15px;display:block}.tabs button{padding:8px;font-size:11px}.tabs .icon{width:15px;height:15px}.file-row{grid-template-columns:48px minmax(0,1fr);gap:12px;padding:15px}.file-preview{width:48px;height:48px}.file-actions{grid-column:2}.parameter-table th,.parameter-table td{padding:11px 10px}.overlay{padding:10px}.two-fields{grid-template-columns:1fr;gap:0}}@media (prefers-reduced-motion:reduce){*{transition:none!important}}@media (max-width:700px){.tabs .icon{display:none}.tabs{gap:2px}}", sn = class extends I {
+var an = ":host{color:var(--primary-text-color,#e8eeec);--bd-accent:#00ae42;--bd-accent-soft:color-mix(in srgb, var(--bd-accent) 12%, transparent);--bd-bg:var(--primary-background-color,#101716);--bd-panel:var(--card-background-color,#19211f);--bd-raised:var(--secondary-background-color,#202a27);--bd-text:var(--primary-text-color,#e8eeec);--bd-muted:var(--secondary-text-color,#93a49d);--bd-line:color-mix(in srgb, var(--bd-text) 7%, transparent);--bd-surface:color-mix(in srgb, var(--bd-panel) 86%, transparent);--bd-inset:color-mix(in srgb, var(--bd-panel) 62%, var(--bd-raised));--bd-card-radius:22px;--bd-shadow:0 8px 28px #183c3010, 0 1px 3px #183c3006, inset 0 1px 0 #ffffff24;--bd-danger:var(--error-color,#db6e67);font-family:var(--paper-font-body1_-_font-family,Inter, ui-sans-serif, system-ui, sans-serif);font-size:14px;line-height:1.5;display:block}*{box-sizing:border-box}button,input,select{font:inherit}button{color:inherit;cursor:pointer}button:disabled{opacity:.42;cursor:not-allowed}button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--bd-accent);outline-offset:3px}button,input,select{-webkit-tap-highlight-color:transparent}a{color:var(--bd-accent)}.shell{background:radial-gradient(ellipse at 0% 0%, #b8dcea40, transparent 55%), radial-gradient(ellipse at 100% 100%, #ffd8b838, transparent 55%), radial-gradient(ellipse at 70% 0%, #c3ead529, transparent 45%), var(--bd-bg);border:1px solid var(--bd-line);border-radius:28px;min-height:460px;overflow:hidden}.topbar{background:color-mix(in srgb, var(--bd-panel) 58%, transparent);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border-bottom:1px solid var(--bd-line);justify-content:space-between;align-items:center;gap:20px;min-height:72px;padding:17px 28px;display:flex}.brand{align-items:center;gap:12px;display:flex}.brand-mark{background:linear-gradient(145deg, var(--bd-accent), color-mix(in srgb, var(--bd-accent) 80%, #07562b));color:#062b14;border-radius:13px;place-items:center;width:37px;height:37px;display:grid;box-shadow:0 5px 14px #00ae4224}.brand-title{letter-spacing:-.4px;font-size:16px;font-weight:750}.brand-subtitle,.eyebrow{color:var(--bd-muted);letter-spacing:1.6px;text-transform:uppercase;font-size:10px;font-weight:650}.top-actions{align-items:center;gap:12px;display:flex}.connection{color:var(--bd-muted);align-items:center;gap:7px;font-size:11px;display:flex}.dot{background:var(--bd-muted);border-radius:50%;flex-shrink:0;width:7px;height:7px}.dot.running,.dot.ready,.dot.finish{background:var(--bd-accent)}.dot.pause,.dot.prepare{background:#d8ac5b}.dot.failed{background:var(--bd-danger)}.workspace{grid-template-columns:216px minmax(0,1fr);display:grid}.sidebar{border-right:1px solid var(--bd-line);background:color-mix(in srgb, var(--bd-panel) 34%, transparent);padding:25px 13px}.sidebar-label{color:var(--bd-muted);letter-spacing:1.6px;text-transform:uppercase;margin:5px 12px 12px;font-size:10px;font-weight:700}.sidebar button{text-align:left;background:0 0;border:1px solid #0000;border-radius:15px;align-items:center;gap:10px;width:100%;padding:11px 12px;display:flex}.sidebar button:hover{background:var(--bd-line)}.sidebar button.selected{background:color-mix(in srgb, var(--bd-accent) 12%, var(--bd-surface));border-color:color-mix(in srgb, var(--bd-accent) 12%, transparent);color:var(--bd-accent);box-shadow:0 3px 10px #183c3005}.sidebar .icon{flex-shrink:0;width:18px;height:18px}.sidebar .printer-link{margin-top:5px}.sidebar .printer-link .dot{margin-left:auto}.sidebar .name{text-overflow:ellipsis;white-space:nowrap;overflow:hidden}.sidebar .model{color:var(--bd-muted);font-size:11px;display:block}.sidebar-rule{background:var(--bd-line);height:1px;margin:20px 10px}.sidebar-foot{color:var(--bd-muted);margin:28px 12px 0;font-size:11px}.main{min-width:0;padding:29px 30px 35px}.page-heading{justify-content:space-between;align-items:flex-start;gap:18px;margin-bottom:24px;display:flex}h1{letter-spacing:-1.1px;overflow-wrap:anywhere;margin:7px 0 8px;font-size:28px;font-weight:720;line-height:1.2}h2{letter-spacing:-.3px;margin:0;font-size:16px}h3{margin:0;font-size:13px}p{margin:0}.muted{color:var(--bd-muted)}.description{color:var(--bd-muted);font-size:12px}.ha-name{overflow-wrap:anywhere;margin-bottom:5px}.stats{flex-wrap:wrap;gap:8px;margin-top:4px;display:flex}.stat{border:1px solid var(--bd-line);background:var(--bd-surface);color:var(--bd-muted);white-space:nowrap;border-radius:14px;padding:8px 13px;font-size:11px;box-shadow:0 3px 12px #183c3005}.stat b{color:var(--bd-text);margin-right:4px;font-size:15px}.tabs{border:1px solid var(--bd-line);background:color-mix(in srgb, var(--bd-panel) 48%, transparent);border-radius:16px;gap:4px;width:-moz-fit-content;width:fit-content;max-width:100%;margin-bottom:22px;padding:5px;display:flex;overflow-x:auto}.tabs button{color:var(--bd-muted);white-space:nowrap;background:0 0;border:0;border-radius:11px;align-items:center;gap:7px;padding:9px 12px;font-size:12px;display:flex}.tabs button.active{background:var(--bd-accent-soft);color:var(--bd-accent)}.icon{vertical-align:middle;flex-shrink:0;width:19px;height:19px;display:inline-block}.icon-button{background:var(--bd-surface);border:1px solid var(--bd-line);border-radius:50%;place-items:center;width:35px;height:35px;display:inline-grid;box-shadow:0 3px 10px #183c3008}.icon-button:hover{background:var(--bd-line)}.button{border:1px solid var(--bd-line);background:var(--bd-inset);border-radius:12px;justify-content:center;align-items:center;gap:8px;padding:10px 14px;font-size:12px;font-weight:600;display:inline-flex;box-shadow:0 2px 6px #183c3005}.button.primary{background:linear-gradient(145deg, var(--bd-accent), color-mix(in srgb, var(--bd-accent) 86%, #087a32));color:#052b12;border-color:#0000;box-shadow:0 4px 12px #00ae421c}.button.danger{color:var(--bd-danger);background:color-mix(in srgb, var(--bd-danger) 8%, transparent);border-color:color-mix(in srgb, var(--bd-danger) 28%, transparent)}.button.small{padding:7px 10px;font-size:11px}.panel{background:var(--bd-surface);border:1px solid var(--bd-line);border-radius:var(--bd-card-radius);box-shadow:var(--bd-shadow);overflow:hidden}.panel-head{background:linear-gradient(110deg, color-mix(in srgb, var(--bd-panel) 36%, transparent), transparent);border-bottom:1px solid var(--bd-line);justify-content:space-between;align-items:center;gap:12px;padding:17px 20px;display:flex}.panel-body{padding:20px}.printer-grid{grid-template-columns:repeat(auto-fit,minmax(min(310px,100%),1fr));gap:18px;display:grid}.printer-card{transition:border-color .15s,box-shadow .15s}.printer-card:hover{border-color:color-mix(in srgb, var(--bd-accent) 24%, var(--bd-line));box-shadow:0 12px 32px #183c3016,inset 0 1px #ffffff24}.printer-card .card-heading{text-align:left;background:0 0;border:0;align-items:center;gap:10px;width:100%;padding:18px 20px 0;display:flex}.machine-badge{border:1px solid var(--bd-line);background:var(--bd-inset);width:36px;height:36px;color:var(--bd-muted);border-radius:12px;place-items:center;display:grid}.card-heading .heading-copy{flex:1;min-width:0}.card-heading .heading-copy b{text-overflow:ellipsis;white-space:nowrap;font-size:14px;display:block;overflow:hidden}.card-heading small{color:var(--bd-muted);font-size:10px}.status{border:1px solid var(--bd-line);white-space:nowrap;border-radius:999px;align-items:center;gap:6px;padding:5px 9px;font-size:10px;display:inline-flex}.status.running,.status.finish{color:var(--bd-accent);background:var(--bd-accent-soft);border-color:#0000}.status.pause,.status.prepare{color:#d8ac5b}.status.failed{color:var(--bd-danger)}.tile-media{grid-template-columns:minmax(0,3fr) minmax(0,2fr);gap:12px;padding:14px 14px 10px;display:grid}.preview{background:radial-gradient(ellipse at center, var(--bd-accent-soft), transparent 72%);border-radius:16px;place-items:center;height:208px;display:grid;position:relative;overflow:hidden}.preview bambu-dashboard-camera{width:100%;position:absolute;inset:0}bambu-printer-camera{min-width:0;display:block}.camera-source-tile .camera-source-entry{z-index:1;background:var(--bd-panel);padding:5px 8px;font-size:10px;position:absolute;top:9px;right:9px;box-shadow:0 3px 12px #0002}.camera-source-entry .icon{width:14px;height:14px}.camera-source-tile .preview-caption{text-overflow:ellipsis;white-space:nowrap;max-width:calc(100% - 20px);overflow:hidden}.camera-source-message{text-align:center;min-height:180px;color:var(--bd-muted);overflow-wrap:anywhere;align-content:center;justify-items:center;gap:8px;padding:48px 14px 28px;font-size:12px;display:grid}.camera-source-message.error{color:var(--bd-danger)}.camera-source-caption{color:var(--bd-muted);border-top:1px solid var(--bd-line);overflow-wrap:anywhere;flex-wrap:wrap;align-items:center;gap:6px 10px;padding:9px 14px;font-size:10px;display:flex}.camera-source-caption b{color:var(--bd-accent)}.camera-source-caption small{margin-left:auto}.project-preview{border:1px solid var(--bd-line);background:linear-gradient(145deg, color-mix(in srgb, var(--bd-accent) 4%, var(--bd-panel)), color-mix(in srgb, #b8dcea 12%, var(--bd-panel)));border-radius:16px;grid-template-rows:minmax(0,1fr);place-items:center;min-width:0;height:208px;display:grid;position:relative;overflow:hidden}.project-preview bambu-dashboard-file-image{padding:8px 8px 32px}.preview-empty{color:var(--bd-muted);text-align:center;justify-items:center;gap:10px;padding:12px 12px 32px;font-size:11px;display:grid}.printer-art{width:90%;max-width:320px;height:100%;color:var(--bd-muted)}.preview-caption{background:var(--bd-surface);border:1px solid var(--bd-line);color:var(--bd-muted);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-radius:999px;padding:4px 8px;font-size:9px;position:absolute;bottom:9px;left:10px}.tile-content{padding:4px 20px 20px}.task-line{align-items:center;gap:9px;margin-bottom:15px;display:flex}.task-line .icon{color:var(--bd-muted);width:15px;height:15px}.task-line span{text-overflow:ellipsis;white-space:nowrap;font-size:12px;overflow:hidden}.progress-label{color:var(--bd-muted);justify-content:space-between;align-items:center;gap:12px;margin:8px 0;font-size:11px;display:flex}.progress-label strong{color:var(--bd-accent);font-size:13px}.progress-track{background:var(--bd-line);border-radius:4px;height:5px;overflow:hidden}.progress-fill{height:100%;width:var(--progress,0%);background:var(--bd-accent);border-radius:inherit;transition:width .3s}.tile-metrics{grid-template-columns:repeat(auto-fit,minmax(min(100px,100%),1fr));gap:10px;margin:18px 0 14px;display:grid}.tile-metrics span{color:var(--bd-muted);font-size:10px;display:block}.tile-metrics strong{margin-top:3px;font-size:13px;font-weight:600;display:block}.tile-footer{border-top:1px solid var(--bd-line);justify-content:space-between;align-items:flex-end;gap:12px;padding-top:14px;display:flex}.tile-footer>.button{flex-shrink:0}.filament-groups{flex-wrap:wrap;flex:1;gap:8px;min-width:0;display:flex}.filament-group{border:1px solid var(--bd-line);background:color-mix(in srgb, var(--bd-panel) 54%, transparent);border-radius:14px;flex-direction:column;gap:8px;max-width:100%;padding:9px 11px;display:flex}.filament-source{color:var(--bd-muted);overflow-wrap:anywhere;align-items:center;gap:5px;font-size:10px;font-weight:600;display:inline-flex}.filament-source .icon{width:13px;height:13px}.filament-dots{align-items:center;gap:5px;display:flex}.filament-dot{border:2px solid var(--bd-line);background:var(--filament,transparent);border-radius:50%;width:15px;height:15px;box-shadow:0 1px 3px #183c3012}.filament-dot.active{outline:1px solid var(--bd-accent);outline-offset:2px}.detail-grid{grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr));grid-auto-rows:1px;grid-auto-flow:dense;align-items:start;gap:14px;display:grid}.detail-grid>*{align-self:start;min-width:0;margin:0}bambu-detail-layout{display:block}.layout-toolbar{flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;margin:0 0 14px;display:flex}.layout-caption{gap:3px;min-width:0;font-size:12px;font-weight:600;display:grid}.layout-caption small{color:var(--bd-muted);font-size:10px;font-weight:400}.layout-actions{flex-wrap:wrap;gap:8px;display:flex}.layout-help{color:var(--bd-muted);margin:0 0 14px;font-size:12px}.layout-item{position:relative}.layout-card-content{min-width:0}.layout-card-content>bambu-completion-notifications{margin:0}.layout-editing .layout-card{border:1px dashed color-mix(in srgb, var(--bd-accent) 40%, transparent);border-radius:calc(var(--bd-card-radius) + 6px);background:var(--bd-accent-soft);padding:6px}.layout-handlebar{align-items:center;gap:4px;margin:0 0 6px;display:flex}.layout-grip{min-width:0;color:var(--bd-text);cursor:grab;touch-action:none;-webkit-user-select:none;user-select:none;text-align:left;background:0 0;border:0;flex:1;align-items:center;gap:7px;padding:7px;font-size:12px;display:flex}.layout-grip span{white-space:nowrap;text-overflow:ellipsis;overflow:hidden}.layout-step{background:var(--bd-surface);border:0;border-radius:9px;flex-shrink:0;width:30px;height:30px}.layout-editing .layout-card-content{pointer-events:none}.layout-item[data-layout-dragging]{border-radius:calc(var(--bd-card-radius) + 6px);outline:2px dashed var(--bd-accent);outline-offset:-2px;background:var(--bd-accent-soft)}.layout-card:popover-open{pointer-events:none;max-width:none;max-height:none;color:var(--bd-text);background:var(--bd-panel);margin:0;position:fixed;inset:auto;overflow:visible;box-shadow:0 18px 48px #183c3038}.layout-card:popover-open .layout-grip{cursor:grabbing}.detail-grid .panel-head{padding:12px 14px}.detail-grid .panel-head h2{align-items:center;gap:7px;font-size:13px;display:flex}.detail-grid .panel-body{padding:14px}.camera-large{background:radial-gradient(ellipse at center, var(--bd-accent-soft), transparent);position:relative}.camera-large bambu-dashboard-camera{width:100%;height:auto;min-height:120px}.camera-large>.printer-art{max-width:320px;height:200px;margin:auto;display:block}.detail-metrics{grid-template-columns:repeat(2,minmax(0,1fr));padding:6px;display:grid}.detail-metrics .metric{background:color-mix(in srgb, var(--bd-panel) 52%, transparent);border-radius:14px;margin:3px;padding:12px 10px}.detail-metrics .metric strong{font-size:20px}.detail-grid .control-divider{margin:12px 0}.detail-grid .control-row{margin:8px 0}.detail-grid .field{margin:10px 0}.detail-grid .ams-grid{grid-template-columns:repeat(auto-fit,minmax(min(130px,100%),1fr));gap:8px;padding:12px}.detail-grid .spool{padding:12px 10px}.detail-grid .spool-visual{width:52px;height:52px;margin:10px auto}.detail-grid .spool-visual:after{inset:12px}.detail-grid .ams-extra{padding:0 12px 12px}.layout-card-content>.ams-section{margin:0}.metric{padding:16px 18px}.metric .metric-top{color:var(--bd-muted);align-items:center;gap:7px;font-size:11px;display:flex}.metric strong{letter-spacing:-.6px;margin-top:7px;font-size:22px;font-weight:650;display:block}.metric small{color:var(--bd-muted);font-size:11px}.job-name{overflow-wrap:anywhere;margin:8px 0 18px;font-size:19px;font-weight:650;line-height:1.4}.job-top{justify-items:center;gap:12px;margin:0 0 14px;display:grid}.job-cover{aspect-ratio:1;border:1px solid var(--bd-line);background:linear-gradient(145deg, var(--bd-panel), color-mix(in srgb, #b8dcea 10%, var(--bd-panel)));border-radius:18px;flex-shrink:0;width:256px;max-width:100%;overflow:hidden}.current-job .job-name{width:100%;margin:0;font-size:17px}.current-job .job-summary{margin:12px 0 0}.current-job .job-summary b{overflow-wrap:anywhere}.job-summary{grid-template-columns:1fr 1fr;gap:14px;margin:18px 0;display:grid}.job-summary span{color:var(--bd-muted);font-size:11px;display:block}.job-summary b{margin-top:4px;font-size:15px;display:block}.completion-estimate{gap:4px;margin-top:10px;display:grid}.completion-estimate time{font-size:12px;font-weight:600}.completion-estimate small{color:var(--bd-muted);font-size:11px}.control-row{gap:8px;margin:12px 0;display:flex}.control-row .button{flex:1}.control-divider{background:var(--bd-line);height:1px;margin:19px 0}.field{flex-direction:column;gap:7px;margin:12px 0;font-size:12px;display:flex}.field label,.field>span{color:var(--bd-muted);font-size:11px}input,select{border:1px solid var(--bd-line);background:var(--bd-inset);width:100%;min-width:0;color:var(--bd-text);border-radius:12px;padding:10px 12px}input[type=checkbox]{width:16px;height:16px;accent-color:var(--bd-accent)}.check{align-items:flex-start;gap:9px;margin:12px 0;font-size:12px;display:flex}.check input{flex-shrink:0;margin-top:2px}.light-control{justify-content:space-between;align-items:center;gap:12px;font-size:12px;display:flex}.light-control .button.on{color:var(--bd-accent);border-color:var(--bd-accent)}.helper{color:var(--bd-muted);margin-top:8px;font-size:11px;line-height:1.6}.ams-section{margin-top:18px}.ams-grid{grid-template-columns:repeat(auto-fit,minmax(min(150px,100%),1fr));gap:12px;padding:20px;display:grid}.spool{border:1px solid var(--bd-line);background:color-mix(in srgb, var(--bd-panel) 64%, var(--bd-raised));border-radius:16px;min-width:0;padding:16px 13px 13px;position:relative;box-shadow:inset 0 1px #ffffff20}.spool.active{border-color:color-mix(in srgb, var(--bd-accent) 65%, transparent);background:var(--bd-accent-soft)}.spool-index{color:var(--bd-muted);font-size:10px}.spool-visual{background:repeating-radial-gradient(circle at center, transparent 0 3px, #0002 4px 5px),var(--filament,var(--bd-raised));border:5px solid color-mix(in srgb, var(--filament,var(--bd-muted)) 65%, var(--bd-line));border-radius:50%;width:64px;height:64px;margin:15px auto;position:relative;box-shadow:inset 0 0 0 1px #fff3}.spool-visual:after{content:\"\";background:var(--bd-bg);border:2px solid var(--bd-line);border-radius:50%;position:absolute;inset:18px}.spool h3{white-space:nowrap;text-overflow:ellipsis;overflow:hidden}.spool .material{color:var(--bd-muted);margin-top:4px;font-size:10px}.spool .remain{color:var(--bd-muted);margin-top:11px;font-size:11px}.spool .active-label{color:var(--bd-accent);font-size:9px;position:absolute;top:12px;right:9px}.ams-extra{color:var(--bd-muted);flex-wrap:wrap;gap:15px;padding:0 20px 17px;font-size:11px;display:flex}.file-list{margin-top:18px}.file-row{grid-template-columns:64px minmax(0,1fr) auto;align-items:center;gap:17px;padding:18px 20px;display:grid}.file-row+.file-row{border-top:1px solid var(--bd-line)}.file-preview{border:1px solid var(--bd-line);background:var(--bd-inset);width:64px;height:64px;color:var(--bd-muted);border-radius:16px;place-items:center;display:grid;overflow:hidden}.file-title{overflow-wrap:anywhere;font-size:13px;font-weight:600}.file-meta{color:var(--bd-muted);flex-wrap:wrap;gap:12px;margin-top:5px;font-size:10px;display:flex}.file-actions{gap:8px;display:flex}.section-heading{justify-content:space-between;align-items:flex-start;gap:20px;display:flex}.section-heading .description{max-width:700px;margin-top:6px}.search-box{border:1px solid var(--bd-line);background:var(--bd-surface);color:var(--bd-muted);border-radius:16px;align-items:center;gap:10px;margin:18px 0 13px;padding-left:12px;display:flex;box-shadow:0 3px 12px #183c3005}.search-box input{background:0 0;border:0}.parameter-table{border-collapse:collapse;width:100%;font-size:12px}.parameter-table th{text-align:left;color:var(--bd-muted);border-bottom:1px solid var(--bd-line);padding:13px 18px;font-size:10px;font-weight:500}.parameter-table td{vertical-align:top;border-bottom:1px solid var(--bd-line);padding:12px 18px}.parameter-table tr:last-child td{border-bottom:0}.entity-name{font-size:12px;font-weight:550}.entity-id{color:var(--bd-muted);overflow-wrap:anywhere;margin-top:4px;font-size:9px}.entity-value{word-break:break-word;font-weight:650}.parameter-table summary{cursor:pointer;color:var(--bd-muted);font-size:10px}.attribute-grid{grid-template-columns:minmax(80px,auto) minmax(0,1fr);gap:7px 12px;padding:12px 0 0;font-size:10px;display:grid}.attribute-grid dt{color:var(--bd-muted);overflow-wrap:anywhere}.attribute-grid dd{word-break:break-word;white-space:pre-wrap;margin:0}.banner{border:1px solid var(--bd-line);background:var(--bd-surface);border-radius:16px;align-items:flex-start;gap:10px;margin-bottom:18px;padding:13px 15px;font-size:12px;display:flex;box-shadow:0 3px 12px #183c3005}.banner.error{border-color:color-mix(in srgb,var(--bd-danger) 35%,transparent);color:var(--bd-danger)}.banner.notice{border-color:color-mix(in srgb,var(--bd-accent) 35%,transparent)}.banner .copy{overflow-wrap:anywhere;flex:1}.empty{text-align:center;color:var(--bd-muted);padding:48px 25px}.empty .icon{opacity:.7;width:30px;height:30px;margin-bottom:12px}.empty p{margin-bottom:15px;font-size:12px}.overlay{z-index:7;-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px);background:#0008;place-items:center;padding:20px;display:grid;position:fixed;inset:0}.dialog{background:var(--bd-panel);border:1px solid var(--bd-line);border-radius:24px;width:min(620px,100%);max-height:90vh;overflow-y:auto;box-shadow:0 20px 90px #0005}.dialog .dialog-body{padding:22px}.dialog-target{background:var(--bd-accent-soft);border:1px solid color-mix(in srgb,var(--bd-accent) 25%,transparent);border-radius:10px;justify-content:space-between;gap:16px;margin-bottom:17px;padding:13px 15px;display:flex}.dialog-target span{color:var(--bd-muted);font-size:10px}.dialog-target b{margin-top:3px;font-size:13px;display:block}.dialog-footer{border-top:1px solid var(--bd-line);justify-content:flex-end;gap:10px;padding:16px 22px;display:flex}.camera-picker{width:min(620px,100vw - 24px);max-height:calc(100dvh - 24px);color:var(--bd-text);padding:0}.camera-picker::backdrop{-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px);background:#0008}.camera-picker .description{margin-bottom:15px}.camera-picker .panel-head h2{align-items:center;gap:8px;display:flex}.camera-picker .field select{width:100%}.camera-setup-empty{border:1px dashed var(--bd-line);color:var(--bd-muted);border-radius:14px;margin:14px 0;padding:15px;font-size:12px}.camera-setup-empty p{margin:7px 0 10px}.two-fields{grid-template-columns:1fr 1fr;gap:15px;display:grid}.progress-caption{color:var(--bd-accent);margin-top:12px;font-size:11px}.mobile-picker{display:none}@media (max-width:1100px){.workspace{grid-template-columns:180px minmax(0,1fr)}.main{padding:24px 20px}.stats{display:none}}@media (max-width:700px){.shell{border-radius:12px}.topbar{padding:14px 17px}.brand-subtitle{font-size:8px}.connection{display:none}.workspace{display:block}.sidebar{display:none}.main{padding:20px 15px}h1{font-size:24px}.page-heading{margin-bottom:16px}.mobile-picker{margin-bottom:15px;display:block}.tabs button{padding:8px;font-size:11px}.tabs .icon{width:15px;height:15px}.file-row{grid-template-columns:48px minmax(0,1fr);gap:12px;padding:15px}.file-preview{width:48px;height:48px}.file-actions{grid-column:2}.parameter-table th,.parameter-table td{padding:11px 10px}.overlay{padding:10px}.two-fields{grid-template-columns:1fr;gap:0}}@media (prefers-reduced-motion:reduce){*{transition:none!important}}@media (max-width:700px){.tabs .icon{display:none}.tabs{gap:2px}}", on = class extends L {
 	constructor(...e) {
 		super(...e), this.entity = "", this._error = "", this._visible = !1, this.generation = 0;
 	}
@@ -1603,13 +1604,13 @@ var on = ":host{color:var(--primary-text-color,#e8eeec);--bd-accent:#00ae42;--bd
 				show_state: !1
 			}), this.card.hass = this.hass, this.requestUpdate();
 		} catch (t) {
-			e === this.generation && (this._error = R(t).message);
+			e === this.generation && (this._error = z(t).message);
 		}
 	}
 	render() {
-		return this._error ? j`<div class="message error">${this._error}</div>` : this._visible ? this.card || j`<div class="message">Camera · …</div>` : N;
+		return this._error ? M`<div class="message error">${this._error}</div>` : this._visible ? this.card || M`<div class="message">Camera · …</div>` : P;
 	}
-}, cn = class extends I {
+}, sn = class extends L {
 	constructor(...e) {
 		super(...e), this.path = "", this.entity = "", this.version = "", this._url = "", this._error = "";
 	}
@@ -1646,31 +1647,217 @@ var on = ":host{color:var(--primary-text-color,#e8eeec);--bd-accent:#00ae42;--bd
 			let i = await r.blob();
 			e.signal.aborted || (this._url = URL.createObjectURL(i));
 		} catch (t) {
-			e.signal.aborted || (this._error = R(t).message);
+			e.signal.aborted || (this._error = z(t).message);
 		}
 	}
 	render() {
-		return this._url ? j`<img src=${this._url} alt="Project preview"/>` : this._error ? j`<span class="error">${this._error}</span>` : N;
+		return this._url ? M`<img src=${this._url} alt="Project preview"/>` : this._error ? M`<span class="error">${this._error}</span>` : P;
 	}
 };
-customElements.define("bambu-dashboard-camera", sn), customElements.define("bambu-dashboard-file-image", cn);
+customElements.define("bambu-dashboard-camera", on), customElements.define("bambu-dashboard-file-image", sn);
+// src/domain/cameras.ts
+var cn = /^camera\.[a-z0-9_]+$/;
+function ln(e) {
+	if (e === null) return {
+		version: 1,
+		entityId: null
+	};
+	if (typeof e != "object" || !e || !("version" in e) || e.version !== 1 || !("entityId" in e) || !(e.entityId === null || typeof e.entityId == "string" && cn.test(e.entityId))) throw Error("HA returned an unsupported camera source preference.");
+	return {
+		version: 1,
+		entityId: e.entityId
+	};
+}
+function un(e, t, n, r) {
+	let i = e ? n[e] : void 0, a = r.entities.find((t) => t.entity_id === e), o = i?.attributes.friendly_name;
+	return {
+		entityId: e,
+		name: typeof o == "string" && o.trim() ? o : a?.name || a?.original_name || e || "",
+		external: t,
+		status: a?.disabled_by ? "disabled" : i ? i.state === "unavailable" ? "unavailable" : i.state === "unknown" ? "unknown" : "ready" : "missing",
+		streaming: !!(Number(i?.attributes.supported_features) & 2)
+	};
+}
+function dn(e, t) {
+	let n = new Set(t.entities.filter((e) => e.platform === "bambu_lab").map((e) => e.entity_id));
+	return Object.keys(e).filter((e) => cn.test(e) && !n.has(e)).map((n) => un(n, !0, e, t)).filter((e) => e.status !== "disabled").sort((e, t) => e.name.localeCompare(t.name) || e.entityId.localeCompare(t.entityId));
+}
+function fn(e, t, n, r) {
+	return un(t.entityId ?? e.camera?.entry.entity_id, t.entityId !== null, n, r);
+}
+// src/ha/user-data.ts
+async function pn(e, t) {
+	let n = await e.callWS({
+		type: "frontend/get_user_data",
+		key: t
+	});
+	if (typeof n != "object" || !n || !Object.hasOwn(n, "value")) throw Error("HA returned an invalid frontend user-data response.");
+	return n.value;
+}
+async function mn(e, t, n) {
+	await e.callWS({
+		type: "frontend/set_user_data",
+		key: t,
+		value: n
+	});
+}
+// src/ha/cameras.ts
+var hn = class {
+	constructor(e) {
+		this.hass = e;
+	}
+	async load(e) {
+		return ln(await pn(this.hass, this.key(e)));
+	}
+	async save(e, t) {
+		await mn(this.hass, this.key(e), ln(t));
+	}
+	key(e) {
+		return `bambu_dashboard.camera_source.v1.${e}`;
+	}
+}, gn = class extends L {
+	constructor(...e) {
+		super(...e), this.language = "en", this.variant = "tile", this._loading = !1, this._saving = !1, this._error = "", this._open = !1, this._choice = "", this.generation = 0;
+	}
+	static {
+		this.properties = {
+			hass: { attribute: !1 },
+			printer: { attribute: !1 },
+			registry: { attribute: !1 },
+			language: { attribute: !1 },
+			variant: {},
+			_preference: { state: !0 },
+			_loading: { state: !0 },
+			_saving: { state: !0 },
+			_error: { state: !0 },
+			_open: { state: !0 },
+			_choice: { state: !0 }
+		};
+	}
+	createRenderRoot() {
+		return this;
+	}
+	connectedCallback() {
+		super.connectedCallback(), this.requestUpdate();
+	}
+	disconnectedCallback() {
+		super.disconnectedCallback(), this.generation++, this.context = void 0, this._open = !1;
+	}
+	willUpdate(e) {
+		this.hass && this.printer && this.registry && (this.context?.connection !== this.hass.connection || this.context.printerId !== this.printer.id) && (this.context = {
+			connection: this.hass.connection,
+			printerId: this.printer.id
+		}, this._preference = void 0, this._choice = "", this._open = !1, this._saving = !1, this.load(++this.generation));
+	}
+	updated() {
+		rn(this);
+		let e = this.querySelector("dialog");
+		e && !e.open && e.showModal();
+	}
+	t(e) {
+		return tn(this.language, e);
+	}
+	get options() {
+		return this.hass && this.registry ? dn(this.hass.states, this.registry) : [];
+	}
+	get source() {
+		return this.hass && this.printer && this.registry && this._preference ? fn(this.printer, this._preference, this.hass.states, this.registry) : void 0;
+	}
+	async load(e = this.generation) {
+		let t = this.hass, n = this.printer.id;
+		this._loading = !0, this._error = "";
+		try {
+			let r = await new hn(t).load(n);
+			if (e !== this.generation) return;
+			this._preference = r, this._choice = r.entityId || "";
+		} catch (t) {
+			e === this.generation && (this._error = z(t).message);
+		} finally {
+			e === this.generation && (this._loading = !1);
+		}
+	}
+	openPicker() {
+		this._choice = this._preference?.entityId || "", this._preference && (this._error = ""), this._open = !0;
+	}
+	closePicker() {
+		this._saving || (this._open = !1);
+	}
+	async save() {
+		if (this._saving || !this._preference) return;
+		let e = this.generation, t = this.printer.id, n = {
+			version: 1,
+			entityId: this._choice || null
+		};
+		this._saving = !0, this._error = "";
+		try {
+			if (n.entityId && !this.options.some((e) => e.entityId === n.entityId)) throw Error(this.t("cameraSelectionMissing"));
+			if (await new hn(this.hass).save(t, n), e !== this.generation) return;
+			this._preference = n, this._open = !1;
+		} catch (t) {
+			e === this.generation && (this._error = z(t).message);
+		} finally {
+			e === this.generation && (this._saving = !1);
+		}
+	}
+	entry() {
+		return M`<button class="button small camera-source-entry" aria-label=${`${this.t("externalCamera")} · ${this.printer?.name || ""}`} ?disabled=${this._loading} @click=${() => this.openPicker()}>${Z("camera")}${this.t(this.source?.external ? "cameraChange" : "externalCamera")}</button>`;
+	}
+	picture(e) {
+		return this._loading || !e && !this._error ? M`<div class="camera-source-message" role="status">${this.t("loading")}</div>` : e ? e.status === "ready" ? M`<bambu-dashboard-camera .hass=${this.hass} .entity=${e.entityId}></bambu-dashboard-camera>` : M`<div class="camera-source-message" role="status">${Z("camera")}<span>${this.status(e)}</span><small>${e.name}</small></div>` : M`<div class="camera-source-message error" role="alert">${this.t("cameraLoadError")}: ${this._error}<button class="button small" @click=${() => void this.load()}>${this.t("retry")}</button></div>`;
+	}
+	status(e) {
+		return e.status === "missing" ? this.t(e.external ? "cameraMissing" : "cameraBuiltinMissing") : this.t(e.status === "ready" ? "ready" : e.status);
+	}
+	picker() {
+		if (!this._open) return P;
+		let e = this.options, t = this._choice && !e.some((e) => e.entityId === this._choice), n = t && this.hass && this.printer && this.registry ? fn(this.printer, {
+			version: 1,
+			entityId: this._choice
+		}, this.hass.states, this.registry) : void 0;
+		return M`<dialog class="dialog camera-picker" aria-label=${this.t("externalCamera")} @cancel=${(e) => {
+			e.preventDefault(), this.closePicker();
+		}} @click=${(e) => {
+			e.target === e.currentTarget && this.closePicker();
+		}}><div>
+      <div class="panel-head"><h2>${Z("camera")} ${this.t("externalCamera")}</h2><button class="icon-button" aria-label=${this.t("close")} ?disabled=${this._saving} @click=${() => this.closePicker()}>${Z("close")}</button></div>
+      <div class="dialog-body"><div class="dialog-target"><div><span>${this.t("printers")}</span><b>${this.printer?.name}</b></div></div>
+        <p class="description">${this.t("cameraPickerHelp")}</p>
+        ${this._error ? M`<div class="banner error" role="alert"><div class="copy">${this._error}</div>${this._preference ? P : M`<button class="button small" ?disabled=${this._loading} @click=${() => void this.load()}>${this.t("retry")}</button>`}</div>` : P}
+        <label class="field"><span>${this.t("cameraSource")}</span><select aria-label=${this.t("cameraSource")} data-value=${this._choice} ?disabled=${this._loading || this._saving || !this._preference} @change=${(e) => {
+			this._choice = e.target.value, this._error = "";
+		}}>
+          <option value="">${this.t("builtinCamera")}</option>
+          ${t ? M`<option value=${this._choice} disabled>${this._choice} · ${n ? this.status(n) : this.t("cameraMissing")}</option>` : P}
+          ${e.map((e) => M`<option value=${e.entityId}>${e.name} · ${e.entityId}${e.status === "ready" ? "" : ` · ${this.status(e)}`}</option>`)}
+        </select></label>
+        ${e.length ? P : M`<div class="camera-setup-empty"><b>${this.t("cameraNone")}</b><p>${this.t("cameraSetupHelp")}</p><a href="/config/integrations/dashboard" target="_blank" rel="noopener">${this.t("cameraSetupLink")} ↗</a></div>`}
+        <p class="helper">${this.t("cameraAccountHelp")}</p>
+      </div><div class="dialog-footer"><button class="button" ?disabled=${this._saving} @click=${() => this.closePicker()}>${this.t("cancel")}</button><button class="button primary" ?disabled=${this._loading || this._saving || !this._preference} @click=${() => void this.save()}>${this.t(this._saving ? "saving" : "cameraSave")}</button></div>
+    </div></dialog>`;
+	}
+	render() {
+		let e = this.source, t = this.t(e ? e.external ? "externalCamera" : "builtinCamera" : this._error ? "cameraLoadError" : "loading"), n = e ? e.external ? "external" : "builtin" : "pending";
+		return this.variant === "detail" ? M`<section class="panel camera-panel"><div class="panel-head"><h2>${Z("camera")} ${this.t("camera")}</h2>${this.entry()}</div><div class="camera-large" data-camera-kind=${n}>${this.picture(e)}</div><div class="camera-source-caption"><b>${t}</b><span>${e?.name || ""}</span><small>${e?.status === "ready" ? this.t(e.streaming ? "live" : "snapshot") : e ? this.status(e) : ""}</small></div></section>${this.picker()}` : M`<div class="preview camera-source-tile" aria-label=${this.t("camera")} data-camera-kind=${n}>${this.picture(e)}${this.entry()}<span class="preview-caption" title=${e?.name || ""}>${t}${e?.external ? ` · ${e.name}` : ""}</span></div>${this.picker()}`;
+	}
+};
+customElements.define("bambu-printer-camera", gn);
 // src/domain/notifications.ts
-var ln = "Managed by Bambu Dashboard Card: completion-notification/v1/";
-function un(e) {
+var _n = "Managed by Bambu Dashboard Card: completion-notification/v1/";
+function vn(e) {
 	if (!/^[a-zA-Z0-9_-]+$/.test(e)) throw Error("Invalid registered device identifier.");
 	return e;
 }
-function dn(e) {
+function yn(e) {
 	if (!/^sensor\.[a-z0-9_]+$/.test(e)) throw Error("Invalid registered sensor entity ID.");
 	return e;
 }
-function fn(e) {
-	return `bambu_dashboard_finish_${un(e)}`;
+function bn(e) {
+	return `bambu_dashboard_finish_${vn(e)}`;
 }
 function Q(e) {
 	return `${e.kind}:${e.id}`;
 }
-function pn(e, t, n) {
+function xn(e, t, n) {
 	let r = e.entities.filter((e) => e.entity_id.startsWith("notify.") && !e.disabled_by).map((r) => {
 		let i = t[r.entity_id], a = e.devices.find((e) => e.id === r.device_id);
 		return {
@@ -1688,7 +1875,7 @@ function pn(e, t, n) {
 	});
 	return r.sort((e, t) => e.label.localeCompare(t.label) || e.id.localeCompare(t.id));
 }
-function mn(e, t) {
+function Sn(e, t) {
 	let n = e.target;
 	if (n.kind === "entity" ? !/^notify\.[a-z0-9_]+$/.test(n.id) : n.kind !== "service" || !/^notify\.mobile_app_[a-z0-9_]+$/.test(n.id)) throw Error("Select a specific notification entity or mobile-app destination.");
 	if (e.style !== "standard" && n.kind !== "service") throw Error("Android alarm alerts require a specific mobile_app service; notify.send_message does not accept channel data.");
@@ -1718,29 +1905,29 @@ function mn(e, t) {
 		data: r
 	};
 }
-function hn(e, t) {
-	return mn(t, {
+function Cn(e, t) {
+	return Sn(t, {
 		title: t.language === "zh" ? "打印提醒测试" : "Print reminder test",
 		message: t.language === "zh" ? `${e.name}：这是一条测试提醒，请确认手机是否响铃。` : `Test reminder for ${e.name}. Please check whether your phone sounds.`
 	});
 }
-function gn(e, t) {
-	let n = z(e.entities, "print_status");
+function wn(e, t) {
+	let n = B(e.entities, "print_status");
 	if (!n || n.entry.device_id !== e.id) throw Error("The printer has no registered print-status sensor.");
-	let r = un(e.id), i = z(e.entities, "subtask_name");
+	let r = vn(e.id), i = B(e.entities, "subtask_name");
 	if (i && i.entry.device_id !== e.id) throw Error("The project sensor does not belong to this printer.");
-	let a = `{{ device_attr('${r}', 'name_by_user') or device_attr('${r}', 'name') or 'Bambu Lab' }}`, o = i ? `{{ states('${dn(i.entry.entity_id)}') }}` : "", s = mn(t, {
+	let a = `{{ device_attr('${r}', 'name_by_user') or device_attr('${r}', 'name') or 'Bambu Lab' }}`, o = i ? `{{ states('${yn(i.entry.entity_id)}') }}` : "", s = Sn(t, {
 		title: t.language === "zh" ? "3D 打印已完成" : "3D print completed",
 		message: t.language === "zh" ? `${a} 已完成打印。${o}` : `${a} finished printing. ${o}`
 	});
 	return {
-		id: fn(r),
+		id: bn(r),
 		alias: `Bambu Dashboard · Print complete · ${e.name}`,
-		description: `${ln}${r}`,
+		description: `${_n}${r}`,
 		initial_state: t.enabled,
 		triggers: [{
 			trigger: "state",
-			entity_id: dn(n.entry.entity_id),
+			entity_id: yn(n.entry.entity_id),
 			from: ["running", "pause"],
 			to: "finish"
 		}],
@@ -1752,15 +1939,15 @@ function gn(e, t) {
 function $(e) {
 	return typeof e == "object" && !!e && !Array.isArray(e);
 }
-function _n(e, t) {
+function Tn(e, t) {
 	if (e === t) return !0;
-	if (Array.isArray(e) && Array.isArray(t)) return e.length === t.length && e.every((e, n) => _n(e, t[n]));
+	if (Array.isArray(e) && Array.isArray(t)) return e.length === t.length && e.every((e, n) => Tn(e, t[n]));
 	if (!$(e) || !$(t)) return !1;
 	let n = Object.keys(e);
-	return n.length === Object.keys(t).length && n.every((n) => Object.hasOwn(t, n) && _n(e[n], t[n]));
+	return n.length === Object.keys(t).length && n.every((n) => Object.hasOwn(t, n) && Tn(e[n], t[n]));
 }
-function vn(e, t) {
-	if (!$(t) || t.id !== fn(e.id) || t.description !== `${ln}${e.id}`) throw Error("This automation ID is owned by another configuration. It will not be overwritten.");
+function En(e, t) {
+	if (!$(t) || t.id !== bn(e.id) || t.description !== `${_n}${e.id}`) throw Error("This automation ID is owned by another configuration. It will not be overwritten.");
 	let n = t.actions, r = Array.isArray(n) && n.length === 1 && $(n[0]) ? n[0] : void 0, i = r && $(r.target) ? r.target.entity_id : void 0, a = r?.action === "notify.send_message" && typeof i == "string" ? {
 		kind: "entity",
 		id: i
@@ -1775,8 +1962,8 @@ function vn(e, t) {
 		language: l,
 		style: c
 	};
-	if (!_n(t, {
-		...gn(e, u),
+	if (!Tn(t, {
+		...wn(e, u),
 		alias: t.alias
 	})) throw Error("The managed notification automation was customized or its sensor IDs changed. Review it in HA before saving.");
 	return {
@@ -1784,12 +1971,12 @@ function vn(e, t) {
 		settings: u
 	};
 }
-function yn(e, t) {
-	let n = fn(t);
+function Dn(e, t) {
+	let n = bn(t);
 	return Object.values(e).find((e) => e.entity_id.startsWith("automation.") && e.attributes.id === n);
 }
 // src/ha/notifications.ts
-var bn = class {
+var On = class {
 	constructor(e) {
 		this.hass = e;
 	}
@@ -1800,15 +1987,15 @@ var bn = class {
 	}
 	async load(e) {
 		let t = await this.request(e.id, "GET");
-		return t === null ? null : vn(e, t);
+		return t === null ? null : En(e, t);
 	}
 	async save(e, t, n) {
 		let r = await this.load(e);
-		if (!_n(r?.config ?? null, n)) throw Error("Notification settings changed in HA. Refresh before saving again.");
-		let i = gn(e, t), a = await this.request(e.id, "POST", i);
+		if (!Tn(r?.config ?? null, n)) throw Error("Notification settings changed in HA. Refresh before saving again.");
+		let i = wn(e, t), a = await this.request(e.id, "POST", i);
 		if (!$(a) || a.result !== "ok") throw Error("HA did not confirm saving the notification automation.");
-		let o = yn(this.hass.states, e.id);
-		return _n(r?.config, i) && o && o.state !== (t.enabled ? "on" : "off") && await this.hass.callService("automation", t.enabled ? "turn_on" : "turn_off", { entity_id: o.entity_id }), {
+		let o = Dn(this.hass.states, e.id);
+		return Tn(r?.config, i) && o && o.state !== (t.enabled ? "on" : "off") && await this.hass.callService("automation", t.enabled ? "turn_on" : "turn_off", { entity_id: o.entity_id }), {
 			config: i,
 			settings: t
 		};
@@ -1822,14 +2009,14 @@ var bn = class {
 		return t.config;
 	}
 	async test(e, t) {
-		let n = hn(e, t);
+		let n = Cn(e, t);
 		await this.hass.callService("notify", n.action.slice(7), {
 			...n.data,
 			...n.target ? { entity_id: n.target.entity_id } : {}
 		});
 	}
 	async request(e, t, n) {
-		let r = await this.hass.fetchWithAuth(`/api/config/automation/config/${encodeURIComponent(fn(e))}`, t === "GET" ? void 0 : {
+		let r = await this.hass.fetchWithAuth(`/api/config/automation/config/${encodeURIComponent(bn(e))}`, t === "GET" ? void 0 : {
 			method: t,
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify(n)
@@ -1837,7 +2024,7 @@ var bn = class {
 		try {
 			i = await r.json();
 		} catch (e) {
-			throw Error(`Notification configuration: HTTP ${r.status}; invalid JSON response. ${R(e).message}`);
+			throw Error(`Notification configuration: HTTP ${r.status}; invalid JSON response. ${z(e).message}`);
 		}
 		if (t === "GET" && r.status === 404 && $(i) && i.message === "Resource not found") return null;
 		if (!r.ok) {
@@ -1846,7 +2033,7 @@ var bn = class {
 		}
 		return i;
 	}
-}, xn = class extends I {
+}, kn = class extends L {
 	constructor(...e) {
 		super(...e), this.language = "en", this.compact = !1, this._services = {}, this._enabled = !1, this._recipient = "", this._style = "android_alarm", this._loading = !1, this._saving = !1, this._error = "", this._runtimeError = "", this._dirty = !1, this.generation = 0, this.runtimeSequence = 0;
 	}
@@ -1924,16 +2111,16 @@ var bn = class {
 			};
 			let e = ++this.generation;
 			this._saved = void 0, this._saving = !1, this._enabled = !1, this._recipient = "", this._style = "android_alarm", this._dirty = !1, this._test = void 0, this._runtimeConfig = void 0, this._runtimeError = "", this.runtimeId = void 0, n?.is_admin !== !1 && this.initialize(e);
-		} else e.has("hass") && this._saved && yn(this.hass.states, this.printer.id)?.entity_id !== this.runtimeId && this.verifyRuntime(this.generation);
+		} else e.has("hass") && this._saved && Dn(this.hass.states, this.printer.id)?.entity_id !== this.runtimeId && this.verifyRuntime(this.generation);
 	}
 	updated() {
-		an(this.renderRoot);
+		rn(this.renderRoot);
 	}
 	t(e) {
 		return tn(this.language, e);
 	}
 	get targets() {
-		return this.hass && this.registry ? pn(this.registry, this.hass.states, this._services).filter((e) => this._style === "standard" || e.kind === "service") : [];
+		return this.hass && this.registry ? xn(this.registry, this.hass.states, this._services).filter((e) => this._style === "standard" || e.kind === "service") : [];
 	}
 	async initialize(e) {
 		this._loading = !0, this._error = "", this._test = void 0;
@@ -1948,7 +2135,7 @@ var bn = class {
 			}
 			this.unsubscribe = n, await this.load(e);
 		} catch (t) {
-			e === this.generation && (this._error = R(t).message);
+			e === this.generation && (this._error = z(t).message);
 		} finally {
 			e === this.generation && (this._loading = !1);
 		}
@@ -1957,23 +2144,23 @@ var bn = class {
 		let t = this.hass, n = this.printer;
 		this._loading = !0, this._error = "", this._test = void 0;
 		try {
-			let r = new bn(t), [i, a] = await Promise.all([r.load(n), r.services()]);
+			let r = new On(t), [i, a] = await Promise.all([r.load(n), r.services()]);
 			if (e !== this.generation) return;
 			this._saved = i, this._services = a, this._enabled = i?.settings.enabled ?? !1, this._recipient = i ? Q(i.settings.target) : "", this._style = i?.settings.style ?? "android_alarm", this._dirty = !1, await this.verifyRuntime(e);
 		} catch (t) {
-			e === this.generation && (this._error = R(t).message);
+			e === this.generation && (this._error = z(t).message);
 		} finally {
 			e === this.generation && (this._loading = !1);
 		}
 	}
 	async verifyRuntime(e) {
 		if (e !== this.generation) return;
-		let t = ++this.runtimeSequence, n = this.hass && this.printer ? yn(this.hass.states, this.printer.id) : void 0;
+		let t = ++this.runtimeSequence, n = this.hass && this.printer ? Dn(this.hass.states, this.printer.id) : void 0;
 		if (this.runtimeId = n?.entity_id, this._runtimeConfig = void 0, this._runtimeError = "", n && this._saved) try {
-			let r = await new bn(this.hass).loadedConfig(n.entity_id);
+			let r = await new On(this.hass).loadedConfig(n.entity_id);
 			e === this.generation && t === this.runtimeSequence && (this._runtimeConfig = r);
 		} catch (n) {
-			e === this.generation && t === this.runtimeSequence && (this._runtimeError = R(n).message);
+			e === this.generation && t === this.runtimeSequence && (this._runtimeError = z(n).message);
 		}
 	}
 	async save() {
@@ -1991,11 +2178,11 @@ var bn = class {
 				} : this._saved.settings.target,
 				language: this.language,
 				style: this._style
-			}, a = await new bn(n).save(t, i, this._saved?.config ?? null);
+			}, a = await new On(n).save(t, i, this._saved?.config ?? null);
 			if (e !== this.generation) return;
 			this._saved = a, this._dirty = !1, this._runtimeConfig = void 0, await this.verifyRuntime(e);
 		} catch (t) {
-			e === this.generation && (this._error = R(t).message);
+			e === this.generation && (this._error = z(t).message);
 		} finally {
 			e === this.generation && (this._saving = !1);
 		}
@@ -2009,7 +2196,7 @@ var bn = class {
 		};
 		try {
 			if (!r?.available) throw Error(this.t("notifyTargetUnavailable"));
-			await new bn(n).test(t, {
+			await new On(n).test(t, {
 				target: {
 					kind: r.kind,
 					id: r.id
@@ -2024,28 +2211,28 @@ var bn = class {
 			e === this.generation && (this._test = {
 				phase: "error",
 				recipient: i,
-				error: R(t).message
+				error: z(t).message
 			});
 		}
 	}
 	runtimeStatus() {
 		if (this._saved === void 0) return "notifyNotLoaded";
 		if (this._saved === null) return "notifyNotConfigured";
-		if (!_n(this._runtimeConfig, this._saved.config)) return "notifyPending";
-		let e = yn(this.hass.states, this.printer.id);
+		if (!Tn(this._runtimeConfig, this._saved.config)) return "notifyPending";
+		let e = Dn(this.hass.states, this.printer.id);
 		return !e || !["on", "off"].includes(e.state) ? "notifyRuntimeUnavailable" : e.state === "on" === this._saved.settings.enabled ? this._saved.settings.enabled ? "notifyActive" : "notifyInactive" : "notifyStateMismatch";
 	}
 	render() {
-		if (!this.hass || !this.printer || !this.registry) return N;
-		let e = this.hass.user?.is_admin !== !1, t = this._loading || this._saving || this._test?.phase === "sending", n = this.targets.find((e) => Q(e) === this._recipient), r = yn(this.hass.states, this.printer.id), i = this.runtimeStatus();
-		return j`<section aria-label=${this.t("completionNotifications")}>
+		if (!this.hass || !this.printer || !this.registry) return P;
+		let e = this.hass.user?.is_admin !== !1, t = this._loading || this._saving || this._test?.phase === "sending", n = this.targets.find((e) => Q(e) === this._recipient), r = Dn(this.hass.states, this.printer.id), i = this.runtimeStatus();
+		return M`<section aria-label=${this.t("completionNotifications")}>
       <header><h2>${this.t("completionNotifications")}</h2><button ?disabled=${t || !e} @click=${() => void (this.unsubscribe ? this.load() : this.initialize(this.generation))}>${this.t("refresh")}</button></header>
       <div class="body">
-        ${this.compact ? j`<div class="compact-summary"><span class="status ${i === "notifyActive" ? "active" : ""}" role="status">${this.t(e ? i : "notifyAdmin")}</span>${this._saved ? j`<small>${this.targets.find((e) => Q(e) === Q(this._saved.settings.target))?.label || this._saved.settings.target.id}</small>` : N}</div>` : N}
+        ${this.compact ? M`<div class="compact-summary"><span class="status ${i === "notifyActive" ? "active" : ""}" role="status">${this.t(e ? i : "notifyAdmin")}</span>${this._saved ? M`<small>${this.targets.find((e) => Q(e) === Q(this._saved.settings.target))?.label || this._saved.settings.target.id}</small>` : P}</div>` : P}
         <details ?open=${!this.compact || !!(this._error || this._runtimeError)}><summary ?hidden=${!this.compact}>${this.t("notifySettings")}</summary><p>${this.t("notifyHelp")}</p>
-        ${e ? j`
-          ${this._error ? j`<div class="error" role="alert">${this.t("notifyError")}: ${this._error}</div>` : N}
-          ${this._loading ? j`<p role="status">${this.t("loading")}</p>` : N}
+        ${e ? M`
+          ${this._error ? M`<div class="error" role="alert">${this.t("notifyError")}: ${this._error}</div>` : P}
+          ${this._loading ? M`<p role="status">${this.t("loading")}</p>` : P}
           <label class="check"><input type="checkbox" .checked=${this._enabled} ?disabled=${t || this._saved === void 0} @change=${(e) => {
 			this._enabled = e.target.checked, this._dirty = !0;
 		}}>${this.t("notifyEnable")}</label>
@@ -2056,33 +2243,33 @@ var bn = class {
             <label>${this.t("notifyRecipient")}<select aria-label=${this.t("notifyRecipient")} data-value=${this._recipient} ?disabled=${t || this._saved === void 0} @change=${(e) => {
 			this._recipient = e.target.value, this._dirty = !0, this._test = void 0;
 		}}>
-              <option value="">${this.t("chooseRecipient")}</option>${this._recipient && !n ? j`<option value=${this._recipient} disabled>${this._recipient} · ${this.t("unavailable")}</option>` : N}
-              ${this.targets.map((e) => j`<option value=${Q(e)} title=${e.id} ?disabled=${!e.available}>${e.label} · ${this.t(e.kind === "service" ? "notifyMobileApp" : "notifyEntity")}${e.available ? "" : ` · ${this.t("unavailable")}`}</option>`)}
+              <option value="">${this.t("chooseRecipient")}</option>${this._recipient && !n ? M`<option value=${this._recipient} disabled>${this._recipient} · ${this.t("unavailable")}</option>` : P}
+              ${this.targets.map((e) => M`<option value=${Q(e)} title=${e.id} ?disabled=${!e.available}>${e.label} · ${this.t(e.kind === "service" ? "notifyMobileApp" : "notifyEntity")}${e.available ? "" : ` · ${this.t("unavailable")}`}</option>`)}
             </select></label>
           </div>
-          ${!this.targets.length && this._saved !== void 0 ? j`<p>${this.t(this._style === "standard" ? "notifyNoTargets" : "notifyNoAlarmTarget")}</p>` : N}
+          ${!this.targets.length && this._saved !== void 0 ? M`<p>${this.t(this._style === "standard" ? "notifyNoTargets" : "notifyNoAlarmTarget")}</p>` : P}
           <div class="footer"><button class="primary" ?disabled=${t || this._saved === void 0 || !this._recipient || this._enabled && !n?.available} @click=${() => void this.save()}>${this._saving ? this.t("saving") : this.t("saveNotification")}</button><button class="test-notification" ?disabled=${t || !n?.available} @click=${() => void this.testNotification()}>${this.t(this._test?.phase === "sending" ? "notifyTestSending" : "notifyTest")}</button><span role="status" class="status ${i === "notifyActive" ? "active" : ""}">${this._dirty ? this.t("notifyUnsaved") : this.t(i)}</span></div>
           <p class="helper">${this.t("notifyTestHelp")}</p>
-          ${this._test ? j`<p class="helper ${this._test.phase === "error" ? "error" : ""}" role=${this._test.phase === "error" ? "alert" : "status"}>${this._test.recipient} · ${this._test.phase === "error" ? `${this.t("notifyTestError")}: ${this._test.error}` : this.t(this._test.phase === "sending" ? "notifyTestSending" : "notifyTestSubmitted")}</p>` : N}
-          ${this._runtimeError ? j`<div class="error" role="alert">${this.t("notifyRuntimeError")}: ${this._runtimeError}</div>` : N}
-          ${this._style === "android_alarm" ? j`<p class="helper">${this.t("notifyAlarmHelp")}</p>` : N}
-          ${this._style === "android_tts" ? j`<p class="helper">${this.t("notifySpeechHelp")}</p>` : N}
+          ${this._test ? M`<p class="helper ${this._test.phase === "error" ? "error" : ""}" role=${this._test.phase === "error" ? "alert" : "status"}>${this._test.recipient} · ${this._test.phase === "error" ? `${this.t("notifyTestError")}: ${this._test.error}` : this.t(this._test.phase === "sending" ? "notifyTestSending" : "notifyTestSubmitted")}</p>` : P}
+          ${this._runtimeError ? M`<div class="error" role="alert">${this.t("notifyRuntimeError")}: ${this._runtimeError}</div>` : P}
+          ${this._style === "android_alarm" ? M`<p class="helper">${this.t("notifyAlarmHelp")}</p>` : P}
+          ${this._style === "android_tts" ? M`<p class="helper">${this.t("notifySpeechHelp")}</p>` : P}
           <p class="helper">${this.t("notifyReliability")}</p>
-          ${r ? j`<button class="automation" @click=${() => this.dispatchEvent(new CustomEvent("hass-more-info", {
+          ${r ? M`<button class="automation" @click=${() => this.dispatchEvent(new CustomEvent("hass-more-info", {
 			detail: { entityId: r.entity_id },
 			bubbles: !0,
 			composed: !0
-		}))}>${this.t("notifyViewAutomation")} · ${r.state}</button>` : N}
-        ` : j`<p role="status">${this.t("notifyAdmin")}</p>`}
+		}))}>${this.t("notifyViewAutomation")} · ${r.state}</button>` : P}
+        ` : M`<p role="status">${this.t("notifyAdmin")}</p>`}
         </details>
       </div></section>`;
 	}
 };
-customElements.define("bambu-completion-notifications", xn);
+customElements.define("bambu-completion-notifications", kn);
 // node_modules/lit-html/directives/style-map.js
-var Sn = "important", Cn = " !" + Sn, wn = Ne(class extends Pe {
+var An = "important", jn = " !" + An, Mn = Me(class extends Ne {
 	constructor(e) {
-		if (super(e), e.type !== Me.ATTRIBUTE || e.name !== "style" || e.strings?.length > 2) throw Error("The `styleMap` directive must be used in the `style` attribute and must be the only part in the attribute.");
+		if (super(e), e.type !== je.ATTRIBUTE || e.name !== "style" || e.strings?.length > 2) throw Error("The `styleMap` directive must be used in the `style` attribute and must be the only part in the attribute.");
 	}
 	render(e) {
 		return Object.keys(e).reduce((t, n) => {
@@ -2098,15 +2285,15 @@ var Sn = "important", Cn = " !" + Sn, wn = Ne(class extends Pe {
 			let r = t[e];
 			if (r != null) {
 				this.ft.add(e);
-				let t = typeof r == "string" && r.endsWith(Cn);
-				e.includes("-") || t ? n.setProperty(e, t ? r.slice(0, -11) : r, t ? Sn : "") : n[e] = r;
+				let t = typeof r == "string" && r.endsWith(jn);
+				e.includes("-") || t ? n.setProperty(e, t ? r.slice(0, -11) : r, t ? An : "") : n[e] = r;
 			}
 		}
-		return M;
+		return N;
 	}
 });
 // src/domain/layout.ts
-function Tn(e) {
+function Nn(e) {
 	if (e === null) return {
 		version: 1,
 		order: []
@@ -2118,12 +2305,12 @@ function Tn(e) {
 		order: [...e.order]
 	};
 }
-function En(e, t) {
+function Pn(e, t) {
 	let n = new Set(e), r = new Set(t);
 	return [...t.filter((e) => n.has(e)), ...e.filter((e) => !r.has(e))];
 }
-function Dn(e, t, n) {
-	let r = En(e, t);
+function Fn(e, t, n) {
+	let r = Pn(e, t);
 	if (!r.includes(n.source) || !r.includes(n.target)) throw Error("The layout cards changed. Choose a current card to move.");
 	if (n.source === n.target) return [...t];
 	let i = r.filter((e) => e !== n.source);
@@ -2132,30 +2319,21 @@ function Dn(e, t, n) {
 	return [...t.map((t) => e.includes(t) ? i[a++] : t), ...i.slice(a)];
 }
 // src/ha/layout.ts
-var On = class {
+var In = class {
 	constructor(e) {
 		this.hass = e;
 	}
 	async load(e) {
-		let t = await this.hass.callWS({
-			type: "frontend/get_user_data",
-			key: this.key(e)
-		});
-		if (typeof t != "object" || !t || !Object.hasOwn(t, "value")) throw Error("HA returned an invalid layout storage response.");
-		return Tn(t.value);
+		return Nn(await pn(this.hass, this.key(e)));
 	}
 	async save(e, t) {
-		let n = Tn(t);
-		await this.hass.callWS({
-			type: "frontend/set_user_data",
-			key: this.key(e),
-			value: n
-		});
+		let n = Nn(t);
+		await mn(this.hass, this.key(e), n);
 	}
 	key(e) {
 		return `bambu_dashboard.detail_layout.v1.${e}`;
 	}
-}, kn = class {
+}, Ln = class {
 	constructor(e, t) {
 		this.host = e, this.callbacks = t, this.enabled = !1, this.animations = /* @__PURE__ */ new Map(), this.start = (e) => {
 			if (!this.enabled || e.button !== 0 || e.isPrimary === !1 || !(e.target instanceof Element)) return;
@@ -2265,7 +2443,7 @@ var On = class {
 			target: n.dataset.layoutId,
 			after: r
 		};
-		if (Dn(i, i, a).every((e, t) => e === i[t])) return;
+		if (Fn(i, i, a).every((e, t) => e === i[t])) return;
 		let o = this.positions();
 		e.lastMove = a, this.callbacks.move(a), this.animateFrom(o);
 	}
@@ -2311,7 +2489,7 @@ var On = class {
 		}
 		return document.scrollingElement || document.documentElement;
 	}
-}, An = class extends HTMLElement {
+}, Rn = class extends HTMLElement {
 	constructor(...e) {
 		super(...e), this.items = /* @__PURE__ */ new Set(), this._editing = !1;
 	}
@@ -2327,7 +2505,7 @@ var On = class {
 			bubbles: !0,
 			composed: !0
 		}));
-		this.reorder = new kn(this, {
+		this.reorder = new Ln(this, {
 			start: () => e("layout-drag-start"),
 			move: (t) => e("layout-move", t),
 			end: (t) => e(t ? "layout-drag-cancel" : "layout-drag-end")
@@ -2354,9 +2532,9 @@ var On = class {
 		}));
 	}
 };
-customElements.define("bambu-detail-masonry", An);
+customElements.define("bambu-detail-masonry", Rn);
 // src/ui/detail-layout.ts
-var jn = class extends I {
+var zn = class extends L {
 	constructor(...e) {
 		super(...e), this.printerId = "", this.language = "en", this.cards = [], this._draft = [], this._editing = !1, this._loading = !1, this._saving = !1, this._error = "", this._notice = "", this.generation = 0;
 	}
@@ -2391,7 +2569,7 @@ var jn = class extends I {
 		}, this._saved = void 0, this._draft = [], this._editing = !1, this._saving = !1, this._notice = "", this.gesture = void 0, this.load(++this.generation));
 	}
 	updated() {
-		an(this);
+		rn(this);
 	}
 	t(e) {
 		return tn(this.language, e);
@@ -2403,10 +2581,10 @@ var jn = class extends I {
 		this._loading = !0, this._error = "";
 		let t = this.hass, n = this.printerId;
 		try {
-			let r = await new On(t).load(n);
+			let r = await new In(t).load(n);
 			e === this.generation && (this._saved = r.order);
 		} catch (t) {
-			e === this.generation && (this._error = R(t).message);
+			e === this.generation && (this._error = z(t).message);
 		} finally {
 			e === this.generation && (this._loading = !1);
 		}
@@ -2431,13 +2609,13 @@ var jn = class extends I {
 	}
 	move(e) {
 		if (this._editing && !this._saving) try {
-			this._draft = Dn(this.ids, this._draft, e), this._error = "", this._notice = this.t("layoutUnsaved");
+			this._draft = Fn(this.ids, this._draft, e), this._error = "", this._notice = this.t("layoutUnsaved");
 		} catch (e) {
-			this._error = R(e).message;
+			this._error = z(e).message;
 		}
 	}
 	step(e, t) {
-		let n = En(this.ids, this._draft), r = n[n.indexOf(e) + t];
+		let n = Pn(this.ids, this._draft), r = n[n.indexOf(e) + t];
 		r !== void 0 && this.move({
 			source: e,
 			target: r,
@@ -2449,39 +2627,39 @@ var jn = class extends I {
 		let e = this.generation, t = [...this._draft];
 		this._saving = !0, this._error = "";
 		try {
-			if (await new On(this.hass).save(this.printerId, {
+			if (await new In(this.hass).save(this.printerId, {
 				version: 1,
 				order: t
 			}), e !== this.generation) return;
 			this._saved = t, this._editing = !1, this._notice = this.t("layoutSaved");
 		} catch (t) {
-			e === this.generation && (this._error = R(t).message);
+			e === this.generation && (this._error = z(t).message);
 		} finally {
 			e === this.generation && (this._saving = !1);
 		}
 	}
 	render() {
-		let e = En(this.ids, this._editing ? this._draft : this._saved || []), t = new Map(e.map((e, t) => [e, t])), n = this._editing && !this._saving;
-		return j`<div class="layout-toolbar"><div class="layout-caption"><span>${this.t(this._editing ? "layoutEditing" : "detailLayout")}</span><small role="status">${this._loading ? this.t("loading") : this._notice || this.t("layoutAccount")}</small></div><div class="layout-actions">
-      ${this._editing ? j`<button class="button small" ?disabled=${this._saving} @click=${() => {
+		let e = Pn(this.ids, this._editing ? this._draft : this._saved || []), t = new Map(e.map((e, t) => [e, t])), n = this._editing && !this._saving;
+		return M`<div class="layout-toolbar"><div class="layout-caption"><span>${this.t(this._editing ? "layoutEditing" : "detailLayout")}</span><small role="status">${this._loading ? this.t("loading") : this._notice || this.t("layoutAccount")}</small></div><div class="layout-actions">
+      ${this._editing ? M`<button class="button small" ?disabled=${this._saving} @click=${() => {
 			this._draft = [], this._notice = this.t("layoutUnsaved");
-		}}>${this.t("layoutReset")}</button><button class="button small" ?disabled=${this._saving} @click=${() => this.cancel()}>${this.t("cancel")}</button><button class="button primary small" ?disabled=${this._saving} @click=${() => void this.save()}>${this.t(this._saving ? "saving" : "layoutSave")}</button>` : j`<button class="button small" ?disabled=${this._loading || this._saved === void 0} @click=${() => this.edit()}>${Z("move")}${this.t("layoutEdit")}</button>`}
+		}}>${this.t("layoutReset")}</button><button class="button small" ?disabled=${this._saving} @click=${() => this.cancel()}>${this.t("cancel")}</button><button class="button primary small" ?disabled=${this._saving} @click=${() => void this.save()}>${this.t(this._saving ? "saving" : "layoutSave")}</button>` : M`<button class="button small" ?disabled=${this._loading || this._saved === void 0} @click=${() => this.edit()}>${Z("move")}${this.t("layoutEdit")}</button>`}
     </div></div>
-    ${this._editing ? j`<p class="layout-help">${this.t("layoutDragHelp")}</p>` : N}
-    ${this._error ? j`<div class="banner error" role="alert"><div class="copy">${this.t("layoutError")}: ${this._error}</div>${this._saved === void 0 ? j`<button class="button small" ?disabled=${this._loading} @click=${() => void this.load()}>${this.t("retry")}</button>` : N}</div>` : N}
+    ${this._editing ? M`<p class="layout-help">${this.t("layoutDragHelp")}</p>` : P}
+    ${this._error ? M`<div class="banner error" role="alert"><div class="copy">${this.t("layoutError")}: ${this._error}</div>${this._saved === void 0 ? M`<button class="button small" ?disabled=${this._loading} @click=${() => void this.load()}>${this.t("retry")}</button>` : P}</div>` : P}
     <bambu-detail-masonry class="detail-grid ${this._editing ? "layout-editing" : ""}" .editing=${n} @layout-drag-start=${() => this.startGesture()} @layout-drag-end=${() => this.endGesture(!1)} @layout-drag-cancel=${() => this.endGesture(!0)} @layout-move=${(e) => this.move(e.detail)}>
-      ${We(this.cards, (e) => e.id, (n) => j`<div class="layout-item" data-layout-id=${n.id} data-layout-label=${n.label} style=${wn({ order: t.get(n.id) })}>
+      ${Ue(this.cards, (e) => e.id, (n) => M`<div class="layout-item" data-layout-id=${n.id} data-layout-label=${n.label} style=${Mn({ order: t.get(n.id) })}>
         <div class="layout-card">
-        ${this._editing ? j`<div class="layout-handlebar"><button class="layout-grip" data-layout-handle aria-label=${`${this.t("layoutDrag")} ${n.label}`} ?disabled=${this._saving}>${Z("grip")}<span>${n.label}</span></button><button class="layout-step" aria-label=${`${this.t("layoutEarlier")} ${n.label}`} ?disabled=${this._saving || t.get(n.id) === 0} @click=${() => this.step(n.id, -1)}>↑</button><button class="layout-step" aria-label=${`${this.t("layoutLater")} ${n.label}`} ?disabled=${this._saving || t.get(n.id) === e.length - 1} @click=${() => this.step(n.id, 1)}>↓</button></div>` : N}
+        ${this._editing ? M`<div class="layout-handlebar"><button class="layout-grip" data-layout-handle aria-label=${`${this.t("layoutDrag")} ${n.label}`} ?disabled=${this._saving}>${Z("grip")}<span>${n.label}</span></button><button class="layout-step" aria-label=${`${this.t("layoutEarlier")} ${n.label}`} ?disabled=${this._saving || t.get(n.id) === 0} @click=${() => this.step(n.id, -1)}>↑</button><button class="layout-step" aria-label=${`${this.t("layoutLater")} ${n.label}`} ?disabled=${this._saving || t.get(n.id) === e.length - 1} @click=${() => this.step(n.id, 1)}>↓</button></div>` : P}
         <div class="layout-card-content" ?inert=${this._editing}>${n.content}</div>
         </div>
       </div>`)}
     </bambu-detail-masonry>`;
 	}
 };
-customElements.define("bambu-detail-layout", jn);
+customElements.define("bambu-detail-layout", zn);
 // src/editor.ts
-var Mn = class extends I {
+var Bn = class extends L {
 	constructor(...e) {
 		super(...e), this._config = {
 			type: "custom:bambu-dashboard-card",
@@ -2507,7 +2685,7 @@ var Mn = class extends I {
 		this._config = { ...e };
 	}
 	updated(e) {
-		an(this.renderRoot), e.has("hass") && this.hass && this.connection !== this.hass.connection && (this.unsubscribe?.(), this.connection = this.hass.connection, this.unsubscribe = qe(this.hass).subscribe((e) => {
+		rn(this.renderRoot), e.has("hass") && this.hass && this.connection !== this.hass.connection && (this.unsubscribe?.(), this.connection = this.hass.connection, this.unsubscribe = Ke(this.hass).subscribe((e) => {
 			this._catalog = e;
 		}));
 	}
@@ -2529,23 +2707,23 @@ var Mn = class extends I {
 		r < 0 || i < 0 || i >= n.length || ([n[r], n[i]] = [n[i], n[r]], this.change({ devices: n }));
 	}
 	render() {
-		let e = this.hass?.language.startsWith("zh") ? "zh" : "en", t = (t) => tn(e, t), n = this._config.devices || [], r = this._catalog.snapshot && this.hass ? tt(this._catalog.snapshot, this.hass, {
+		let e = this.hass?.language.startsWith("zh") ? "zh" : "en", t = (t) => tn(e, t), n = this._config.devices || [], r = this._catalog.snapshot && this.hass ? et(this._catalog.snapshot, this.hass, {
 			...this._config,
 			discovery: "auto"
 		}) : [];
-		return j`<label>${t("title")}<input type="text" .value=${this._config.title || ""} @input=${(e) => this.change({ title: e.target.value })}/></label>
+		return M`<label>${t("title")}<input type="text" .value=${this._config.title || ""} @input=${(e) => this.change({ title: e.target.value })}/></label>
       <label>${t("language")}<select data-value=${this._config.language || "auto"} @change=${(e) => this.change({ language: e.target.value })}><option value="auto">${t("automatic")}</option><option value="en">English</option><option value="zh">简体中文</option></select></label>
       <label class="check"><input type="checkbox" .checked=${this._config.discovery === "selected"} @change=${(e) => this.change({
 			discovery: e.target.checked ? "selected" : "auto",
 			devices: this._config.devices || []
 		})}/>${t("selectedDevices")}</label>
-      ${this._config.discovery === "selected" ? j`${r.map((e) => j`<div class="row"><label class="check"><input type="checkbox" .checked=${n.includes(e.id)} @change=${(t) => this.change({ devices: t.target.checked ? [...n, e.id] : n.filter((t) => t !== e.id) })}/>${e.name} <small>${e.model}</small></label>${n.includes(e.id) ? j`<button aria-label="Move up" @click=${() => this.move(e.id, -1)}>↑</button><button aria-label="Move down" @click=${() => this.move(e.id, 1)}>↓</button>` : N}</div>`)}` : j`<small>${t("allPrinters")} · ${r.length}</small>`}
-      ${this._catalog.error ? j`<p class="error">${this._catalog.error.message}</p>` : N}`;
+      ${this._config.discovery === "selected" ? M`${r.map((e) => M`<div class="row"><label class="check"><input type="checkbox" .checked=${n.includes(e.id)} @change=${(t) => this.change({ devices: t.target.checked ? [...n, e.id] : n.filter((t) => t !== e.id) })}/>${e.name} <small>${e.model}</small></label>${n.includes(e.id) ? M`<button aria-label="Move up" @click=${() => this.move(e.id, -1)}>↑</button><button aria-label="Move down" @click=${() => this.move(e.id, 1)}>↓</button>` : P}</div>`)}` : M`<small>${t("allPrinters")} · ${r.length}</small>`}
+      ${this._catalog.error ? M`<p class="error">${this._catalog.error.message}</p>` : P}`;
 	}
 };
-customElements.define("bambu-dashboard-card-editor", Mn);
+customElements.define("bambu-dashboard-card-editor", Bn);
 // src/card.ts
-var Nn = 6e4, Pn = class extends I {
+var Vn = 6e4, Hn = class extends L {
 	constructor(...e) {
 		super(...e), this._config = {
 			type: "custom:bambu-dashboard-card",
@@ -2571,7 +2749,7 @@ var Nn = 6e4, Pn = class extends I {
 		};
 	}
 	static {
-		this.styles = a(on);
+		this.styles = a(an);
 	}
 	set hass(e) {
 		let t = this._hass;
@@ -2605,13 +2783,13 @@ var Nn = 6e4, Pn = class extends I {
 	connectedCallback() {
 		super.connectedCallback(), this.attachCatalog(), this._now = Date.now(), this.clock = setInterval(() => {
 			this._now = Date.now();
-		}, Nn);
+		}, Vn);
 	}
 	disconnectedCallback() {
 		super.disconnectedCallback(), this.unsubscribe?.(), this.unsubscribe = void 0, this.connection = void 0, clearInterval(this.clock), this.clock = void 0, this.downloadUrl && URL.revokeObjectURL(this.downloadUrl);
 	}
 	attachCatalog() {
-		this._hass && this.connection !== this._hass.connection && (this.unsubscribe?.(), this.connection = this._hass.connection, this.unsubscribe = qe(this._hass).subscribe((e) => {
+		this._hass && this.connection !== this._hass.connection && (this.unsubscribe?.(), this.connection = this._hass.connection, this.unsubscribe = Ke(this._hass).subscribe((e) => {
 			this._catalogState = e;
 		}));
 	}
@@ -2622,7 +2800,7 @@ var Nn = 6e4, Pn = class extends I {
 		return tn(this.language, e);
 	}
 	get printers() {
-		return this._catalogState.snapshot && this._hass ? tt(this._catalogState.snapshot, this._hass, this._config) : [];
+		return this._catalogState.snapshot && this._hass ? et(this._catalogState.snapshot, this._hass, this._config) : [];
 	}
 	get currentPrinters() {
 		return this.printers.filter((e) => !this._selected || e.id === this._selected);
@@ -2632,7 +2810,7 @@ var Nn = 6e4, Pn = class extends I {
 		return new Xt(this._hass);
 	}
 	target(e) {
-		let t = (this._catalogState.snapshot && this._hass ? tt(this._catalogState.snapshot, this._hass, {
+		let t = (this._catalogState.snapshot && this._hass ? et(this._catalogState.snapshot, this._hass, {
 			type: this._config.type,
 			discovery: "auto"
 		}) : []).find((t) => t.id === e);
@@ -2641,7 +2819,7 @@ var Nn = 6e4, Pn = class extends I {
 	}
 	willUpdate(e) {
 		if (!e.has("hass") && !e.has("_catalogState")) return;
-		let t = this.printers, n = this._catalogState.snapshot && this._hass ? tt(this._catalogState.snapshot, this._hass, {
+		let t = this.printers, n = this._catalogState.snapshot && this._hass ? et(this._catalogState.snapshot, this._hass, {
 			type: this._config.type,
 			discovery: "auto"
 		}) : [];
@@ -2652,7 +2830,7 @@ var Nn = 6e4, Pn = class extends I {
 		}
 	}
 	updated() {
-		an(this.renderRoot);
+		rn(this.renderRoot);
 	}
 	value(e) {
 		if (!e) return this.t("unsupported");
@@ -2664,10 +2842,10 @@ var Nn = 6e4, Pn = class extends I {
 		return `${e.state.state}${t ? ` ${String(t)}` : ""}`;
 	}
 	sensor(e, t) {
-		return this.value(z(e.entities, t));
+		return this.value(B(e.entities, t));
 	}
 	remaining(e) {
-		let t = z(e.entities, "remaining_time"), n = Qt(e);
+		let t = B(e.entities, "remaining_time"), n = Qt(e);
 		if (n === null) return this.value(t);
 		let r = Math.round(n / 6e4), i = Math.floor(r / 60), a = r % 60;
 		return [i ? `${i} ${this.t("hourUnit")}` : "", a || !i ? `${a} ${this.t("minuteUnit")}` : ""].filter(Boolean).join(" ");
@@ -2681,7 +2859,7 @@ var Nn = 6e4, Pn = class extends I {
 			hour12: !1,
 			timeZone: this._hass?.config?.time_zone
 		}).format(t);
-		return j`<div class="completion-estimate"><span>${this.t("estimatedFinish")}</span>${t === null ? j`<small>${e.status === "pause" ? this.t("estimatePaused") : "—"}</small>` : j`<time datetime=${new Date(t).toISOString()}>${n}</time>`}</div>`;
+		return M`<div class="completion-estimate"><span>${this.t("estimatedFinish")}</span>${t === null ? M`<small>${e.status === "pause" ? this.t("estimatePaused") : "—"}</small>` : M`<time datetime=${new Date(t).toISOString()}>${n}</time>`}</div>`;
 	}
 	status(e) {
 		let t = {
@@ -2698,7 +2876,7 @@ var Nn = 6e4, Pn = class extends I {
 		return t[e.status] ? this.t(t[e.status]) : e.status;
 	}
 	statusBadge(e) {
-		return j`<span class="status ${e.status}"><span class="dot ${e.status}"></span>${this.status(e)}</span>`;
+		return M`<span class="status ${e.status}"><span class="dot ${e.status}"></span>${this.status(e)}</span>`;
 	}
 	selectPrinter(e) {
 		this._selected = e, this._search = "";
@@ -2708,8 +2886,8 @@ var Nn = 6e4, Pn = class extends I {
 	}
 	progress(e) {
 		let t = e.progress !== null && e.progress >= 0 && e.progress <= 100;
-		return j`<div class="progress-label"><span>${this.t("progress")}</span><strong>${e.progress === null ? "—" : `${e.progress}%`}</strong></div>
-      <div class="progress-track" role="progressbar" aria-label=${this.t("progress")} aria-valuenow=${t ? e.progress : N} style=${`--progress:${t ? e.progress : 0}%`}><div class="progress-fill"></div></div>`;
+		return M`<div class="progress-label"><span>${this.t("progress")}</span><strong>${e.progress === null ? "—" : `${e.progress}%`}</strong></div>
+      <div class="progress-track" role="progressbar" aria-label=${this.t("progress")} aria-valuenow=${t ? e.progress : P} style=${`--progress:${t ? e.progress : 0}%`}><div class="progress-fill"></div></div>`;
 	}
 	async runAction(e, t, n, r) {
 		if (!this._pending.has(e)) {
@@ -2726,7 +2904,7 @@ var Nn = 6e4, Pn = class extends I {
 					confirmed: r
 				});
 			} catch (n) {
-				this.clearPending(e), this._error = `${t}: ${R(n).message}`;
+				this.clearPending(e), this._error = `${t}: ${z(n).message}`;
 			}
 		}
 	}
@@ -2744,7 +2922,7 @@ var Nn = 6e4, Pn = class extends I {
 		try {
 			this._files = await this.client.files();
 		} catch (e) {
-			this._filesError = R(e).message;
+			this._filesError = z(e).message;
 		} finally {
 			this._filesLoading = !1;
 		}
@@ -2756,7 +2934,7 @@ var Nn = 6e4, Pn = class extends I {
 			let n = document.createElement("a");
 			n.href = this.downloadUrl, n.download = e.filename, n.click();
 		} catch (e) {
-			this._error = R(e).message;
+			this._error = z(e).message;
 		}
 	}
 	async openStart(e, t) {
@@ -2794,7 +2972,7 @@ var Nn = 6e4, Pn = class extends I {
 			n === this.dialogGeneration && this._dialog?.kind === "start" && (this._dialog = {
 				...this._dialog,
 				loading: !1,
-				error: R(e).message
+				error: z(e).message
 			});
 		}
 	}
@@ -2818,14 +2996,14 @@ var Nn = 6e4, Pn = class extends I {
 		try {
 			if (Jt(e.options, e.metadata?.plates), e.file) {
 				if (!e.metadata) throw Error("Project metadata has not been verified.");
-				let t = qt(e.metadata, n.model, Xe(z(n.entities, "nozzle_diameter")));
+				let t = qt(e.metadata, n.model, Ye(B(n.entities, "nozzle_diameter")));
 				if (t.length) throw Error(t.join(" "));
 			} else if (!e.acknowledged) throw Error(this.t("manualConfirm"));
 			if (e.options.useAms && !n.ams.some((e) => !e.external)) throw Error("No AMS is registered for this printer.");
 		} catch (t) {
 			this._dialog = {
 				...e,
-				error: R(t).message
+				error: z(t).message
 			};
 			return;
 		}
@@ -2838,21 +3016,21 @@ var Nn = 6e4, Pn = class extends I {
 	}
 	render() {
 		let e = this.printers, t = e.find((e) => e.id === this._selected);
-		return j`<div class="shell">
+		return M`<div class="shell">
       <header class="topbar"><div class="brand"><span class="brand-mark">${Z("printer")}</span><div><div class="brand-title">${this._config.title || "Bambu Dashboard"}</div><div class="brand-subtitle">HOME ASSISTANT · PRINT WORKSPACE</div></div></div>
-      <div class="top-actions"><span class="connection"><span class="dot ${this._catalogState.error ? "failed" : "ready"}"></span>ha-bambulab</span><button class="icon-button" aria-label=${this.t("refresh")} @click=${() => this._hass && void qe(this._hass).refresh()}>${Z("refresh")}</button></div></header>
+      <div class="top-actions"><span class="connection"><span class="dot ${this._catalogState.error ? "failed" : "ready"}"></span>ha-bambulab</span><button class="icon-button" aria-label=${this.t("refresh")} @click=${() => this._hass && void Ke(this._hass).refresh()}>${Z("refresh")}</button></div></header>
       <div class="workspace">${this.renderSidebar(e)}<main class="main">
-        <div class="mobile-picker"><select aria-label=${this.t("printers")} data-value=${this._selected || ""} @change=${(e) => this.selectPrinter(e.target.value || null)}><option value="">${this.t("allPrinters")}</option>${e.map((e) => j`<option value=${e.id}>${e.name}</option>`)}</select></div>
-        <div class="page-heading"><div><div class="eyebrow">${t ? t.model : "YOUR PRINT FARM"}</div><h1>${t?.name || this.t("workspace")}</h1>${t ? j`<p class="description ha-name">${this.t("haName")}: ${t.haName}</p>` : N}<p class="description">${t ? `${this.status(t)} · ${this.value(t.stage)}` : this.t("subtitle")}</p></div>
+        <div class="mobile-picker"><select aria-label=${this.t("printers")} data-value=${this._selected || ""} @change=${(e) => this.selectPrinter(e.target.value || null)}><option value="">${this.t("allPrinters")}</option>${e.map((e) => M`<option value=${e.id}>${e.name}</option>`)}</select></div>
+        <div class="page-heading"><div><div class="eyebrow">${t ? t.model : "YOUR PRINT FARM"}</div><h1>${t?.name || this.t("workspace")}</h1>${t ? M`<p class="description ha-name">${this.t("haName")}: ${t.haName}</p>` : P}<p class="description">${t ? `${this.status(t)} · ${this.value(t.stage)}` : this.t("subtitle")}</p></div>
         <div class="stats"><span class="stat"><b>${e.length}</b>${this.t("printers")}</span><span class="stat"><b>${e.filter((e) => e.status === "running").length}</b>${this.t("printing")}</span></div></div>
         ${this.renderBanners()}
-        ${this._catalogState.error ? j`<div class="banner error">${Z("alert")}<div>${this.t("registryError")}: ${this._catalogState.error.message}</div></div>` : N}
+        ${this._catalogState.error ? M`<div class="banner error">${Z("alert")}<div>${this.t("registryError")}: ${this._catalogState.error.message}</div></div>` : P}
         <nav class="tabs" aria-label="Workspace">${[
 			"overview",
 			"ams",
 			"files",
 			"parameters"
-		].map((e, t) => j`<button class=${this._tab === e ? "active" : ""} @click=${() => this.setTab(e)}>${Z([
+		].map((e, t) => M`<button class=${this._tab === e ? "active" : ""} @click=${() => this.setTab(e)}>${Z([
 			"grid",
 			"spool",
 			"folder",
@@ -2862,32 +3040,32 @@ var Nn = 6e4, Pn = class extends I {
       </main></div></div>${this.renderDialog()}`;
 	}
 	renderSidebar(e) {
-		return j`<aside class="sidebar"><div class="sidebar-label">WORKSPACE</div><button class=${this._selected ? "" : "selected"} @click=${() => this.selectPrinter(null)}>${Z("grid")}${this.t("allPrinters")}</button><div class="sidebar-rule"></div><div class="sidebar-label">${this.t("printers")}</div>
-      ${We(e, (e) => e.id, (e) => j`<button class="printer-link ${this._selected === e.id ? "selected" : ""}" title=${`${e.name} · ${e.haName}`} @click=${() => this.selectPrinter(e.id)}>${Z("printer")}<span class="name">${e.name}<small class="model">${e.haName === e.name ? e.model : e.haName}</small></span><span class="dot ${e.status}"></span></button>`)}
+		return M`<aside class="sidebar"><div class="sidebar-label">WORKSPACE</div><button class=${this._selected ? "" : "selected"} @click=${() => this.selectPrinter(null)}>${Z("grid")}${this.t("allPrinters")}</button><div class="sidebar-rule"></div><div class="sidebar-label">${this.t("printers")}</div>
+      ${Ue(e, (e) => e.id, (e) => M`<button class="printer-link ${this._selected === e.id ? "selected" : ""}" title=${`${e.name} · ${e.haName}`} @click=${() => this.selectPrinter(e.id)}>${Z("printer")}<span class="name">${e.name}<small class="model">${e.haName === e.name ? e.model : e.haName}</small></span><span class="dot ${e.status}"></span></button>`)}
       <div class="sidebar-foot">Bambu Dashboard Card<br>v0.1 · Community project</div></aside>`;
 	}
 	renderBanners() {
-		return j`${this._error ? j`<div class="banner error" role="alert">${Z("alert")}<div class="copy">${this._error}</div><button class="icon-button" aria-label=${this.t("close")} @click=${() => {
+		return M`${this._error ? M`<div class="banner error" role="alert">${Z("alert")}<div class="copy">${this._error}</div><button class="icon-button" aria-label=${this.t("close")} @click=${() => {
 			this._error = "";
-		}}>${Z("close")}</button></div>` : N}
-      ${this._notice ? j`<div class="banner notice" role="status">${Z("check")}<div class="copy">${this._notice}</div><button class="icon-button" aria-label=${this.t("close")} @click=${() => {
+		}}>${Z("close")}</button></div>` : P}
+      ${this._notice ? M`<div class="banner notice" role="status">${Z("check")}<div class="copy">${this._notice}</div><button class="icon-button" aria-label=${this.t("close")} @click=${() => {
 			this._notice = "";
-		}}>${Z("close")}</button></div>` : N}
-      ${[...this._pending].map(([e, t]) => j`<div class="banner notice" role="status">${Z("clock")}<div class="copy"><b>${t.name}</b><br>${t.phase === "request" ? this._transfer || this.t("loading") : this.t("submitted")}</div>${t.phase === "submitted" ? j`<button class="button small" @click=${() => this.clearPending(e)}>${this.t("dismiss")}</button>` : N}</div>`)}`;
+		}}>${Z("close")}</button></div>` : P}
+      ${[...this._pending].map(([e, t]) => M`<div class="banner notice" role="status">${Z("clock")}<div class="copy"><b>${t.name}</b><br>${t.phase === "request" ? this._transfer || this.t("loading") : this.t("submitted")}</div>${t.phase === "submitted" ? M`<button class="button small" @click=${() => this.clearPending(e)}>${this.t("dismiss")}</button>` : P}</div>`)}`;
 	}
 	renderEmpty(e, t) {
-		return j`<div class="panel empty">${Z(e)}<p>${t}</p></div>`;
+		return M`<div class="panel empty">${Z(e)}<p>${t}</p></div>`;
 	}
 	renderContent(e) {
-		return this._tab === "files" ? this.renderFiles() : this._tab === "parameters" ? this.renderParameters() : this._tab === "ams" ? j`${this.currentPrinters.map((e) => this.renderAms(e, !0))}` : e ? this.renderDetail(e) : j`<div class="printer-grid">${We(this.printers, (e) => e.id, (e) => this.renderTile(e))}</div>`;
+		return this._tab === "files" ? this.renderFiles() : this._tab === "parameters" ? this.renderParameters() : this._tab === "ams" ? M`${this.currentPrinters.map((e) => this.renderAms(e, !0))}` : e ? this.renderDetail(e) : M`<div class="printer-grid">${Ue(this.printers, (e) => e.id, (e) => this.renderTile(e))}</div>`;
 	}
 	renderTile(e) {
-		let t = V(z(e.entities, "subtask_name")), n = Ze(e), r = z(e.entities, "speed_profile"), i = n === null ? V(r) === null ? this.value(r) : this.t("unknown") : `${n}%`;
-		return j`<article class="panel printer-card"><button class="card-heading" @click=${() => this.selectPrinter(e.id)}><span class="machine-badge">${Z("printer")}</span><span class="heading-copy"><b>${e.name}</b><small>${e.haName === e.name ? e.model : `${e.model} · ${e.haName}`}</small></span>${this.statusBadge(e)}</button>
-      <div class="tile-media"><div class="preview" aria-label=${this.t("camera")}>${rn()}${e.camera && B(e.camera) ? j`<bambu-dashboard-camera .hass=${this._hass} .entity=${e.camera.entry.entity_id}></bambu-dashboard-camera>` : N}<span class="preview-caption">${e.camera ? this.t("camera") : this.t("unsupported")}</span></div>
-      <div class="project-preview" aria-label=${this.t("projectPreview")}>${e.cover && V(e.cover) ? j`<bambu-dashboard-file-image .hass=${this._hass} .entity=${e.cover.entry.entity_id} .version=${V(e.cover) || ""}></bambu-dashboard-file-image>` : j`<div class="preview-empty">${Z("folder")}<span>${this.t("noProjectPreview")}</span></div>`}<span class="preview-caption">${this.t("projectPreview")}</span></div></div>
+		let t = H(B(e.entities, "subtask_name")), n = Xe(e), r = B(e.entities, "speed_profile"), i = n === null ? H(r) === null ? this.value(r) : this.t("unknown") : `${n}%`;
+		return M`<article class="panel printer-card"><button class="card-heading" @click=${() => this.selectPrinter(e.id)}><span class="machine-badge">${Z("printer")}</span><span class="heading-copy"><b>${e.name}</b><small>${e.haName === e.name ? e.model : `${e.model} · ${e.haName}`}</small></span>${this.statusBadge(e)}</button>
+      <div class="tile-media"><bambu-printer-camera .hass=${this._hass} .printer=${e} .registry=${this._catalogState.snapshot} .language=${this.language}></bambu-printer-camera>
+      <div class="project-preview" aria-label=${this.t("projectPreview")}>${e.cover && H(e.cover) ? M`<bambu-dashboard-file-image .hass=${this._hass} .entity=${e.cover.entry.entity_id} .version=${H(e.cover) || ""}></bambu-dashboard-file-image>` : M`<div class="preview-empty">${Z("folder")}<span>${this.t("noProjectPreview")}</span></div>`}<span class="preview-caption">${this.t("projectPreview")}</span></div></div>
       <div class="tile-content"><div class="task-line">${Z("folder")}<span>${t || this.t("noTask")}</span></div>${this.progress(e)}<div class="tile-metrics"><div><span>${this.t("remaining")}</span><strong>${this.remaining(e)}</strong>${this.completionEstimate(e)}</div><div><span>${this.t("nozzle")}</span><strong>${this.sensor(e, "nozzle_temp")}</strong></div><div><span>${this.t("bed")}</span><strong>${this.sensor(e, "bed_temp")}</strong></div><div class="tile-speed"><span>${this.t("speed")}</span><strong>${i}</strong></div></div>
-      <div class="tile-footer"><div class="filament-groups">${e.ams.map((e) => j`<div class="filament-group" role="group" aria-label=${this.filamentSourceLabel(e)} title=${e.device.name_by_user || e.device.name || this.filamentSourceLabel(e)}><span class="filament-source">${Z("spool")}${this.filamentSourceLabel(e)}</span><div class="filament-dots">${e.slots.map(({ entity: e }) => j`<span title=${Qe(e)} class="filament-dot ${e.state?.attributes.active ? "active" : ""}" style=${`--filament:${at(e.state?.attributes.color) || "transparent"}`}></span>`)}</div></div>`)}</div><button class="button small" @click=${() => this.selectPrinter(e.id)}>${this.t("details")}${Z("arrow")}</button></div></div></article>`;
+      <div class="tile-footer"><div class="filament-groups">${e.ams.map((e) => M`<div class="filament-group" role="group" aria-label=${this.filamentSourceLabel(e)} title=${e.device.name_by_user || e.device.name || this.filamentSourceLabel(e)}><span class="filament-source">${Z("spool")}${this.filamentSourceLabel(e)}</span><div class="filament-dots">${e.slots.map(({ entity: e }) => M`<span title=${Ze(e)} class="filament-dot ${e.state?.attributes.active ? "active" : ""}" style=${`--filament:${it(e.state?.attributes.color) || "transparent"}`}></span>`)}</div></div>`)}</div><button class="button small" @click=${() => this.selectPrinter(e.id)}>${this.t("details")}${Z("arrow")}</button></div></div></article>`;
 	}
 	filamentSourceLabel(e) {
 		return e.external ? this.t("external") : e.device.model || e.device.name_by_user || e.device.name || "AMS";
@@ -2897,22 +3075,22 @@ var Nn = 6e4, Pn = class extends I {
 			{
 				id: "camera",
 				label: this.t("camera"),
-				content: j`<section class="panel camera-panel"><div class="panel-head"><h2>${Z("camera")} ${this.t("camera")}</h2><span class="description">${e.camera && Number(e.camera.state?.attributes.supported_features) & 2 ? this.t("live") : this.t("snapshot")}</span></div><div class="camera-large">${e.camera ? j`<bambu-dashboard-camera .hass=${this._hass} .entity=${e.camera.entry.entity_id}></bambu-dashboard-camera>` : j`${rn()}<span class="preview-caption">${this.t("unsupported")}</span>`}</div></section>`
+				content: M`<bambu-printer-camera .hass=${this._hass} .printer=${e} .registry=${this._catalogState.snapshot} .language=${this.language} variant="detail"></bambu-printer-camera>`
 			},
 			{
 				id: "job",
 				label: this.t("task"),
-				content: j`<section class="panel current-job"><div class="panel-head"><h2>${Z("folder")} ${this.t("task")}</h2>${this.statusBadge(e)}</div><div class="panel-body"><div class="job-top">${e.cover && V(e.cover) ? j`<div class="job-cover"><bambu-dashboard-file-image .hass=${this._hass} .entity=${e.cover.entry.entity_id} .version=${V(e.cover) || ""}></bambu-dashboard-file-image></div>` : N}<div class="job-name">${V(z(e.entities, "subtask_name")) || this.t("noTask")}</div></div>${this.progress(e)}<div class="job-summary"><div><span>${this.t("remaining")}</span><b>${this.remaining(e)}</b>${this.completionEstimate(e)}</div><div><span>${this.t("layers")}</span><b>${this.sensor(e, "current_layer")} / ${this.sensor(e, "total_layers")}</b></div></div></div></section>`
+				content: M`<section class="panel current-job"><div class="panel-head"><h2>${Z("folder")} ${this.t("task")}</h2>${this.statusBadge(e)}</div><div class="panel-body"><div class="job-top">${e.cover && H(e.cover) ? M`<div class="job-cover"><bambu-dashboard-file-image .hass=${this._hass} .entity=${e.cover.entry.entity_id} .version=${H(e.cover) || ""}></bambu-dashboard-file-image></div>` : P}<div class="job-name">${H(B(e.entities, "subtask_name")) || this.t("noTask")}</div></div>${this.progress(e)}<div class="job-summary"><div><span>${this.t("remaining")}</span><b>${this.remaining(e)}</b>${this.completionEstimate(e)}</div><div><span>${this.t("layers")}</span><b>${this.sensor(e, "current_layer")} / ${this.sensor(e, "total_layers")}</b></div></div></div></section>`
 			},
 			{
 				id: "controls",
 				label: this.t("controls"),
-				content: j`<section class="panel controls-panel"><div class="panel-head"><h2>${Z("tune")} ${this.t("controls")}</h2></div><div class="panel-body">${this.renderControls(e)}</div></section>`
+				content: M`<section class="panel controls-panel"><div class="panel-head"><h2>${Z("tune")} ${this.t("controls")}</h2></div><div class="panel-body">${this.renderControls(e)}</div></section>`
 			},
 			{
 				id: "metrics",
 				label: this.t("liveParameters"),
-				content: j`<section class="panel live-metrics"><div class="panel-head"><h2>${Z("heat")} ${this.t("liveParameters")}</h2></div><div class="detail-metrics">${[
+				content: M`<section class="panel live-metrics"><div class="panel-head"><h2>${Z("heat")} ${this.t("liveParameters")}</h2></div><div class="detail-metrics">${[
 					[
 						"nozzle",
 						"nozzle_temp",
@@ -2938,7 +3116,7 @@ var Nn = 6e4, Pn = class extends I {
 						"print_length",
 						""
 					]
-				].map(([t, n, r]) => j`<div class="metric"><div class="metric-top">${Z(t === "nozzle" || t === "bed" ? "heat" : "tune")}${this.t(t)}</div><strong>${this.sensor(e, n)}</strong>${r ? j`<small>→ ${this.sensor(e, r)}</small>` : N}</div>`)}</div></section>`
+				].map(([t, n, r]) => M`<div class="metric"><div class="metric-top">${Z(t === "nozzle" || t === "bed" ? "heat" : "tune")}${this.t(t)}</div><strong>${this.sensor(e, n)}</strong>${r ? M`<small>→ ${this.sensor(e, r)}</small>` : P}</div>`)}</div></section>`
 			}
 		];
 		return e.ams.length ? t.push(...e.ams.map((t) => ({
@@ -2948,43 +3126,43 @@ var Nn = 6e4, Pn = class extends I {
 		}))) : t.push({
 			id: "filament-empty",
 			label: this.t("ams"),
-			content: j`<section class="panel empty">${Z("spool")}<p>${this.t("noAms")}</p></section>`
+			content: M`<section class="panel empty">${Z("spool")}<p>${this.t("noAms")}</p></section>`
 		}), t.push({
 			id: "notifications",
 			label: this.t("completionNotifications"),
-			content: j`<bambu-completion-notifications .hass=${this._hass} .printer=${e} .registry=${this._catalogState.snapshot} .language=${this.language} .compact=${!0}></bambu-completion-notifications>`
-		}), j`<bambu-detail-layout .hass=${this._hass} .printerId=${e.id} .language=${this.language} .cards=${t}></bambu-detail-layout>`;
+			content: M`<bambu-completion-notifications .hass=${this._hass} .printer=${e} .registry=${this._catalogState.snapshot} .language=${this.language} .compact=${!0}></bambu-completion-notifications>`
+		}), M`<bambu-detail-layout .hass=${this._hass} .printerId=${e.id} .language=${this.language} .cards=${t}></bambu-detail-layout>`;
 	}
 	renderControls(e) {
 		let t = this._pending.has(e.id), n = e.speed?.state?.attributes.options;
-		return j`<button class="button primary" style="width:100%" ?disabled=${!H(e) || t} @click=${() => void this.openStart(e)}>${Z("play")}${this.t("start")}</button><div class="control-row"><button class="button" ?disabled=${t || !(e.status === "running" ? B(e.pause) : e.status === "pause" && B(e.resume))} @click=${() => this.press(e, e.status === "pause" ? "resume" : "pause")}>${Z(e.status === "pause" ? "play" : "pause")}${this.t(e.status === "pause" ? "resumeAction" : "pauseAction")}</button><button class="button danger" ?disabled=${t || !["running", "pause"].includes(e.status) || !B(e.stop)} @click=${() => this.press(e, "stop")}>${Z("stop")}${this.t("stopAction")}</button></div>
-      <div class="control-divider"></div><label class="field"><span>${this.t("speed")}</span><select data-value=${V(e.speed) || ""} ?disabled=${t || e.status !== "running" || !B(e.speed)} @change=${(t) => {
+		return M`<button class="button primary" style="width:100%" ?disabled=${!U(e) || t} @click=${() => void this.openStart(e)}>${Z("play")}${this.t("start")}</button><div class="control-row"><button class="button" ?disabled=${t || !(e.status === "running" ? V(e.pause) : e.status === "pause" && V(e.resume))} @click=${() => this.press(e, e.status === "pause" ? "resume" : "pause")}>${Z(e.status === "pause" ? "play" : "pause")}${this.t(e.status === "pause" ? "resumeAction" : "pauseAction")}</button><button class="button danger" ?disabled=${t || !["running", "pause"].includes(e.status) || !V(e.stop)} @click=${() => this.press(e, "stop")}>${Z("stop")}${this.t("stopAction")}</button></div>
+      <div class="control-divider"></div><label class="field"><span>${this.t("speed")}</span><select data-value=${H(e.speed) || ""} ?disabled=${t || e.status !== "running" || !V(e.speed)} @change=${(t) => {
 			let n = t.target.value;
-			this.runAction(e.id, `${e.name} · ${this.t("speed")}`, (e) => this.client.speed(e, n), (e) => V(e.speed) === n);
-		}}><option value="" disabled>${this.value(e.speed)}</option>${Array.isArray(n) ? n.map((e) => j`<option value=${String(e)}>${String(e)}</option>`) : N}</select></label><div class="helper">${this.t("speedHelp")}</div>
-      <div class="control-divider"></div><div class="light-control"><span>${Z("light")} ${this.t("light")}</span><button class="button small ${V(e.light) === "on" ? "on" : ""}" ?disabled=${t || !B(e.light) || !["on", "off"].includes(V(e.light) || "")} @click=${() => {
-			let t = V(e.light) === "on" ? "off" : "on";
-			this.runAction(e.id, `${e.name} · ${this.t("light")}`, (e) => this.client.light(e), (e) => V(e.light) === t);
-		}}>${V(e.light) === "on" ? this.t("on") : V(e.light) === "off" ? this.t("off") : this.value(e.light)}</button></div><div class="helper">${this.t("lightHelp")}</div>`;
+			this.runAction(e.id, `${e.name} · ${this.t("speed")}`, (e) => this.client.speed(e, n), (e) => H(e.speed) === n);
+		}}><option value="" disabled>${this.value(e.speed)}</option>${Array.isArray(n) ? n.map((e) => M`<option value=${String(e)}>${String(e)}</option>`) : P}</select></label><div class="helper">${this.t("speedHelp")}</div>
+      <div class="control-divider"></div><div class="light-control"><span>${Z("light")} ${this.t("light")}</span><button class="button small ${H(e.light) === "on" ? "on" : ""}" ?disabled=${t || !V(e.light) || !["on", "off"].includes(H(e.light) || "")} @click=${() => {
+			let t = H(e.light) === "on" ? "off" : "on";
+			this.runAction(e.id, `${e.name} · ${this.t("light")}`, (e) => this.client.light(e), (e) => H(e.light) === t);
+		}}>${H(e.light) === "on" ? this.t("on") : H(e.light) === "off" ? this.t("off") : this.value(e.light)}</button></div><div class="helper">${this.t("lightHelp")}</div>`;
 	}
 	renderAms(e, t) {
-		return e.ams.length ? j`${e.ams.map((n) => this.renderAmsUnit(e, n, t))}` : j`<div class="ams-section">${this.renderEmpty("spool", `${t ? `${e.name} · ` : ""}${this.t("noAms")}`)}</div>`;
+		return e.ams.length ? M`${e.ams.map((n) => this.renderAmsUnit(e, n, t))}` : M`<div class="ams-section">${this.renderEmpty("spool", `${t ? `${e.name} · ` : ""}${this.t("noAms")}`)}</div>`;
 	}
 	renderAmsUnit(e, t, n) {
-		let r = z(t.entities, "humidity"), i = z(t.entities, "ams_temp");
-		return j`<section class="panel ams-section"><div class="panel-head"><h2>${Z("spool")} ${n ? `${e.name} · ` : ""}${t.external ? this.t("external") : t.device.name_by_user || t.device.model}</h2><span class="description">${t.slots.length} ${t.external ? "" : "slots"}</span></div><div class="ams-grid">${t.slots.map(({ index: e, entity: n }) => {
-			let r = n.state?.attributes || {}, i = ot(n);
-			return j`<div class="spool ${r.active === !0 ? "active" : ""}" style=${`--filament:${at(r.color) || "var(--bd-raised)"}`}><div class="spool-index">${t.external ? this.t("external") : `SLOT ${String(e).padStart(2, "0")}`}</div>${r.active === !0 ? j`<span class="active-label">● ${this.t("active")}</span>` : N}<div class="spool-visual"></div><h3>${r.empty === !0 ? this.t("empty") : this.value(n)}</h3><div class="material">${typeof r.type == "string" ? r.type : "—"} ${at(r.color) || ""}</div><div class="remain">${i === null ? this.t("remainingUnknown") : `${i}%`}</div></div>`;
-		})}</div>${r || i ? j`<div class="ams-extra">${r ? j`<span>${this.t("humidity")}: ${this.value(r)}</span>` : N}${i ? j`<span>${this.t("temperature")}: ${this.value(i)}</span>` : N}</div>` : N}</section>`;
+		let r = B(t.entities, "humidity"), i = B(t.entities, "ams_temp");
+		return M`<section class="panel ams-section"><div class="panel-head"><h2>${Z("spool")} ${n ? `${e.name} · ` : ""}${t.external ? this.t("external") : t.device.name_by_user || t.device.model}</h2><span class="description">${t.slots.length} ${t.external ? "" : "slots"}</span></div><div class="ams-grid">${t.slots.map(({ index: e, entity: n }) => {
+			let r = n.state?.attributes || {}, i = at(n);
+			return M`<div class="spool ${r.active === !0 ? "active" : ""}" style=${`--filament:${it(r.color) || "var(--bd-raised)"}`}><div class="spool-index">${t.external ? this.t("external") : `SLOT ${String(e).padStart(2, "0")}`}</div>${r.active === !0 ? M`<span class="active-label">● ${this.t("active")}</span>` : P}<div class="spool-visual"></div><h3>${r.empty === !0 ? this.t("empty") : this.value(n)}</h3><div class="material">${typeof r.type == "string" ? r.type : "—"} ${it(r.color) || ""}</div><div class="remain">${i === null ? this.t("remainingUnknown") : `${i}%`}</div></div>`;
+		})}</div>${r || i ? M`<div class="ams-extra">${r ? M`<span>${this.t("humidity")}: ${this.value(r)}</span>` : P}${i ? M`<span>${this.t("temperature")}: ${this.value(i)}</span>` : P}</div>` : P}</section>`;
 	}
 	renderFiles() {
 		let e = this._files?.filter((e) => !this._selected || e.printer_device_id === this._selected);
-		return j`<div class="section-heading"><div><h2>${this.t("cachedFiles")}</h2><p class="description">${this.t("cacheHelp")}</p></div><button class="button small" ?disabled=${this._filesLoading} @click=${() => void this.loadFiles()}>${Z("refresh")}${this.t("refresh")}</button></div>
-      ${this._filesError ? j`<div class="banner error" style="margin-top:18px" role="alert">${Z("alert")}<div>${this._filesError}</div></div>` : N}
-      ${this._filesLoading ? this.renderEmpty("refresh", this.t("loading")) : e?.length ? j`<section class="panel file-list">${e.map((e) => {
-			let t = this.printers.find((t) => t.id === (this._selected || e.printer_device_id)), n = t && H(t) ? t : this.printers.find((e) => H(e) && !this._pending.has(e.id));
-			return j`<div class="file-row"><div class="file-preview">${e.thumbnail_path ? j`<bambu-dashboard-file-image .hass=${this._hass} .path=${e.thumbnail_path}></bambu-dashboard-file-image>` : Z("folder")}</div><div><div class="file-title">${e.filename}</div><div class="file-meta"><span>${e.printer_name}</span><span>${e.size_human || `${e.size.toLocaleString()} B`}</span><span>${this.date(e.modified)}</span></div></div><div class="file-actions"><button class="icon-button" aria-label=${this.t("download")} @click=${() => void this.download(e)}>${Z("download")}</button><button class="button small" ?disabled=${!n || !H(n) || this._pending.has(n.id)} @click=${() => n && void this.openStart(n, e)}>${Z("play")}${this.t("printAgain")}</button></div></div>`;
-		})}</section>` : this._filesError ? N : this.renderEmpty("folder", this.t("noFiles"))}`;
+		return M`<div class="section-heading"><div><h2>${this.t("cachedFiles")}</h2><p class="description">${this.t("cacheHelp")}</p></div><button class="button small" ?disabled=${this._filesLoading} @click=${() => void this.loadFiles()}>${Z("refresh")}${this.t("refresh")}</button></div>
+      ${this._filesError ? M`<div class="banner error" style="margin-top:18px" role="alert">${Z("alert")}<div>${this._filesError}</div></div>` : P}
+      ${this._filesLoading ? this.renderEmpty("refresh", this.t("loading")) : e?.length ? M`<section class="panel file-list">${e.map((e) => {
+			let t = this.printers.find((t) => t.id === (this._selected || e.printer_device_id)), n = t && U(t) ? t : this.printers.find((e) => U(e) && !this._pending.has(e.id));
+			return M`<div class="file-row"><div class="file-preview">${e.thumbnail_path ? M`<bambu-dashboard-file-image .hass=${this._hass} .path=${e.thumbnail_path}></bambu-dashboard-file-image>` : Z("folder")}</div><div><div class="file-title">${e.filename}</div><div class="file-meta"><span>${e.printer_name}</span><span>${e.size_human || `${e.size.toLocaleString()} B`}</span><span>${this.date(e.modified)}</span></div></div><div class="file-actions"><button class="icon-button" aria-label=${this.t("download")} @click=${() => void this.download(e)}>${Z("download")}</button><button class="button small" ?disabled=${!n || !U(n) || this._pending.has(n.id)} @click=${() => n && void this.openStart(n, e)}>${Z("play")}${this.t("printAgain")}</button></div></div>`;
+		})}</section>` : this._filesError ? P : this.renderEmpty("folder", this.t("noFiles"))}`;
 	}
 	date(e) {
 		if (!e) return "—";
@@ -2999,11 +3177,11 @@ var Nn = 6e4, Pn = class extends I {
 		let e = this._search.toLocaleLowerCase(), t = this.currentPrinters.flatMap((e) => e.allEntities.map((t) => ({
 			printer: e,
 			entity: t
-		}))).filter(({ printer: t, entity: n }) => `${t.name} ${t.haName} ${Qe(n)} ${n.entry.entity_id} ${n.state?.state || ""}`.toLocaleLowerCase().includes(e));
-		return j`<div class="section-heading"><div><h2>${this.t("parameters")}</h2><p class="description">${t.length} entities · ha-bambulab</p></div></div><label class="search-box">${Z("search")}<input aria-label=${this.t("search")} placeholder=${this.t("search")} .value=${this._search} @input=${(e) => {
+		}))).filter(({ printer: t, entity: n }) => `${t.name} ${t.haName} ${Ze(n)} ${n.entry.entity_id} ${n.state?.state || ""}`.toLocaleLowerCase().includes(e));
+		return M`<div class="section-heading"><div><h2>${this.t("parameters")}</h2><p class="description">${t.length} entities · ha-bambulab</p></div></div><label class="search-box">${Z("search")}<input aria-label=${this.t("search")} placeholder=${this.t("search")} .value=${this._search} @input=${(e) => {
 			this._search = e.target.value;
 		}}/></label>
-      ${t.length ? j`<section class="panel" style="overflow-x:auto"><table class="parameter-table"><thead><tr><th>${this.t("entity")}</th><th>${this.t("value")}</th><th>${this.t("details")}</th></tr></thead><tbody>${We(t, ({ entity: e }) => e.entry.entity_id, ({ printer: e, entity: t }) => j`<tr><td><div class="entity-name">${Qe(t)}</div><div class="entity-id">${e.name} · ${Je(t.entry.entity_id)}</div></td><td><span class="entity-value">${this.value(t)}</span></td><td><details><summary>${this.t("attributes")}</summary><div class="entity-id">${t.entry.entity_id}</div><dl class="attribute-grid"><dt>${this.t("updated")}</dt><dd>${this.date(t.state?.last_updated)}</dd>${Object.entries(nt(t)).map(([e, t]) => j`<dt>${e}</dt><dd>${typeof t == "object" ? JSON.stringify(t, null, 2) : String(t)}</dd>`)}</dl><button class="button small" @click=${() => this.dispatchEvent(new CustomEvent("hass-more-info", {
+      ${t.length ? M`<section class="panel" style="overflow-x:auto"><table class="parameter-table"><thead><tr><th>${this.t("entity")}</th><th>${this.t("value")}</th><th>${this.t("details")}</th></tr></thead><tbody>${Ue(t, ({ entity: e }) => e.entry.entity_id, ({ printer: e, entity: t }) => M`<tr><td><div class="entity-name">${Ze(t)}</div><div class="entity-id">${e.name} · ${qe(t.entry.entity_id)}</div></td><td><span class="entity-value">${this.value(t)}</span></td><td><details><summary>${this.t("attributes")}</summary><div class="entity-id">${t.entry.entity_id}</div><dl class="attribute-grid"><dt>${this.t("updated")}</dt><dd>${this.date(t.state?.last_updated)}</dd>${Object.entries(tt(t)).map(([e, t]) => M`<dt>${e}</dt><dd>${typeof t == "object" ? JSON.stringify(t, null, 2) : String(t)}</dd>`)}</dl><button class="button small" @click=${() => this.dispatchEvent(new CustomEvent("hass-more-info", {
 			detail: { entityId: t.entry.entity_id },
 			bubbles: !0,
 			composed: !0
@@ -3011,25 +3189,25 @@ var Nn = 6e4, Pn = class extends I {
 	}
 	renderDialog() {
 		let e = this._dialog;
-		if (!e) return N;
+		if (!e) return P;
 		let t = this.printers.find((t) => t.id === e.printerId);
-		if (!t) return j`<div class="overlay"><section class="dialog" role="dialog" aria-modal="true"><div class="dialog-body">The target printer was removed.</div><div class="dialog-footer"><button class="button" @click=${() => this.closeDialog()}>${this.t("close")}</button></div></section></div>`;
-		let n = this._pending.has(t.id), r = e.kind === "start" && e.metadata ? qt(e.metadata, t.model, Xe(z(t.entities, "nozzle_diameter"))).length > 0 : !1;
-		return j`<div class="overlay" @keydown=${(e) => {
+		if (!t) return M`<div class="overlay"><section class="dialog" role="dialog" aria-modal="true"><div class="dialog-body">The target printer was removed.</div><div class="dialog-footer"><button class="button" @click=${() => this.closeDialog()}>${this.t("close")}</button></div></section></div>`;
+		let n = this._pending.has(t.id), r = e.kind === "start" && e.metadata ? qt(e.metadata, t.model, Ye(B(t.entities, "nozzle_diameter"))).length > 0 : !1;
+		return M`<div class="overlay" @keydown=${(e) => {
 			e.key === "Escape" && !n && this.closeDialog();
 		}}><section class="dialog" role="dialog" aria-modal="true" aria-label=${this.t(e.kind === "stop" ? "stopAction" : "start")}><div class="panel-head"><h2>${this.t(e.kind === "stop" ? "stopAction" : "start")}</h2><button class="icon-button" ?disabled=${n} aria-label=${this.t("close")} @click=${() => this.closeDialog()}>${Z("close")}</button></div><div class="dialog-body"><div class="dialog-target"><div><span>${this.t("target")}</span><b>${t.name}</b></div><div><span>${t.model}</span><b>${this.sensor(t, "nozzle_diameter")}</b></div></div>
-      ${e.kind === "stop" ? j`<p>${this.t("stopHelp")}</p>` : this.renderStartFields(t, e, n)}</div><div class="dialog-footer"><button class="button" ?disabled=${n} @click=${() => this.closeDialog()}>${this.t("cancel")}</button>${e.kind === "stop" ? j`<button class="button danger" ?disabled=${n} @click=${() => {
+      ${e.kind === "stop" ? M`<p>${this.t("stopHelp")}</p>` : this.renderStartFields(t, e, n)}</div><div class="dialog-footer"><button class="button" ?disabled=${n} @click=${() => this.closeDialog()}>${this.t("cancel")}</button>${e.kind === "stop" ? M`<button class="button danger" ?disabled=${n} @click=${() => {
 			this.closeDialog(), this.runAction(t.id, `${t.name} · ${this.t("stopAction")}`, (e) => this.client.press(e, "stop"), (e) => [
 				"idle",
 				"finish",
 				"failed"
 			].includes(e.status));
-		}}>${this.t("stopAction")}</button>` : j`<button class="button primary" ?disabled=${n || r || e.loading || !(!e.file || e.metadata && !e.error) || !H(t)} @click=${() => void this.confirmStart()}>${Z("play")}${this.t("confirmStart")}</button>`}</div></section></div>`;
+		}}>${this.t("stopAction")}</button>` : M`<button class="button primary" ?disabled=${n || r || e.loading || !(!e.file || e.metadata && !e.error) || !U(t)} @click=${() => void this.confirmStart()}>${Z("play")}${this.t("confirmStart")}</button>`}</div></section></div>`;
 	}
 	renderStartFields(e, t, n) {
-		if (t.loading) return j`<p>${this.t("checking")}</p>`;
-		let r = t.metadata ? qt(t.metadata, e.model, Xe(z(e.entities, "nozzle_diameter"))) : [];
-		return j`<label class="field"><span>${this.t("target")}</span><select aria-label=${this.t("target")} data-value=${e.id} ?disabled=${n} @change=${(e) => {
+		if (t.loading) return M`<p>${this.t("checking")}</p>`;
+		let r = t.metadata ? qt(t.metadata, e.model, Ye(B(e.entities, "nozzle_diameter"))) : [];
+		return M`<label class="field"><span>${this.t("target")}</span><select aria-label=${this.t("target")} data-value=${e.id} ?disabled=${n} @change=${(e) => {
 			this._dialog = {
 				...t,
 				printerId: e.target.value,
@@ -3041,9 +3219,9 @@ var Nn = 6e4, Pn = class extends I {
 					amsMapping: ""
 				}
 			};
-		}}>${this.printers.map((e) => j`<option value=${e.id} ?disabled=${!H(e) || this._pending.has(e.id)}>${e.name} · ${e.model}</option>`)}</select></label>
-      ${t.error ? j`<div class="banner error" role="alert">${t.error}</div>` : N}${r.length ? j`<div class="banner error">${r.join(" ")}</div>` : N}
-      ${t.file ? j`<div class="field"><span>${this.t("task")}</span><b>${t.file.filename}</b></div>` : j`<label class="field"><span>${this.t("sdPath")}</span><input placeholder="cache/project.3mf" .value=${t.path} ?disabled=${n} @input=${(e) => {
+		}}>${this.printers.map((e) => M`<option value=${e.id} ?disabled=${!U(e) || this._pending.has(e.id)}>${e.name} · ${e.model}</option>`)}</select></label>
+      ${t.error ? M`<div class="banner error" role="alert">${t.error}</div>` : P}${r.length ? M`<div class="banner error">${r.join(" ")}</div>` : P}
+      ${t.file ? M`<div class="field"><span>${this.t("task")}</span><b>${t.file.filename}</b></div>` : M`<label class="field"><span>${this.t("sdPath")}</span><input placeholder="cache/project.3mf" .value=${t.path} ?disabled=${n} @input=${(e) => {
 			this._dialog = {
 				...t,
 				path: e.target.value
@@ -3054,21 +3232,21 @@ var Nn = 6e4, Pn = class extends I {
 				acknowledged: e.target.checked
 			};
 		}}/>${this.t("manualConfirm")}</label>`}
-      <label class="field"><span>${this.t("plate")}</span>${t.metadata ? j`<select data-value=${String(t.options.plate)} ?disabled=${n} @change=${(e) => this.updateOptions({ plate: Number(e.target.value) })}>${t.metadata.plates.map((e) => j`<option value=${e.id}>${e.id} · ${e.name}</option>`)}</select>` : j`<input type="number" min="1" max="100" .value=${String(t.options.plate)} ?disabled=${n} @input=${(e) => this.updateOptions({ plate: Number(e.target.value) })}/>`}</label>
+      <label class="field"><span>${this.t("plate")}</span>${t.metadata ? M`<select data-value=${String(t.options.plate)} ?disabled=${n} @change=${(e) => this.updateOptions({ plate: Number(e.target.value) })}>${t.metadata.plates.map((e) => M`<option value=${e.id}>${e.id} · ${e.name}</option>`)}</select>` : M`<input type="number" min="1" max="100" .value=${String(t.options.plate)} ?disabled=${n} @input=${(e) => this.updateOptions({ plate: Number(e.target.value) })}/>`}</label>
       <div class="two-fields">${[
 			["bedLeveling", "bedLevel"],
 			["timelapse", "timelapse"],
 			["flowCalibration", "flowCali"],
 			["vibrationCalibration", "vibrationCali"]
-		].map(([e, r]) => j`<label class="check"><input type="checkbox" .checked=${!!t.options[e]} ?disabled=${n} @change=${(t) => this.updateOptions({ [e]: t.target.checked })}/>${this.t(r)}</label>`)}</div>
-      ${e.ams.some((e) => !e.external) ? j`<div class="control-divider"></div><label class="check"><input type="checkbox" .checked=${t.options.useAms} ?disabled=${n} @change=${(e) => this.updateOptions({ useAms: e.target.checked })}/>${this.t("useAms")}</label>${t.options.useAms ? j`<label class="field"><span>${this.t("mapping")}</span><input placeholder="0,1,2" .value=${t.options.amsMapping} ?disabled=${n} @input=${(e) => this.updateOptions({ amsMapping: e.target.value })}/></label><p class="helper">${this.t("mappingHelp")}</p>` : N}` : N}
-      <div class="control-divider"></div><p class="helper">${this.t("startHelp")}</p>${this._transfer ? j`<p class="progress-caption">${this._transfer}</p>` : N}`;
+		].map(([e, r]) => M`<label class="check"><input type="checkbox" .checked=${!!t.options[e]} ?disabled=${n} @change=${(t) => this.updateOptions({ [e]: t.target.checked })}/>${this.t(r)}</label>`)}</div>
+      ${e.ams.some((e) => !e.external) ? M`<div class="control-divider"></div><label class="check"><input type="checkbox" .checked=${t.options.useAms} ?disabled=${n} @change=${(e) => this.updateOptions({ useAms: e.target.checked })}/>${this.t("useAms")}</label>${t.options.useAms ? M`<label class="field"><span>${this.t("mapping")}</span><input placeholder="0,1,2" .value=${t.options.amsMapping} ?disabled=${n} @input=${(e) => this.updateOptions({ amsMapping: e.target.value })}/></label><p class="helper">${this.t("mappingHelp")}</p>` : P}` : P}
+      <div class="control-divider"></div><p class="helper">${this.t("startHelp")}</p>${this._transfer ? M`<p class="progress-caption">${this._transfer}</p>` : P}`;
 	}
 };
-customElements.define("bambu-dashboard-card", Pn), window.customCards = window.customCards || [], window.customCards.push({
+customElements.define("bambu-dashboard-card", Hn), window.customCards = window.customCards || [], window.customCards.push({
 	type: "bambu-dashboard-card",
 	name: "Bambu Dashboard",
 	preview: !0,
 	description: "Complete multi-printer workspace for ha-bambulab."
 }), console.info("%c BAMBU DASHBOARD %c 0.1.0 ", "background:#00ae42;color:#08291f;font-weight:bold;padding:4px", "background:#15201b;color:#cfe9de;padding:4px");
-export { Pn as BambuDashboardCard };
+export { Hn as BambuDashboardCard };
