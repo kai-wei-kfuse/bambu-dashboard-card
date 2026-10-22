@@ -1,8 +1,51 @@
 import { describe, expect, it } from 'vitest';
-import { discoverPrinters, filamentRemaining, findEntity, parameterAttributes } from '../src/domain/printers';
+import { discoverPrinters, filamentRemaining, findEntity, parameterAttributes, speedPercentage } from '../src/domain/printers';
 import { fixtureHass, fixtureRegistry } from './fixtures';
 
 describe('dynamic printer directory', () => {
+  it('uses the reported speed modifier, preserving custom percentages without mapping mode names', () => {
+    const registry = fixtureRegistry();
+    registry.entities.push({ entity_id: 'sensor.one_speed_profile', device_id: 'printer-one', platform: 'bambu_lab', translation_key: 'speed_profile' });
+    const hass = fixtureHass();
+    hass.states['sensor.one_speed_profile'] = { entity_id: 'sensor.one_speed_profile', state: 'standard', attributes: { modifier: 124 } };
+    const printer = discoverPrinters(registry, hass, { type: 'custom:bambu-dashboard-card' }).find((item) => item.id === 'printer-one')!;
+    for (const modifier of [100, 124, 150, 55, 0, 166]) {
+      hass.states['sensor.one_speed_profile'].attributes.modifier = modifier;
+      expect(speedPercentage(printer)).toBe(modifier);
+    }
+    for (const modifier of [undefined, '100', -1, Number.NaN, Infinity]) {
+      hass.states['sensor.one_speed_profile'].attributes.modifier = modifier;
+      expect(speedPercentage(printer)).toBeNull();
+    }
+    hass.states['sensor.one_speed_profile'].attributes.modifier = 100;
+    hass.states['sensor.one_speed_profile'].state = 'unavailable';
+    expect(speedPercentage(printer)).toBeNull();
+  });
+
+  it('separates the printer-reported name from a renamed HA device without changing identity', () => {
+    const registry = fixtureRegistry();
+    registry.devices[0].name = 'A1_HA_IDENTIFIER';
+    Object.assign(registry.devices[0], { name_by_user: 'HA Workshop' });
+    registry.entities.push({ entity_id: 'sensor.one_printer_name', device_id: 'printer-one', platform: 'bambu_lab', translation_key: 'printer_name' });
+    const hass = fixtureHass();
+    hass.states['sensor.one_printer_name'] = { entity_id: 'sensor.one_printer_name', state: 'My workshop printer', attributes: {} };
+    const printer = discoverPrinters(registry, hass, { type: 'custom:bambu-dashboard-card' }).find((item) => item.id === 'printer-one')!;
+    expect(printer.name).toBe('My workshop printer');
+    expect(printer.haName).toBe('HA Workshop');
+    expect(printer.id).toBe('printer-one');
+    expect(printer.pause!.entry.entity_id).toBe('button.one_pause');
+  });
+
+  it.each(['unknown', 'unavailable', '   '])('retains the HA display name when the printer-name value is %s', (state) => {
+    const registry = fixtureRegistry();
+    registry.entities.push({ entity_id: 'sensor.one_printer_name', device_id: 'printer-one', platform: 'bambu_lab', translation_key: 'printer_name' });
+    const hass = fixtureHass();
+    hass.states['sensor.one_printer_name'] = { entity_id: 'sensor.one_printer_name', state, attributes: {} };
+    const printer = discoverPrinters(registry, hass, { type: 'custom:bambu-dashboard-card' }).find((item) => item.id === 'printer-one')!;
+    expect(printer.name).toBe('Workshop A1');
+    expect(printer.haName).toBe('Workshop A1');
+  });
+
   it('discovers printers and owns each child device without a model allow-list', () => {
     const registry = fixtureRegistry();
     registry.devices[1].model = 'Future Bambu Model';

@@ -1,0 +1,38 @@
+# Stage 2 — completion notifications and release validation
+
+Version: 1.9
+
+## Current Plan (v1.9)
+
+The prior Stage 2 release-validation-only scope in development order v1.0 is superseded by the user-requested notification scope in [change proposal 002](../initial-changes/002-completion-notifications.md) and [ADR 002](../adr/002-native-completion-notifications.md). Existing release checks remain required.
+
+- [x] Implement pure recipient discovery and managed automation generation/parsing.
+- [x] Implement authenticated automation read/save with ownership and explicit error handling.
+- [x] Add per-printer recipient, enable/disable and save controls; display saved and loaded runtime state.
+- [x] Verify behavior, typing, production build and a real HA configuration smoke test without sending a phone message.
+- [x] Add an explicit one-shot phone test button using the selected destination/style without saving or enabling an automation; verify submission and ask the user to confirm sound.
+- [x] Add and test an explicit Android alarm-speech style to honor the requirement that ordinary notifications stay silent; see ADR 002's independent alarm speech decision. User confirmed audible speech; saved/loaded enabled automation verified.
+- [x] Place each overview camera on the left and its project thumbnail on the right; use a 256px square detail preview (v1.5), scaling only when the available width is smaller, and verify desktop/narrow-screen rendering without content overflow.
+- [x] Reorganize detail information as independent content-sized masonry cards, preserving the 256px preview and every existing control/data module. See [ADR 003](../adr/003-detail-masonry.md). Verify four/two/single-column rendering, settings expansion and stable offscreen camera space.
+- [x] Add current-time-plus-remaining ETA, separate printer/HA display names and use the official-store green reference. See [ADR 004](../adr/004-printer-identity-and-completion-estimate.md). Verify actual HA labels, `#00AE42`, timezone display and narrow-screen layout.
+- [x] Show the reported speed percentage on every overview tile from the speed-profile sensor's `modifier` attribute, without guessing from speed mode names. Verify live HA readings and narrow-screen layout.
+- [x] Refine card surfaces using the supplied soft-gradient/translucent reference while retaining Bambu green and dense masonry; group overview filament colors by their actual AMS model or external-spool source. Verify actual HA labels, desktop masonry and narrow layouts.
+- [ ] Verify phone delivery during a real print with the user's chosen destination.
+- [ ] Validate physical print/light/speed controls with an operator.
+- [ ] Check broader model compatibility, accessibility and clean HACS installation.
+- [ ] Publish a versioned release after validation.
+
+## Revision History
+
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0 | 2026-10-22 | Add native completion notifications to active Stage 2; retain release checks. See ADR 002 and change proposal 002. |
+| 1.1 | 2026-10-22 | Record implementation and 41 passing tests; verify disabled automation save/load on real HA. User clarified Android alarm-style alerts; actual sound test remains open. |
+| 1.2 | 2026-10-22 | Add the user-requested phone test button with shared notify payloads. All 47 tests pass; real HA accepted one test request. Phone sound awaits user confirmation. |
+| 1.3 | 2026-10-22 | Add explicit alarm speech after silent notification receipt; user confirmed audible speech with ordinary notifications silent. All 49 tests pass and enabled saved configuration is verified; see ADR 002. |
+| 1.4 | 2026-10-22 | Implement the user-requested overview camera/thumbnail arrangement and 96px detail preview; verify real HA desktop and narrow layouts. Presentation only; existing 49 tests, typing and build pass. |
+| 1.5 | 2026-10-22 | User revised the detail preview size to 256px square; allow the project title to wrap below and scale the square only for narrower containers. Supersedes v1.4's 96px detail size. |
+| 1.6 | 2026-10-22 | Implement dense detail masonry per ADR 003, compact reminder settings and readable hour/minute estimates. Real HA four/two/single-column checks pass; 54 tests, types and build pass. The paired camera/control layout is superseded. |
+| 1.7 | 2026-10-22 | Implement the requested printer/HA-name hierarchy, current-time completion estimate and `#00AE42` green per ADR 004. All 76 tests, typing, build and real HA desktop/narrow checks pass. |
+| 1.8 | 2026-10-22 | Implement overview speed percentage from the installed integration's modifier. All 78 tests, typing/build and real HA desktop/narrow checks pass; no control or backend changes. |
+| 1.9 | 2026-10-23 | Apply soft-gradient/translucent surfaces, larger radii and diffuse shadows; label actual AMS/external-spool color groups. All 79 tests, types/build and real HA overview/detail/narrow checks pass. Presentation only. |

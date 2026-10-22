@@ -2,6 +2,7 @@
 
 ## Stage 2
 
+- [ ] Verify completion notification sound on the selected phone during a real print, including alarm volume, channel permissions and Do Not Disturb behavior. Configuration persistence is already verified without sending a notification.
 - [ ] Validate start/pause/resume/stop, light behavior and speed changes on physical hardware with an operator present.
 - [ ] Verify camera and capability rendering on models beyond A1 / AMS Lite.
 - [ ] Verify a clean HACS installation and publish an installable release after validation.

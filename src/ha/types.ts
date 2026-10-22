@@ -47,6 +47,7 @@ export interface HomeAssistant {
   language: string;
   connection: HassConnection;
   config?: { time_zone?: string };
+  user?: { is_admin: boolean };
   callWS<T>(message: Record<string, unknown>): Promise<T>;
   callService(domain: string, service: string, data?: Record<string, unknown>): Promise<unknown>;
   callApi<T>(method: string, path: string, parameters?: unknown): Promise<T>;

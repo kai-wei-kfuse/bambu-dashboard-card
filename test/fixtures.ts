@@ -83,7 +83,12 @@ export function fixtureHass(overrides: Partial<HomeAssistant> = {}): HomeAssista
   return {
     language: 'en', states: fixtureStates(), config: { time_zone: 'UTC' },
     connection: { subscribeEvents: async () => () => {} },
-    callWS: async <T>(message: Record<string, unknown>) => (message.type === 'config/device_registry/list' ? registry.devices : registry.entities) as T,
+    callWS: async <T>(message: Record<string, unknown>) => {
+      if (message.type === 'config/device_registry/list') return registry.devices as T;
+      if (message.type === 'config/entity_registry/list') return registry.entities as T;
+      if (message.type === 'get_services') return {} as T;
+      throw new Error(`Unconfigured test WebSocket request: ${String(message.type)}`);
+    },
     callService: async () => { throw new Error('Test fixture does not execute printer commands.'); },
     callApi: async () => { throw new Error('Test fixture has no HTTP API response configured.'); },
     fetchWithAuth: async () => { throw new Error('Test fixture has no binary response configured.'); },

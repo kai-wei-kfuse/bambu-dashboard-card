@@ -15,6 +15,7 @@ export interface AmsUnit {
 export interface Printer {
   id: string;
   name: string;
+  haName: string;
   model: string;
   serial?: string;
   device: DeviceEntry;
@@ -63,6 +64,13 @@ export function numeric(entity?: EntityBinding): number | null {
   if (value === null || value.trim() === '') return null;
   const number = Number(value);
   return Number.isFinite(number) ? number : null;
+}
+
+export function speedPercentage(printer: Printer): number | null {
+  const profile = findEntity(printer.entities, 'speed_profile');
+  if (!profile || scalar(profile) === null) return null;
+  const modifier = profile.state!.attributes.modifier;
+  return typeof modifier === 'number' && Number.isFinite(modifier) && modifier >= 0 ? modifier : null;
 }
 
 export function entityName(entity: EntityBinding): string {
@@ -123,10 +131,12 @@ export function discoverPrinters(snapshot: RegistrySnapshot, hass: HomeAssistant
         });
       const rawStatus = scalar(findEntity(entities, 'print_status'));
       const status = rawStatus?.toLowerCase() || findEntity(entities, 'print_status')?.state?.state || 'unknown';
+      const haName = device.name_by_user || device.name || device.model || 'Bambu Lab';
       return {
         id: device.id,
         device,
-        name: device.name_by_user || device.name || device.model || 'Bambu Lab',
+        name: scalar(findEntity(entities, 'printer_name'))?.trim() || haName,
+        haName,
         model: device.model || 'Unknown',
         serial: device.identifiers?.find(([platform]) => platform === 'bambu_lab')?.[1] || device.serial_number || undefined,
         entities,

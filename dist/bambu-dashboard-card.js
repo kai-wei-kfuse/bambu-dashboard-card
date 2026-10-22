@@ -29,7 +29,7 @@ var e = globalThis, t = e.ShadowRoot && (e.ShadyCSS === void 0 || e.ShadyCSS.nat
 	let t = "";
 	for (let n of e.cssRules) t += n.cssText;
 	return a(t);
-})(e) : e, { is: l, defineProperty: u, getOwnPropertyDescriptor: d, getOwnPropertyNames: f, getOwnPropertySymbols: p, getPrototypeOf: m } = Object, h = globalThis, g = h.trustedTypes, _ = g ? g.emptyScript : "", ee = h.reactiveElementPolyfillSupport, v = (e, t) => e, y = {
+})(e) : e, { is: l, defineProperty: u, getOwnPropertyDescriptor: d, getOwnPropertyNames: f, getOwnPropertySymbols: p, getPrototypeOf: m } = Object, h = globalThis, g = h.trustedTypes, _ = g ? g.emptyScript : "", ee = h.reactiveElementPolyfillSupport, v = (e, t) => e, te = {
 	toAttribute(e, t) {
 		switch (t) {
 			case Boolean:
@@ -58,23 +58,23 @@ var e = globalThis, t = e.ShadowRoot && (e.ShadyCSS === void 0 || e.ShadyCSS.nat
 		}
 		return n;
 	}
-}, te = (e, t) => !l(e, t), b = {
+}, ne = (e, t) => !l(e, t), re = {
 	attribute: !0,
 	type: String,
-	converter: y,
+	converter: te,
 	reflect: !1,
 	useDefault: !1,
-	hasChanged: te
+	hasChanged: ne
 };
 Symbol.metadata ??= Symbol("metadata"), h.litPropertyMetadata ??= /* @__PURE__ */ new WeakMap();
-var x = class extends HTMLElement {
+var y = class extends HTMLElement {
 	static addInitializer(e) {
 		this._$Ei(), (this.l ??= []).push(e);
 	}
 	static get observedAttributes() {
 		return this.finalize(), this._$Eh && [...this._$Eh.keys()];
 	}
-	static createProperty(e, t = b) {
+	static createProperty(e, t = re) {
 		if (t.state && (t.attribute = !1), this._$Ei(), this.prototype.hasOwnProperty(e) && ((t = Object.create(t)).wrapped = !0), this.elementProperties.set(e, t), !t.noAccessor) {
 			let n = Symbol(), r = this.getPropertyDescriptor(e, n, t);
 			r !== void 0 && u(this.prototype, e, r);
@@ -100,7 +100,7 @@ var x = class extends HTMLElement {
 		};
 	}
 	static getPropertyOptions(e) {
-		return this.elementProperties.get(e) ?? b;
+		return this.elementProperties.get(e) ?? re;
 	}
 	static _$Ei() {
 		if (this.hasOwnProperty(v("elementProperties"))) return;
@@ -171,14 +171,14 @@ var x = class extends HTMLElement {
 	_$ET(e, t) {
 		let n = this.constructor.elementProperties.get(e), r = this.constructor._$Eu(e, n);
 		if (r !== void 0 && !0 === n.reflect) {
-			let i = (n.converter?.toAttribute === void 0 ? y : n.converter).toAttribute(t, n.type);
+			let i = (n.converter?.toAttribute === void 0 ? te : n.converter).toAttribute(t, n.type);
 			this._$Em = e, i == null ? this.removeAttribute(r) : this.setAttribute(r, i), this._$Em = null;
 		}
 	}
 	_$AK(e, t) {
 		let n = this.constructor, r = n._$Eh.get(e);
 		if (r !== void 0 && this._$Em !== r) {
-			let e = n.getPropertyOptions(r), i = typeof e.converter == "function" ? { fromAttribute: e.converter } : e.converter?.fromAttribute === void 0 ? y : e.converter;
+			let e = n.getPropertyOptions(r), i = typeof e.converter == "function" ? { fromAttribute: e.converter } : e.converter?.fromAttribute === void 0 ? te : e.converter;
 			this._$Em = r;
 			let a = i.fromAttribute(t, e.type);
 			this[r] = a ?? this._$Ej?.get(r) ?? a, this._$Em = null;
@@ -187,7 +187,7 @@ var x = class extends HTMLElement {
 	requestUpdate(e, t, n, r = !1, i) {
 		if (e !== void 0) {
 			let a = this.constructor;
-			if (!1 === r && (i = this[e]), n ??= a.getPropertyOptions(e), !((n.hasChanged ?? te)(i, t) || n.useDefault && n.reflect && i === this._$Ej?.get(e) && !this.hasAttribute(a._$Eu(e, n)))) return;
+			if (!1 === r && (i = this[e]), n ??= a.getPropertyOptions(e), !((n.hasChanged ?? ne)(i, t) || n.useDefault && n.reflect && i === this._$Ej?.get(e) && !this.hasAttribute(a._$Eu(e, n)))) return;
 			this.C(e, t, n);
 		}
 		!1 === this.isUpdatePending && (this._$ES = this._$EP());
@@ -251,88 +251,88 @@ var x = class extends HTMLElement {
 	updated(e) {}
 	firstUpdated(e) {}
 };
-x.elementStyles = [], x.shadowRootOptions = { mode: "open" }, x[v("elementProperties")] = /* @__PURE__ */ new Map(), x[v("finalized")] = /* @__PURE__ */ new Map(), ee?.({ ReactiveElement: x }), (h.reactiveElementVersions ??= []).push("2.1.2");
+y.elementStyles = [], y.shadowRootOptions = { mode: "open" }, y[v("elementProperties")] = /* @__PURE__ */ new Map(), y[v("finalized")] = /* @__PURE__ */ new Map(), ee?.({ ReactiveElement: y }), (h.reactiveElementVersions ??= []).push("2.1.2");
 // node_modules/lit-html/lit-html.js
-var ne = globalThis, S = (e) => e, C = ne.trustedTypes, w = C ? C.createPolicy("lit-html", { createHTML: (e) => e }) : void 0, re = "$lit$", T = `lit$${Math.random().toFixed(9).slice(2)}$`, ie = "?" + T, ae = `<${ie}>`, E = document, D = () => E.createComment(""), O = (e) => e === null || typeof e != "object" && typeof e != "function", k = Array.isArray, oe = (e) => k(e) || typeof e?.[Symbol.iterator] == "function", se = "[ 	\n\f\r]", A = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, j = /-->/g, ce = />/g, M = RegExp(`>|${se}(?:([^\\s"'>=/]+)(${se}*=${se}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`, "g"), le = /'/g, ue = /"/g, de = /^(?:script|style|textarea|title)$/i, fe = (e) => (t, ...n) => ({
+var ie = globalThis, b = (e) => e, x = ie.trustedTypes, S = x ? x.createPolicy("lit-html", { createHTML: (e) => e }) : void 0, ae = "$lit$", C = `lit$${Math.random().toFixed(9).slice(2)}$`, oe = "?" + C, se = `<${oe}>`, w = document, T = () => w.createComment(""), E = (e) => e === null || typeof e != "object" && typeof e != "function", D = Array.isArray, ce = (e) => D(e) || typeof e?.[Symbol.iterator] == "function", le = "[ 	\n\f\r]", O = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, k = /-->/g, ue = />/g, A = RegExp(`>|${le}(?:([^\\s"'>=/]+)(${le}*=${le}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`, "g"), de = /'/g, fe = /"/g, pe = /^(?:script|style|textarea|title)$/i, me = (e) => (t, ...n) => ({
 	_$litType$: e,
 	strings: t,
 	values: n
-}), N = fe(1), pe = fe(2), P = Symbol.for("lit-noChange"), F = Symbol.for("lit-nothing"), me = /* @__PURE__ */ new WeakMap(), I = E.createTreeWalker(E, 129);
-function he(e, t) {
-	if (!k(e) || !e.hasOwnProperty("raw")) throw Error("invalid template strings array");
-	return w === void 0 ? t : w.createHTML(t);
+}), j = me(1), he = me(2), M = Symbol.for("lit-noChange"), N = Symbol.for("lit-nothing"), ge = /* @__PURE__ */ new WeakMap(), P = w.createTreeWalker(w, 129);
+function _e(e, t) {
+	if (!D(e) || !e.hasOwnProperty("raw")) throw Error("invalid template strings array");
+	return S === void 0 ? t : S.createHTML(t);
 }
-var ge = (e, t) => {
-	let n = e.length - 1, r = [], i, a = t === 2 ? "<svg>" : t === 3 ? "<math>" : "", o = A;
+var ve = (e, t) => {
+	let n = e.length - 1, r = [], i, a = t === 2 ? "<svg>" : t === 3 ? "<math>" : "", o = O;
 	for (let t = 0; t < n; t++) {
 		let n = e[t], s, c, l = -1, u = 0;
-		for (; u < n.length && (o.lastIndex = u, c = o.exec(n), c !== null);) u = o.lastIndex, o === A ? c[1] === "!--" ? o = j : c[1] === void 0 ? c[2] === void 0 ? c[3] !== void 0 && (o = M) : (de.test(c[2]) && (i = RegExp("</" + c[2], "g")), o = M) : o = ce : o === M ? c[0] === ">" ? (o = i ?? A, l = -1) : c[1] === void 0 ? l = -2 : (l = o.lastIndex - c[2].length, s = c[1], o = c[3] === void 0 ? M : c[3] === "\"" ? ue : le) : o === ue || o === le ? o = M : o === j || o === ce ? o = A : (o = M, i = void 0);
-		let d = o === M && e[t + 1].startsWith("/>") ? " " : "";
-		a += o === A ? n + ae : l >= 0 ? (r.push(s), n.slice(0, l) + re + n.slice(l) + T + d) : n + T + (l === -2 ? t : d);
+		for (; u < n.length && (o.lastIndex = u, c = o.exec(n), c !== null);) u = o.lastIndex, o === O ? c[1] === "!--" ? o = k : c[1] === void 0 ? c[2] === void 0 ? c[3] !== void 0 && (o = A) : (pe.test(c[2]) && (i = RegExp("</" + c[2], "g")), o = A) : o = ue : o === A ? c[0] === ">" ? (o = i ?? O, l = -1) : c[1] === void 0 ? l = -2 : (l = o.lastIndex - c[2].length, s = c[1], o = c[3] === void 0 ? A : c[3] === "\"" ? fe : de) : o === fe || o === de ? o = A : o === k || o === ue ? o = O : (o = A, i = void 0);
+		let d = o === A && e[t + 1].startsWith("/>") ? " " : "";
+		a += o === O ? n + se : l >= 0 ? (r.push(s), n.slice(0, l) + ae + n.slice(l) + C + d) : n + C + (l === -2 ? t : d);
 	}
-	return [he(e, a + (e[n] || "<?>") + (t === 2 ? "</svg>" : t === 3 ? "</math>" : "")), r];
-}, _e = class e {
+	return [_e(e, a + (e[n] || "<?>") + (t === 2 ? "</svg>" : t === 3 ? "</math>" : "")), r];
+}, ye = class e {
 	constructor({ strings: t, _$litType$: n }, r) {
 		let i;
 		this.parts = [];
-		let a = 0, o = 0, s = t.length - 1, c = this.parts, [l, u] = ge(t, n);
-		if (this.el = e.createElement(l, r), I.currentNode = this.el.content, n === 2 || n === 3) {
+		let a = 0, o = 0, s = t.length - 1, c = this.parts, [l, u] = ve(t, n);
+		if (this.el = e.createElement(l, r), P.currentNode = this.el.content, n === 2 || n === 3) {
 			let e = this.el.content.firstChild;
 			e.replaceWith(...e.childNodes);
 		}
-		for (; (i = I.nextNode()) !== null && c.length < s;) {
+		for (; (i = P.nextNode()) !== null && c.length < s;) {
 			if (i.nodeType === 1) {
-				if (i.hasAttributes()) for (let e of i.getAttributeNames()) if (e.endsWith(re)) {
-					let t = u[o++], n = i.getAttribute(e).split(T), r = /([.?@])?(.*)/.exec(t);
+				if (i.hasAttributes()) for (let e of i.getAttributeNames()) if (e.endsWith(ae)) {
+					let t = u[o++], n = i.getAttribute(e).split(C), r = /([.?@])?(.*)/.exec(t);
 					c.push({
 						type: 1,
 						index: a,
 						name: r[2],
 						strings: n,
-						ctor: r[1] === "." ? xe : r[1] === "?" ? Se : r[1] === "@" ? Ce : be
+						ctor: r[1] === "." ? Ce : r[1] === "?" ? we : r[1] === "@" ? Te : Se
 					}), i.removeAttribute(e);
-				} else e.startsWith(T) && (c.push({
+				} else e.startsWith(C) && (c.push({
 					type: 6,
 					index: a
 				}), i.removeAttribute(e));
-				if (de.test(i.tagName)) {
-					let e = i.textContent.split(T), t = e.length - 1;
+				if (pe.test(i.tagName)) {
+					let e = i.textContent.split(C), t = e.length - 1;
 					if (t > 0) {
-						i.textContent = C ? C.emptyScript : "";
-						for (let n = 0; n < t; n++) i.append(e[n], D()), I.nextNode(), c.push({
+						i.textContent = x ? x.emptyScript : "";
+						for (let n = 0; n < t; n++) i.append(e[n], T()), P.nextNode(), c.push({
 							type: 2,
 							index: ++a
 						});
-						i.append(e[t], D());
+						i.append(e[t], T());
 					}
 				}
 			} else if (i.nodeType === 8) {
-				if (i.data === ie) c.push({
+				if (i.data === oe) c.push({
 					type: 2,
 					index: a
 				});
 				else {
 					let e = -1;
-					for (; (e = i.data.indexOf(T, e + 1)) !== -1;) c.push({
+					for (; (e = i.data.indexOf(C, e + 1)) !== -1;) c.push({
 						type: 7,
 						index: a
-					}), e += T.length - 1;
+					}), e += C.length - 1;
 				}
 			}
 			a++;
 		}
 	}
 	static createElement(e, t) {
-		let n = E.createElement("template");
+		let n = w.createElement("template");
 		return n.innerHTML = e, n;
 	}
 };
-function L(e, t, n = e, r) {
-	if (t === P) return t;
-	let i = r === void 0 ? n._$Cl : n._$Co?.[r], a = O(t) ? void 0 : t._$litDirective$;
-	return i?.constructor !== a && (i?._$AO?.(!1), a === void 0 ? i = void 0 : (i = new a(e), i._$AT(e, n, r)), r === void 0 ? n._$Cl = i : (n._$Co ??= [])[r] = i), i !== void 0 && (t = L(e, i._$AS(e, t.values), i, r)), t;
+function F(e, t, n = e, r) {
+	if (t === M) return t;
+	let i = r === void 0 ? n._$Cl : n._$Co?.[r], a = E(t) ? void 0 : t._$litDirective$;
+	return i?.constructor !== a && (i?._$AO?.(!1), a === void 0 ? i = void 0 : (i = new a(e), i._$AT(e, n, r)), r === void 0 ? n._$Cl = i : (n._$Co ??= [])[r] = i), i !== void 0 && (t = F(e, i._$AS(e, t.values), i, r)), t;
 }
-var ve = class {
+var be = class {
 	constructor(e, t) {
 		this._$AV = [], this._$AN = void 0, this._$AD = e, this._$AM = t;
 	}
@@ -343,28 +343,28 @@ var ve = class {
 		return this._$AM._$AU;
 	}
 	u(e) {
-		let { el: { content: t }, parts: n } = this._$AD, r = (e?.creationScope ?? E).importNode(t, !0);
-		I.currentNode = r;
-		let i = I.nextNode(), a = 0, o = 0, s = n[0];
+		let { el: { content: t }, parts: n } = this._$AD, r = (e?.creationScope ?? w).importNode(t, !0);
+		P.currentNode = r;
+		let i = P.nextNode(), a = 0, o = 0, s = n[0];
 		for (; s !== void 0;) {
 			if (a === s.index) {
 				let t;
-				s.type === 2 ? t = new ye(i, i.nextSibling, this, e) : s.type === 1 ? t = new s.ctor(i, s.name, s.strings, this, e) : s.type === 6 && (t = new we(i, this, e)), this._$AV.push(t), s = n[++o];
+				s.type === 2 ? t = new xe(i, i.nextSibling, this, e) : s.type === 1 ? t = new s.ctor(i, s.name, s.strings, this, e) : s.type === 6 && (t = new Ee(i, this, e)), this._$AV.push(t), s = n[++o];
 			}
-			a !== s?.index && (i = I.nextNode(), a++);
+			a !== s?.index && (i = P.nextNode(), a++);
 		}
-		return I.currentNode = E, r;
+		return P.currentNode = w, r;
 	}
 	p(e) {
 		let t = 0;
 		for (let n of this._$AV) n !== void 0 && (n.strings === void 0 ? n._$AI(e[t]) : (n._$AI(e, n, t), t += n.strings.length - 2)), t++;
 	}
-}, ye = class e {
+}, xe = class e {
 	get _$AU() {
 		return this._$AM?._$AU ?? this._$Cv;
 	}
 	constructor(e, t, n, r) {
-		this.type = 2, this._$AH = F, this._$AN = void 0, this._$AA = e, this._$AB = t, this._$AM = n, this.options = r, this._$Cv = r?.isConnected ?? !0;
+		this.type = 2, this._$AH = N, this._$AN = void 0, this._$AA = e, this._$AB = t, this._$AM = n, this.options = r, this._$Cv = r?.isConnected ?? !0;
 	}
 	get parentNode() {
 		let e = this._$AA.parentNode, t = this._$AM;
@@ -377,7 +377,7 @@ var ve = class {
 		return this._$AB;
 	}
 	_$AI(e, t = this) {
-		e = L(this, e, t), O(e) ? e === F || e == null || e === "" ? (this._$AH !== F && this._$AR(), this._$AH = F) : e !== this._$AH && e !== P && this._(e) : e._$litType$ === void 0 ? e.nodeType === void 0 ? oe(e) ? this.k(e) : this._(e) : this.T(e) : this.$(e);
+		e = F(this, e, t), E(e) ? e === N || e == null || e === "" ? (this._$AH !== N && this._$AR(), this._$AH = N) : e !== this._$AH && e !== M && this._(e) : e._$litType$ === void 0 ? e.nodeType === void 0 ? ce(e) ? this.k(e) : this._(e) : this.T(e) : this.$(e);
 	}
 	O(e) {
 		return this._$AA.parentNode.insertBefore(e, this._$AB);
@@ -386,36 +386,36 @@ var ve = class {
 		this._$AH !== e && (this._$AR(), this._$AH = this.O(e));
 	}
 	_(e) {
-		this._$AH !== F && O(this._$AH) ? this._$AA.nextSibling.data = e : this.T(E.createTextNode(e)), this._$AH = e;
+		this._$AH !== N && E(this._$AH) ? this._$AA.nextSibling.data = e : this.T(w.createTextNode(e)), this._$AH = e;
 	}
 	$(e) {
-		let { values: t, _$litType$: n } = e, r = typeof n == "number" ? this._$AC(e) : (n.el === void 0 && (n.el = _e.createElement(he(n.h, n.h[0]), this.options)), n);
+		let { values: t, _$litType$: n } = e, r = typeof n == "number" ? this._$AC(e) : (n.el === void 0 && (n.el = ye.createElement(_e(n.h, n.h[0]), this.options)), n);
 		if (this._$AH?._$AD === r) this._$AH.p(t);
 		else {
-			let e = new ve(r, this), n = e.u(this.options);
+			let e = new be(r, this), n = e.u(this.options);
 			e.p(t), this.T(n), this._$AH = e;
 		}
 	}
 	_$AC(e) {
-		let t = me.get(e.strings);
-		return t === void 0 && me.set(e.strings, t = new _e(e)), t;
+		let t = ge.get(e.strings);
+		return t === void 0 && ge.set(e.strings, t = new ye(e)), t;
 	}
 	k(t) {
-		k(this._$AH) || (this._$AH = [], this._$AR());
+		D(this._$AH) || (this._$AH = [], this._$AR());
 		let n = this._$AH, r, i = 0;
-		for (let a of t) i === n.length ? n.push(r = new e(this.O(D()), this.O(D()), this, this.options)) : r = n[i], r._$AI(a), i++;
+		for (let a of t) i === n.length ? n.push(r = new e(this.O(T()), this.O(T()), this, this.options)) : r = n[i], r._$AI(a), i++;
 		i < n.length && (this._$AR(r && r._$AB.nextSibling, i), n.length = i);
 	}
 	_$AR(e = this._$AA.nextSibling, t) {
 		for (this._$AP?.(!1, !0, t); e !== this._$AB;) {
-			let t = S(e).nextSibling;
-			S(e).remove(), e = t;
+			let t = b(e).nextSibling;
+			b(e).remove(), e = t;
 		}
 	}
 	setConnected(e) {
 		this._$AM === void 0 && (this._$Cv = e, this._$AP?.(e));
 	}
-}, be = class {
+}, Se = class {
 	get tagName() {
 		return this.element.tagName;
 	}
@@ -423,47 +423,47 @@ var ve = class {
 		return this._$AM._$AU;
 	}
 	constructor(e, t, n, r, i) {
-		this.type = 1, this._$AH = F, this._$AN = void 0, this.element = e, this.name = t, this._$AM = r, this.options = i, n.length > 2 || n[0] !== "" || n[1] !== "" ? (this._$AH = Array(n.length - 1).fill(/* @__PURE__ */ new String()), this.strings = n) : this._$AH = F;
+		this.type = 1, this._$AH = N, this._$AN = void 0, this.element = e, this.name = t, this._$AM = r, this.options = i, n.length > 2 || n[0] !== "" || n[1] !== "" ? (this._$AH = Array(n.length - 1).fill(/* @__PURE__ */ new String()), this.strings = n) : this._$AH = N;
 	}
 	_$AI(e, t = this, n, r) {
 		let i = this.strings, a = !1;
-		if (i === void 0) e = L(this, e, t, 0), a = !O(e) || e !== this._$AH && e !== P, a && (this._$AH = e);
+		if (i === void 0) e = F(this, e, t, 0), a = !E(e) || e !== this._$AH && e !== M, a && (this._$AH = e);
 		else {
 			let r = e, o, s;
-			for (e = i[0], o = 0; o < i.length - 1; o++) s = L(this, r[n + o], t, o), s === P && (s = this._$AH[o]), a ||= !O(s) || s !== this._$AH[o], s === F ? e = F : e !== F && (e += (s ?? "") + i[o + 1]), this._$AH[o] = s;
+			for (e = i[0], o = 0; o < i.length - 1; o++) s = F(this, r[n + o], t, o), s === M && (s = this._$AH[o]), a ||= !E(s) || s !== this._$AH[o], s === N ? e = N : e !== N && (e += (s ?? "") + i[o + 1]), this._$AH[o] = s;
 		}
 		a && !r && this.j(e);
 	}
 	j(e) {
-		e === F ? this.element.removeAttribute(this.name) : this.element.setAttribute(this.name, e ?? "");
+		e === N ? this.element.removeAttribute(this.name) : this.element.setAttribute(this.name, e ?? "");
 	}
-}, xe = class extends be {
+}, Ce = class extends Se {
 	constructor() {
 		super(...arguments), this.type = 3;
 	}
 	j(e) {
-		this.element[this.name] = e === F ? void 0 : e;
+		this.element[this.name] = e === N ? void 0 : e;
 	}
-}, Se = class extends be {
+}, we = class extends Se {
 	constructor() {
 		super(...arguments), this.type = 4;
 	}
 	j(e) {
-		this.element.toggleAttribute(this.name, !!e && e !== F);
+		this.element.toggleAttribute(this.name, !!e && e !== N);
 	}
-}, Ce = class extends be {
+}, Te = class extends Se {
 	constructor(e, t, n, r, i) {
 		super(e, t, n, r, i), this.type = 5;
 	}
 	_$AI(e, t = this) {
-		if ((e = L(this, e, t, 0) ?? F) === P) return;
-		let n = this._$AH, r = e === F && n !== F || e.capture !== n.capture || e.once !== n.once || e.passive !== n.passive, i = e !== F && (n === F || r);
+		if ((e = F(this, e, t, 0) ?? N) === M) return;
+		let n = this._$AH, r = e === N && n !== N || e.capture !== n.capture || e.once !== n.once || e.passive !== n.passive, i = e !== N && (n === N || r);
 		r && this.element.removeEventListener(this.name, this, n), i && this.element.addEventListener(this.name, this, e), this._$AH = e;
 	}
 	handleEvent(e) {
 		typeof this._$AH == "function" ? this._$AH.call(this.options?.host ?? this.element, e) : this._$AH.handleEvent(e);
 	}
-}, we = class {
+}, Ee = class {
 	constructor(e, t, n) {
 		this.element = e, this.type = 6, this._$AN = void 0, this._$AM = t, this.options = n;
 	}
@@ -471,33 +471,33 @@ var ve = class {
 		return this._$AM._$AU;
 	}
 	_$AI(e) {
-		L(this, e);
+		F(this, e);
 	}
-}, Te = {
-	M: re,
-	P: T,
-	A: ie,
+}, De = {
+	M: ae,
+	P: C,
+	A: oe,
 	C: 1,
-	L: ge,
-	R: ve,
-	D: oe,
-	V: L,
-	I: ye,
-	H: be,
-	N: Se,
-	U: Ce,
-	B: xe,
-	F: we
-}, Ee = ne.litHtmlPolyfillSupport;
-Ee?.(_e, ye), (ne.litHtmlVersions ??= []).push("3.3.3");
-var De = (e, t, n) => {
+	L: ve,
+	R: be,
+	D: ce,
+	V: F,
+	I: xe,
+	H: Se,
+	N: we,
+	U: Te,
+	B: Ce,
+	F: Ee
+}, Oe = ie.litHtmlPolyfillSupport;
+Oe?.(ye, xe), (ie.litHtmlVersions ??= []).push("3.3.3");
+var ke = (e, t, n) => {
 	let r = n?.renderBefore ?? t, i = r._$litPart$;
 	if (i === void 0) {
 		let e = n?.renderBefore ?? null;
-		r._$litPart$ = i = new ye(t.insertBefore(D(), e), e, void 0, n ?? {});
+		r._$litPart$ = i = new xe(t.insertBefore(T(), e), e, void 0, n ?? {});
 	}
 	return i._$AI(e), i;
-}, Oe = globalThis, R = class extends x {
+}, Ae = globalThis, I = class extends y {
 	constructor() {
 		super(...arguments), this.renderOptions = { host: this }, this._$Do = void 0;
 	}
@@ -507,7 +507,7 @@ var De = (e, t, n) => {
 	}
 	update(e) {
 		let t = this.render();
-		this.hasUpdated || (this.renderOptions.isConnected = this.isConnected), super.update(e), this._$Do = De(t, this.renderRoot, this.renderOptions);
+		this.hasUpdated || (this.renderOptions.isConnected = this.isConnected), super.update(e), this._$Do = ke(t, this.renderRoot, this.renderOptions);
 	}
 	connectedCallback() {
 		super.connectedCallback(), this._$Do?.setConnected(!0);
@@ -516,24 +516,24 @@ var De = (e, t, n) => {
 		super.disconnectedCallback(), this._$Do?.setConnected(!1);
 	}
 	render() {
-		return P;
+		return M;
 	}
 };
-R._$litElement$ = !0, R.finalized = !0, Oe.litElementHydrateSupport?.({ LitElement: R });
-var ke = Oe.litElementPolyfillSupport;
-ke?.({ LitElement: R }), (Oe.litElementVersions ??= []).push("4.2.2");
+I._$litElement$ = !0, I.finalized = !0, Ae.litElementHydrateSupport?.({ LitElement: I });
+var je = Ae.litElementPolyfillSupport;
+je?.({ LitElement: I }), (Ae.litElementVersions ??= []).push("4.2.2");
 // node_modules/lit-html/directive.js
-var Ae = {
+var Me = {
 	ATTRIBUTE: 1,
 	CHILD: 2,
 	PROPERTY: 3,
 	BOOLEAN_ATTRIBUTE: 4,
 	EVENT: 5,
 	ELEMENT: 6
-}, je = (e) => (...t) => ({
+}, Ne = (e) => (...t) => ({
 	_$litDirective$: e,
 	values: t
-}), Me = class {
+}), Pe = class {
 	constructor(e) {}
 	get _$AU() {
 		return this._$AM._$AU;
@@ -547,9 +547,9 @@ var Ae = {
 	update(e, t) {
 		return this.render(...t);
 	}
-}, { I: Ne } = Te, Pe = (e) => e, Fe = () => document.createComment(""), Ie = (e, t, n) => {
+}, { I: Fe } = De, Ie = (e) => e, Le = () => document.createComment(""), Re = (e, t, n) => {
 	let r = e._$AA.parentNode, i = t === void 0 ? e._$AB : t._$AA;
-	if (n === void 0) n = new Ne(r.insertBefore(Fe(), i), r.insertBefore(Fe(), i), e, e.options);
+	if (n === void 0) n = new Fe(r.insertBefore(Le(), i), r.insertBefore(Le(), i), e, e.options);
 	else {
 		let t = n._$AB.nextSibling, a = n._$AM, o = a !== e;
 		if (o) {
@@ -559,21 +559,21 @@ var Ae = {
 		if (t !== i || o) {
 			let e = n._$AA;
 			for (; e !== t;) {
-				let t = Pe(e).nextSibling;
-				Pe(r).insertBefore(e, i), e = t;
+				let t = Ie(e).nextSibling;
+				Ie(r).insertBefore(e, i), e = t;
 			}
 		}
 	}
 	return n;
-}, z = (e, t, n = e) => (e._$AI(t, n), e), Le = {}, Re = (e, t = Le) => e._$AH = t, ze = (e) => e._$AH, Be = (e) => {
+}, L = (e, t, n = e) => (e._$AI(t, n), e), ze = {}, Be = (e, t = ze) => e._$AH = t, Ve = (e) => e._$AH, He = (e) => {
 	e._$AR(), e._$AA.remove();
-}, Ve = (e, t, n) => {
+}, Ue = (e, t, n) => {
 	let r = /* @__PURE__ */ new Map();
 	for (let i = t; i <= n; i++) r.set(e[i], i);
 	return r;
-}, He = je(class extends Me {
+}, We = Ne(class extends Pe {
 	constructor(e) {
-		if (super(e), e.type !== Ae.CHILD) throw Error("repeat() can only be used in text expressions");
+		if (super(e), e.type !== Me.CHILD) throw Error("repeat() can only be used in text expressions");
 	}
 	dt(e, t, n) {
 		let r;
@@ -589,36 +589,36 @@ var Ae = {
 		return this.dt(e, t, n).values;
 	}
 	update(e, [t, n, r]) {
-		let i = ze(e), { values: a, keys: o } = this.dt(t, n, r);
+		let i = Ve(e), { values: a, keys: o } = this.dt(t, n, r);
 		if (!Array.isArray(i)) return this.ut = o, a;
 		let s = this.ut ??= [], c = [], l, u, d = 0, f = i.length - 1, p = 0, m = a.length - 1;
 		for (; d <= f && p <= m;) if (i[d] === null) d++;
 		else if (i[f] === null) f--;
-		else if (s[d] === o[p]) c[p] = z(i[d], a[p]), d++, p++;
-		else if (s[f] === o[m]) c[m] = z(i[f], a[m]), f--, m--;
-		else if (s[d] === o[m]) c[m] = z(i[d], a[m]), Ie(e, c[m + 1], i[d]), d++, m--;
-		else if (s[f] === o[p]) c[p] = z(i[f], a[p]), Ie(e, i[d], i[f]), f--, p++;
-		else if (l === void 0 && (l = Ve(o, p, m), u = Ve(s, d, f)), l.has(s[d])) {
+		else if (s[d] === o[p]) c[p] = L(i[d], a[p]), d++, p++;
+		else if (s[f] === o[m]) c[m] = L(i[f], a[m]), f--, m--;
+		else if (s[d] === o[m]) c[m] = L(i[d], a[m]), Re(e, c[m + 1], i[d]), d++, m--;
+		else if (s[f] === o[p]) c[p] = L(i[f], a[p]), Re(e, i[d], i[f]), f--, p++;
+		else if (l === void 0 && (l = Ue(o, p, m), u = Ue(s, d, f)), l.has(s[d])) {
 			if (l.has(s[f])) {
 				let t = u.get(o[p]), n = t === void 0 ? null : i[t];
 				if (n === null) {
-					let t = Ie(e, i[d]);
-					z(t, a[p]), c[p] = t;
-				} else c[p] = z(n, a[p]), Ie(e, i[d], n), i[t] = null;
+					let t = Re(e, i[d]);
+					L(t, a[p]), c[p] = t;
+				} else c[p] = L(n, a[p]), Re(e, i[d], n), i[t] = null;
 				p++;
-			} else Be(i[f]), f--;
-		} else Be(i[d]), d++;
+			} else He(i[f]), f--;
+		} else He(i[d]), d++;
 		for (; p <= m;) {
-			let t = Ie(e, c[m + 1]);
-			z(t, a[p]), c[p++] = t;
+			let t = Re(e, c[m + 1]);
+			L(t, a[p]), c[p++] = t;
 		}
 		for (; d <= f;) {
 			let e = i[d++];
-			e !== null && Be(e);
+			e !== null && He(e);
 		}
-		return this.ut = o, Re(e, c), P;
+		return this.ut = o, Be(e, c), M;
 	}
-}), Ue = class {
+}), Ge = class {
 	constructor(e) {
 		this.listeners = /* @__PURE__ */ new Set(), this.subscriptions = [], this.generation = 0, this.requestSequence = 0, this.state = { loading: !0 }, this.hass = e;
 	}
@@ -650,7 +650,7 @@ var Ae = {
 			e === this.generation && this.emit({
 				...this.state,
 				loading: !1,
-				error: B(t)
+				error: R(t)
 			});
 		}
 	}
@@ -675,53 +675,59 @@ var Ae = {
 			e === this.generation && t === this.requestSequence && this.emit({
 				...this.state,
 				loading: !1,
-				error: B(n)
+				error: R(n)
 			});
 		}
 	}
-}, We = /* @__PURE__ */ new WeakMap();
-function Ge(e) {
-	let t = We.get(e.connection);
-	return t || (t = new Ue(e), We.set(e.connection, t)), t.updateHass(e), t;
+}, Ke = /* @__PURE__ */ new WeakMap();
+function qe(e) {
+	let t = Ke.get(e.connection);
+	return t || (t = new Ge(e), Ke.set(e.connection, t)), t.updateHass(e), t;
 }
-function B(e) {
+function R(e) {
 	return e instanceof Error ? e : typeof e == "object" && e && "message" in e ? Error(String(e.message)) : Error(String(e));
 }
 // src/domain/printers.ts
-function Ke(e) {
+function Je(e) {
 	return e.split(".")[0];
 }
-function qe(e, t) {
+function Ye(e, t) {
 	if (e.translation_key === t) return !0;
 	let n = e.unique_id?.toLowerCase();
 	return t === "printing_speed" ? n?.endsWith("_speed") === !0 : n?.endsWith(`_${t.toLowerCase()}`) === !0;
 }
-function V(e, t, n = "sensor") {
-	return e.find(({ entry: e }) => !e.disabled_by && Ke(e.entity_id) === n && qe(e, t));
+function z(e, t, n = "sensor") {
+	return e.find(({ entry: e }) => !e.disabled_by && Je(e.entity_id) === n && Ye(e, t));
 }
-function H(e) {
+function B(e) {
 	return !(!e?.state || e.entry.disabled_by || e.state.state === "unavailable");
 }
-function U(e) {
+function V(e) {
 	let t = e?.state?.state;
 	return t === void 0 || t === "unknown" || t === "unavailable" ? null : t;
 }
-function Je(e) {
-	let t = U(e);
+function Xe(e) {
+	let t = V(e);
 	if (t === null || t.trim() === "") return null;
 	let n = Number(t);
 	return Number.isFinite(n) ? n : null;
 }
-function Ye(e) {
+function Ze(e) {
+	let t = z(e.entities, "speed_profile");
+	if (!t || V(t) === null) return null;
+	let n = t.state.attributes.modifier;
+	return typeof n == "number" && Number.isFinite(n) && n >= 0 ? n : null;
+}
+function Qe(e) {
 	return e.entry.name || e.entry.original_name || String(e.state?.attributes.friendly_name || e.entry.translation_key || e.entry.entity_id);
 }
-function Xe(e) {
+function $e(e) {
 	let t = e.entry.unique_id?.match(/_tray_(\d+)$/i);
 	if (t) return Number(t[1]);
 	let n = e.state?.attributes.slot;
 	return typeof n == "number" && Number.isInteger(n) ? n + 1 : void 0;
 }
-function Ze(e, t) {
+function et(e, t) {
 	let n = [e], r = /* @__PURE__ */ new Set([e]), i = [];
 	for (; n.length;) {
 		let e = n.shift();
@@ -729,7 +735,7 @@ function Ze(e, t) {
 	}
 	return i;
 }
-function Qe(e, t, n) {
+function tt(e, t, n) {
 	let r = /* @__PURE__ */ new Map();
 	for (let n of e.entities) {
 		if (n.platform !== "bambu_lab" || !n.device_id) continue;
@@ -740,14 +746,14 @@ function Qe(e, t, n) {
 		}), r.set(n.device_id, e);
 	}
 	let i = n.devices || [];
-	return e.devices.filter((e) => !e.disabled_by && V(r.get(e.id) || [], "print_status")).filter((e) => n.discovery !== "selected" || i.includes(e.id)).map((t) => {
-		let n = r.get(t.id) || [], i = Ze(t.id, e.devices), a = i.filter((e) => /ams|external spool/i.test(e.model || "")).map((e) => {
-			let t = r.get(e.id) || [], n = /external spool/i.test(e.model || ""), i = t.filter(({ entry: e }) => Ke(e.entity_id) === "sensor").map((e) => ({
+	return e.devices.filter((e) => !e.disabled_by && z(r.get(e.id) || [], "print_status")).filter((e) => n.discovery !== "selected" || i.includes(e.id)).map((t) => {
+		let n = r.get(t.id) || [], i = et(t.id, e.devices), a = i.filter((e) => /ams|external spool/i.test(e.model || "")).map((e) => {
+			let t = r.get(e.id) || [], n = /external spool/i.test(e.model || ""), i = t.filter(({ entry: e }) => Je(e.entity_id) === "sensor").map((e) => ({
 				entity: e,
-				index: Xe(e)
+				index: $e(e)
 			})).filter((e) => e.index !== void 0).sort((e, t) => e.index - t.index);
 			if (n) {
-				let e = t.find(({ entry: e }) => Ke(e.entity_id) === "sensor");
+				let e = t.find(({ entry: e }) => Je(e.entity_id) === "sensor");
 				e && i.push({
 					index: 1,
 					entity: e
@@ -759,26 +765,27 @@ function Qe(e, t, n) {
 				slots: i,
 				external: n
 			};
-		}), o = U(V(n, "print_status"))?.toLowerCase() || V(n, "print_status")?.state?.state || "unknown";
+		}), o = V(z(n, "print_status"))?.toLowerCase() || z(n, "print_status")?.state?.state || "unknown", s = t.name_by_user || t.name || t.model || "Bambu Lab";
 		return {
 			id: t.id,
 			device: t,
-			name: t.name_by_user || t.name || t.model || "Bambu Lab",
+			name: V(z(n, "printer_name"))?.trim() || s,
+			haName: s,
 			model: t.model || "Unknown",
 			serial: t.identifiers?.find(([e]) => e === "bambu_lab")?.[1] || t.serial_number || void 0,
 			entities: n,
 			allEntities: [...n, ...i.flatMap((e) => r.get(e.id) || [])],
 			ams: a,
 			status: o,
-			stage: V(n, "stage"),
-			progress: Je(V(n, "print_progress")),
-			camera: V(n, "camera", "camera"),
-			light: V(n, "chamber_light", "light") || V(n, "camera_light", "light"),
-			speed: V(n, "printing_speed", "select"),
-			cover: V(n, "cover_image", "image"),
-			pause: V(n, "pause", "button"),
-			resume: V(n, "resume", "button"),
-			stop: V(n, "stop", "button")
+			stage: z(n, "stage"),
+			progress: Xe(z(n, "print_progress")),
+			camera: z(n, "camera", "camera"),
+			light: z(n, "chamber_light", "light") || z(n, "camera_light", "light"),
+			speed: z(n, "printing_speed", "select"),
+			cover: z(n, "cover_image", "image"),
+			pause: z(n, "pause", "button"),
+			resume: z(n, "resume", "button"),
+			stop: z(n, "stop", "button")
 		};
 	}).sort((e, t) => {
 		if (i.length) {
@@ -788,7 +795,7 @@ function Qe(e, t, n) {
 		return e.name.localeCompare(t.name);
 	});
 }
-function W(e) {
+function H(e) {
 	return [
 		"idle",
 		"finish",
@@ -796,24 +803,24 @@ function W(e) {
 		"failed"
 	].includes(e.status);
 }
-function $e(e) {
-	return Object.fromEntries(Object.entries(e.state?.attributes || {}).filter(([e]) => !et(e)).map(([e, t]) => [e, tt(t)]));
-}
-function et(e) {
-	return /token|password|secret|credential|authorization|api_key/i.test(e);
-}
-function tt(e) {
-	return Array.isArray(e) ? e.map(tt) : typeof e == "object" && e ? Object.fromEntries(Object.entries(e).filter(([e]) => !et(e)).map(([e, t]) => [e, tt(t)])) : typeof e == "string" && /^(https?:\/\/|\/)/i.test(e) ? e.replace(/([?&](?:[^=&]*(?:token|password|secret|credential|authorization|api_key)[^=&]*)=)[^&#]*/gi, "$1[redacted]") : e;
-}
 function nt(e) {
-	return typeof e == "string" && /^#[\da-f]{6}([\da-f]{2})?$/i.test(e) ? e : void 0;
+	return Object.fromEntries(Object.entries(e.state?.attributes || {}).filter(([e]) => !rt(e)).map(([e, t]) => [e, it(t)]));
 }
 function rt(e) {
+	return /token|password|secret|credential|authorization|api_key/i.test(e);
+}
+function it(e) {
+	return Array.isArray(e) ? e.map(it) : typeof e == "object" && e ? Object.fromEntries(Object.entries(e).filter(([e]) => !rt(e)).map(([e, t]) => [e, it(t)])) : typeof e == "string" && /^(https?:\/\/|\/)/i.test(e) ? e.replace(/([?&](?:[^=&]*(?:token|password|secret|credential|authorization|api_key)[^=&]*)=)[^&#]*/gi, "$1[redacted]") : e;
+}
+function at(e) {
+	return typeof e == "string" && /^#[\da-f]{6}([\da-f]{2})?$/i.test(e) ? e : void 0;
+}
+function ot(e) {
 	let t = e.state?.attributes;
 	return !t?.remain_enabled || typeof t.remain != "number" ? null : t.remain >= 0 && t.remain <= 100 ? t.remain : null;
 }
 // node_modules/fflate/esm/browser.js
-var G = Uint8Array, K = Uint16Array, it = Int32Array, at = new G([
+var U = Uint8Array, W = Uint16Array, st = Int32Array, ct = new U([
 	0,
 	0,
 	0,
@@ -846,7 +853,7 @@ var G = Uint8Array, K = Uint16Array, it = Int32Array, at = new G([
 	0,
 	0,
 	0
-]), ot = new G([
+]), lt = new U([
 	0,
 	0,
 	0,
@@ -879,7 +886,7 @@ var G = Uint8Array, K = Uint16Array, it = Int32Array, at = new G([
 	13,
 	0,
 	0
-]), st = new G([
+]), ut = new U([
 	16,
 	17,
 	18,
@@ -899,51 +906,51 @@ var G = Uint8Array, K = Uint16Array, it = Int32Array, at = new G([
 	14,
 	1,
 	15
-]), ct = function(e, t) {
-	for (var n = new K(31), r = 0; r < 31; ++r) n[r] = t += 1 << e[r - 1];
-	for (var i = new it(n[30]), r = 1; r < 30; ++r) for (var a = n[r]; a < n[r + 1]; ++a) i[a] = a - n[r] << 5 | r;
+]), dt = function(e, t) {
+	for (var n = new W(31), r = 0; r < 31; ++r) n[r] = t += 1 << e[r - 1];
+	for (var i = new st(n[30]), r = 1; r < 30; ++r) for (var a = n[r]; a < n[r + 1]; ++a) i[a] = a - n[r] << 5 | r;
 	return {
 		b: n,
 		r: i
 	};
-}, lt = ct(at, 2), ut = lt.b, dt = lt.r;
-ut[28] = 258, dt[258] = 28;
-var ft = ct(ot, 0), pt = ft.b;
-ft.r;
-for (var mt = new K(32768), q = 0; q < 32768; ++q) {
-	var J = (q & 43690) >> 1 | (q & 21845) << 1;
-	J = (J & 52428) >> 2 | (J & 13107) << 2, J = (J & 61680) >> 4 | (J & 3855) << 4, mt[q] = ((J & 65280) >> 8 | (J & 255) << 8) >> 1;
+}, ft = dt(ct, 2), pt = ft.b, mt = ft.r;
+pt[28] = 258, mt[258] = 28;
+var ht = dt(lt, 0), gt = ht.b;
+ht.r;
+for (var _t = new W(32768), G = 0; G < 32768; ++G) {
+	var K = (G & 43690) >> 1 | (G & 21845) << 1;
+	K = (K & 52428) >> 2 | (K & 13107) << 2, K = (K & 61680) >> 4 | (K & 3855) << 4, _t[G] = ((K & 65280) >> 8 | (K & 255) << 8) >> 1;
 }
-for (var ht = (function(e, t, n) {
-	for (var r = e.length, i = 0, a = new K(t); i < r; ++i) e[i] && ++a[e[i] - 1];
-	var o = new K(t);
+for (var vt = (function(e, t, n) {
+	for (var r = e.length, i = 0, a = new W(t); i < r; ++i) e[i] && ++a[e[i] - 1];
+	var o = new W(t);
 	for (i = 1; i < t; ++i) o[i] = o[i - 1] + a[i - 1] << 1;
 	var s;
 	if (n) {
-		s = new K(1 << t);
+		s = new W(1 << t);
 		var c = 15 - t;
-		for (i = 0; i < r; ++i) if (e[i]) for (var l = i << 4 | e[i], u = t - e[i], d = o[e[i] - 1]++ << u, f = d | (1 << u) - 1; d <= f; ++d) s[mt[d] >> c] = l;
-	} else for (s = new K(r), i = 0; i < r; ++i) e[i] && (s[i] = mt[o[e[i] - 1]++] >> 15 - e[i]);
+		for (i = 0; i < r; ++i) if (e[i]) for (var l = i << 4 | e[i], u = t - e[i], d = o[e[i] - 1]++ << u, f = d | (1 << u) - 1; d <= f; ++d) s[_t[d] >> c] = l;
+	} else for (s = new W(r), i = 0; i < r; ++i) e[i] && (s[i] = _t[o[e[i] - 1]++] >> 15 - e[i]);
 	return s;
-}), gt = new G(288), q = 0; q < 144; ++q) gt[q] = 8;
-for (var q = 144; q < 256; ++q) gt[q] = 9;
-for (var q = 256; q < 280; ++q) gt[q] = 7;
-for (var q = 280; q < 288; ++q) gt[q] = 8;
-for (var _t = new G(32), q = 0; q < 32; ++q) _t[q] = 5;
-var vt = /*#__PURE__*/ ht(gt, 9, 1), yt = /*#__PURE__*/ ht(_t, 5, 1), bt = function(e) {
+}), yt = new U(288), G = 0; G < 144; ++G) yt[G] = 8;
+for (var G = 144; G < 256; ++G) yt[G] = 9;
+for (var G = 256; G < 280; ++G) yt[G] = 7;
+for (var G = 280; G < 288; ++G) yt[G] = 8;
+for (var bt = new U(32), G = 0; G < 32; ++G) bt[G] = 5;
+var xt = /*#__PURE__*/ vt(yt, 9, 1), St = /*#__PURE__*/ vt(bt, 5, 1), Ct = function(e) {
 	for (var t = e[0], n = 1; n < e.length; ++n) e[n] > t && (t = e[n]);
 	return t;
-}, Y = function(e, t, n) {
+}, q = function(e, t, n) {
 	var r = t / 8 | 0;
 	return (e[r] | e[r + 1] << 8) >> (t & 7) & n;
-}, xt = function(e, t) {
+}, wt = function(e, t) {
 	var n = t / 8 | 0;
 	return (e[n] | e[n + 1] << 8 | e[n + 2] << 16) >> (t & 7);
-}, St = function(e) {
+}, Tt = function(e) {
 	return (e + 7) / 8 | 0;
-}, Ct = function(e, t, n) {
-	return (t == null || t < 0) && (t = 0), (n == null || n > e.length) && (n = e.length), new G(e.subarray(t, n));
-}, wt = [
+}, Et = function(e, t, n) {
+	return (t == null || t < 0) && (t = 0), (n == null || n > e.length) && (n = e.length), new U(e.subarray(t, n));
+}, Dt = [
 	"unexpected EOF",
 	"invalid block type",
 	"invalid length/literal",
@@ -958,154 +965,154 @@ var vt = /*#__PURE__*/ ht(gt, 9, 1), yt = /*#__PURE__*/ ht(_t, 5, 1), bt = funct
 	"filename too long",
 	"stream finishing",
 	"invalid zip data"
-], X = function(e, t, n) {
-	var r = Error(t || wt[e]);
-	if (r.code = e, Error.captureStackTrace && Error.captureStackTrace(r, X), !n) throw r;
+], J = function(e, t, n) {
+	var r = Error(t || Dt[e]);
+	if (r.code = e, Error.captureStackTrace && Error.captureStackTrace(r, J), !n) throw r;
 	return r;
-}, Tt = function(e, t, n, r) {
+}, Ot = function(e, t, n, r) {
 	var i = e.length, a = r ? r.length : 0;
-	if (!i || t.f && !t.l) return n || new G(0);
+	if (!i || t.f && !t.l) return n || new U(0);
 	var o = !n, s = o || t.i != 2, c = t.i;
-	o && (n = new G(i * 3));
+	o && (n = new U(i * 3));
 	var l = function(e) {
 		var t = n.length;
 		if (e > t) {
-			var r = new G(Math.max(t * 2, e));
+			var r = new U(Math.max(t * 2, e));
 			r.set(n), n = r;
 		}
 	}, u = t.f || 0, d = t.p || 0, f = t.b || 0, p = t.l, m = t.d, h = t.m, g = t.n, _ = i * 8;
 	do {
 		if (!p) {
-			u = Y(e, d, 1);
-			var ee = Y(e, d + 1, 3);
+			u = q(e, d, 1);
+			var ee = q(e, d + 1, 3);
 			if (d += 3, !ee) {
-				var v = St(d) + 4, y = e[v - 4] | e[v - 3] << 8, te = v + y;
-				if (te > i) {
-					c && X(0);
+				var v = Tt(d) + 4, te = e[v - 4] | e[v - 3] << 8, ne = v + te;
+				if (ne > i) {
+					c && J(0);
 					break;
 				}
-				s && l(f + y), n.set(e.subarray(v, te), f), t.b = f += y, t.p = d = te * 8, t.f = u;
+				s && l(f + te), n.set(e.subarray(v, ne), f), t.b = f += te, t.p = d = ne * 8, t.f = u;
 				continue;
 			}
-			if (ee == 1) p = vt, m = yt, h = 9, g = 5;
+			if (ee == 1) p = xt, m = St, h = 9, g = 5;
 			else if (ee == 2) {
-				var b = Y(e, d, 31) + 257, x = Y(e, d + 10, 15) + 4, ne = b + Y(e, d + 5, 31) + 1;
+				var re = q(e, d, 31) + 257, y = q(e, d + 10, 15) + 4, ie = re + q(e, d + 5, 31) + 1;
 				d += 14;
-				for (var S = new G(ne), C = new G(19), w = 0; w < x; ++w) C[st[w]] = Y(e, d + w * 3, 7);
-				d += x * 3;
-				for (var re = bt(C), T = (1 << re) - 1, ie = ht(C, re, 1), w = 0; w < ne;) {
-					var ae = ie[Y(e, d, T)];
-					d += ae & 15;
-					var v = ae >> 4;
-					if (v < 16) S[w++] = v;
+				for (var b = new U(ie), x = new U(19), S = 0; S < y; ++S) x[ut[S]] = q(e, d + S * 3, 7);
+				d += y * 3;
+				for (var ae = Ct(x), C = (1 << ae) - 1, oe = vt(x, ae, 1), S = 0; S < ie;) {
+					var se = oe[q(e, d, C)];
+					d += se & 15;
+					var v = se >> 4;
+					if (v < 16) b[S++] = v;
 					else {
-						var E = 0, D = 0;
-						for (v == 16 ? (D = 3 + Y(e, d, 3), d += 2, E = S[w - 1]) : v == 17 ? (D = 3 + Y(e, d, 7), d += 3) : v == 18 && (D = 11 + Y(e, d, 127), d += 7); D--;) S[w++] = E;
+						var w = 0, T = 0;
+						for (v == 16 ? (T = 3 + q(e, d, 3), d += 2, w = b[S - 1]) : v == 17 ? (T = 3 + q(e, d, 7), d += 3) : v == 18 && (T = 11 + q(e, d, 127), d += 7); T--;) b[S++] = w;
 					}
 				}
-				var O = S.subarray(0, b), k = S.subarray(b);
-				h = bt(O), g = bt(k), p = ht(O, h, 1), m = ht(k, g, 1);
-			} else X(1);
+				var E = b.subarray(0, re), D = b.subarray(re);
+				h = Ct(E), g = Ct(D), p = vt(E, h, 1), m = vt(D, g, 1);
+			} else J(1);
 			if (d > _) {
-				c && X(0);
+				c && J(0);
 				break;
 			}
 		}
 		s && l(f + 131072);
-		for (var oe = (1 << h) - 1, se = (1 << g) - 1, A = d;; A = d) {
-			var E = p[xt(e, d) & oe], j = E >> 4;
-			if (d += E & 15, d > _) {
-				c && X(0);
+		for (var ce = (1 << h) - 1, le = (1 << g) - 1, O = d;; O = d) {
+			var w = p[wt(e, d) & ce], k = w >> 4;
+			if (d += w & 15, d > _) {
+				c && J(0);
 				break;
 			}
-			if (E || X(2), j < 256) n[f++] = j;
-			else if (j == 256) {
-				A = d, p = null;
+			if (w || J(2), k < 256) n[f++] = k;
+			else if (k == 256) {
+				O = d, p = null;
 				break;
 			} else {
-				var ce = j - 254;
-				if (j > 264) {
-					var w = j - 257, M = at[w];
-					ce = Y(e, d, (1 << M) - 1) + ut[w], d += M;
+				var ue = k - 254;
+				if (k > 264) {
+					var S = k - 257, A = ct[S];
+					ue = q(e, d, (1 << A) - 1) + pt[S], d += A;
 				}
-				var le = m[xt(e, d) & se], ue = le >> 4;
-				le || X(3), d += le & 15;
-				var k = pt[ue];
-				if (ue > 3) {
-					var M = ot[ue];
-					k += xt(e, d) & (1 << M) - 1, d += M;
+				var de = m[wt(e, d) & le], fe = de >> 4;
+				de || J(3), d += de & 15;
+				var D = gt[fe];
+				if (fe > 3) {
+					var A = lt[fe];
+					D += wt(e, d) & (1 << A) - 1, d += A;
 				}
 				if (d > _) {
-					c && X(0);
+					c && J(0);
 					break;
 				}
 				s && l(f + 131072);
-				var de = f + ce;
-				if (f < k) {
-					var fe = a - k, N = Math.min(k, de);
-					for (fe + f < 0 && X(3); f < N; ++f) n[f] = r[fe + f];
+				var pe = f + ue;
+				if (f < D) {
+					var me = a - D, j = Math.min(D, pe);
+					for (me + f < 0 && J(3); f < j; ++f) n[f] = r[me + f];
 				}
-				for (; f < de; ++f) n[f] = n[f - k];
+				for (; f < pe; ++f) n[f] = n[f - D];
 			}
 		}
-		t.l = p, t.p = A, t.b = f, t.f = u, p && (u = 1, t.m = h, t.d = m, t.n = g);
+		t.l = p, t.p = O, t.b = f, t.f = u, p && (u = 1, t.m = h, t.d = m, t.n = g);
 	} while (!u);
-	return f != n.length && o ? Ct(n, 0, f) : n.subarray(0, f);
-}, Et = /*#__PURE__*/ new G(0), Z = function(e, t) {
+	return f != n.length && o ? Et(n, 0, f) : n.subarray(0, f);
+}, kt = /*#__PURE__*/ new U(0), Y = function(e, t) {
 	return e[t] | e[t + 1] << 8;
-}, Q = function(e, t) {
+}, X = function(e, t) {
 	return (e[t] | e[t + 1] << 8 | e[t + 2] << 16 | e[t + 3] << 24) >>> 0;
-}, Dt = function(e, t) {
-	return Q(e, t) + Q(e, t + 4) * 4294967296;
+}, At = function(e, t) {
+	return X(e, t) + X(e, t + 4) * 4294967296;
 };
-function Ot(e, t) {
-	return Tt(e, { i: 2 }, t && t.out, t && t.dictionary);
+function jt(e, t) {
+	return Ot(e, { i: 2 }, t && t.out, t && t.dictionary);
 }
-var kt = typeof TextDecoder < "u" && /*#__PURE__*/ new TextDecoder();
+var Mt = typeof TextDecoder < "u" && /*#__PURE__*/ new TextDecoder();
 try {
-	kt.decode(Et, { stream: !0 });
+	Mt.decode(kt, { stream: !0 });
 } catch {}
-var At = function(e) {
+var Nt = function(e) {
 	for (var t = "", n = 0;;) {
 		var r = e[n++], i = (r > 127) + (r > 223) + (r > 239);
 		if (n + i > e.length) return {
 			s: t,
-			r: Ct(e, n - 1)
+			r: Et(e, n - 1)
 		};
 		i ? i == 3 ? (r = ((r & 15) << 18 | (e[n++] & 63) << 12 | (e[n++] & 63) << 6 | e[n++] & 63) - 65536, t += String.fromCharCode(55296 | r >> 10, 56320 | r & 1023)) : i & 1 ? t += String.fromCharCode((r & 31) << 6 | e[n++] & 63) : t += String.fromCharCode((r & 15) << 12 | (e[n++] & 63) << 6 | e[n++] & 63) : t += String.fromCharCode(r);
 	}
 };
-function jt(e, t) {
+function Pt(e, t) {
 	if (t) {
 		for (var n = "", r = 0; r < e.length; r += 16384) n += String.fromCharCode.apply(null, e.subarray(r, r + 16384));
 		return n;
 	}
-	if (kt) return kt.decode(e);
-	var i = At(e), a = i.s, n = i.r;
-	return n.length && X(8), a;
+	if (Mt) return Mt.decode(e);
+	var i = Nt(e), a = i.s, n = i.r;
+	return n.length && J(8), a;
 }
-var Mt = function(e, t) {
-	return t + 30 + Z(e, t + 26) + Z(e, t + 28);
-}, Nt = function(e, t, n) {
-	var r = Z(e, t + 28), i = Z(e, t + 30), a = jt(e.subarray(t + 46, t + 46 + r), !(Z(e, t + 8) & 2048)), o = t + 46 + r, s = Pt(e, o, i, n, Q(e, t + 20), Q(e, t + 24), Q(e, t + 42)), c = s[0], l = s[1], u = s[2];
+var Ft = function(e, t) {
+	return t + 30 + Y(e, t + 26) + Y(e, t + 28);
+}, It = function(e, t, n) {
+	var r = Y(e, t + 28), i = Y(e, t + 30), a = Pt(e.subarray(t + 46, t + 46 + r), !(Y(e, t + 8) & 2048)), o = t + 46 + r, s = Lt(e, o, i, n, X(e, t + 20), X(e, t + 24), X(e, t + 42)), c = s[0], l = s[1], u = s[2];
 	return [
-		Z(e, t + 10),
+		Y(e, t + 10),
 		c,
 		l,
 		a,
-		o + i + Z(e, t + 32),
+		o + i + Y(e, t + 32),
 		u
 	];
-}, Pt = function(e, t, n, r, i, a, o) {
+}, Lt = function(e, t, n, r, i, a, o) {
 	var s = i == 4294967295, c = a == 4294967295, l = o == 4294967295, u = t + n, d = s + c + l;
 	if (r && d) {
-		for (; t + 4 < u; t += 4 + Z(e, t + 2)) if (Z(e, t) == 1) return [
-			s ? Dt(e, t + 4 + 8 * c) : i,
-			c ? Dt(e, t + 4) : a,
-			l ? Dt(e, t + 4 + 8 * (c + s)) : o,
+		for (; t + 4 < u; t += 4 + Y(e, t + 2)) if (Y(e, t) == 1) return [
+			s ? At(e, t + 4 + 8 * c) : i,
+			c ? At(e, t + 4) : a,
+			l ? At(e, t + 4 + 8 * (c + s)) : o,
 			1
 		];
-		r < 2 && X(13);
+		r < 2 && J(13);
 	}
 	return [
 		i,
@@ -1114,28 +1121,28 @@ var Mt = function(e, t) {
 		0
 	];
 };
-function Ft(e, t) {
-	for (var n = {}, r = e.length - 22; Q(e, r) != 101010256; --r) (!r || e.length - r > 65558) && X(13);
-	var i = Z(e, r + 8);
+function Rt(e, t) {
+	for (var n = {}, r = e.length - 22; X(e, r) != 101010256; --r) (!r || e.length - r > 65558) && J(13);
+	var i = Y(e, r + 8);
 	if (!i) return {};
-	var a = Q(e, r + 16), o = Q(e, r - 20) == 117853008;
+	var a = X(e, r + 16), o = X(e, r - 20) == 117853008;
 	if (o) {
-		var s = Q(e, r - 12);
-		o = Q(e, s) == 101075792, o && (i = Q(e, s + 32), a = Q(e, s + 48));
+		var s = X(e, r - 12);
+		o = X(e, s) == 101075792, o && (i = X(e, s + 32), a = X(e, s + 48));
 	}
 	for (var c = t && t.filter, l = 0; l < i; ++l) {
-		var u = Nt(e, a, o), d = u[0], f = u[1], p = u[2], m = u[3], h = u[4], g = u[5], _ = Mt(e, g);
+		var u = It(e, a, o), d = u[0], f = u[1], p = u[2], m = u[3], h = u[4], g = u[5], _ = Ft(e, g);
 		a = h, (!c || c({
 			name: m,
 			size: f,
 			originalSize: p,
 			compression: d
-		})) && (d ? d == 8 ? n[m] = Ot(e.subarray(_, _ + f), { out: new G(p) }) : X(14, "unknown compression type " + d) : n[m] = Ct(e, _, _ + f));
+		})) && (d ? d == 8 ? n[m] = jt(e.subarray(_, _ + f), { out: new U(p) }) : J(14, "unknown compression type " + d) : n[m] = Et(e, _, _ + f));
 	}
 	return n;
 }
 // src/domain/projects.ts
-function It(e) {
+function zt(e) {
 	let t = e.split("/");
 	if (t.length < 3 || t[1] !== "prints" || t.some((e) => !e || e === "." || e === ".." || /[\\\0]/.test(e))) throw Error("Invalid cached project path.");
 	return {
@@ -1144,12 +1151,12 @@ function It(e) {
 		remote: t.slice(2).join("/")
 	};
 }
-function Lt(e) {
+function Bt(e) {
 	let t = e.split("/");
 	if (t.length < 2 || t.some((e) => !e || e === "." || e === ".." || /[\\\0]/.test(e))) throw Error("Invalid cached file path.");
 	return `/api/bambu_lab/file_cache/${t.map(encodeURIComponent).join("/")}`;
 }
-function Rt(e) {
+function Vt(e) {
 	if (typeof e != "object" || !e || !("files" in e) || !Array.isArray(e.files)) throw Error("The cached-project API returned an invalid response.");
 	return e.files.map((e) => {
 		if (typeof e != "object" || !e) throw Error("Invalid cached-project entry.");
@@ -1164,23 +1171,23 @@ function Rt(e) {
 			"printer_model"
 		]) if (typeof t[e] != "string") throw Error(`Cached project is missing ${e}.`);
 		if (typeof t.size != "number" || !Number.isSafeInteger(t.size) || t.size <= 0) throw Error("Invalid cached-project size.");
-		return It(t.path), t;
+		return zt(t.path), t;
 	});
 }
-function zt(e) {
+function Ht(e) {
 	let t = new DOMParser().parseFromString(e, "application/xml");
 	if (t.querySelector("parsererror")) throw Error("The 3MF contains invalid metadata XML.");
 	return t;
 }
-function Bt(e, t) {
+function Ut(e, t) {
 	let n = Array.from(e.querySelectorAll("metadata")).find((e) => e.getAttribute("key") === t);
 	return n?.getAttribute("value") || n?.textContent || null;
 }
-function Vt(e) {
+function Wt(e) {
 	return (Array.isArray(e) ? e : typeof e == "string" ? e.split(/[;,]/) : []).map(Number).filter((e) => Number.isFinite(e) && e > 0);
 }
-function Ht(e) {
-	let t = /* @__PURE__ */ new Set(), n = Ft(e, { filter: (e) => {
+function Gt(e) {
+	let t = /* @__PURE__ */ new Set(), n = Rt(e, { filter: (e) => {
 		let n = e.name.match(/^Metadata\/plate_(\d+)\.gcode$/i);
 		return n && t.add(Number(n[1])), [
 			"Metadata/project_settings.config",
@@ -1189,17 +1196,17 @@ function Ht(e) {
 		].includes(e.name);
 	} });
 	if (!t.size) throw Error("This is not a sliced 3MF project: no printable G-code plates were found.");
-	let r = n["Metadata/project_settings.config"] ? JSON.parse(jt(n["Metadata/project_settings.config"])) : void 0, i = n["Metadata/model_settings.config"] ? zt(jt(n["Metadata/model_settings.config"])) : void 0, a = n["Metadata/slice_info.config"] ? zt(jt(n["Metadata/slice_info.config"])) : void 0, o = typeof r?.printer_model == "string" ? r.printer_model : null, s = Vt(r?.nozzle_diameter);
-	if (!s.length && a) for (let e of a.querySelectorAll("nozzle")) s.push(...Vt(e.getAttribute("nozzle_diameter")));
+	let r = n["Metadata/project_settings.config"] ? JSON.parse(Pt(n["Metadata/project_settings.config"])) : void 0, i = n["Metadata/model_settings.config"] ? Ht(Pt(n["Metadata/model_settings.config"])) : void 0, a = n["Metadata/slice_info.config"] ? Ht(Pt(n["Metadata/slice_info.config"])) : void 0, o = typeof r?.printer_model == "string" ? r.printer_model : null, s = Wt(r?.nozzle_diameter);
+	if (!s.length && a) for (let e of a.querySelectorAll("nozzle")) s.push(...Wt(e.getAttribute("nozzle_diameter")));
 	let c = [...t].sort((e, t) => e - t).map((e) => {
-		let t = Array.from(i?.querySelectorAll("plate") || []).find((t) => Number(Bt(t, "plater_id")) === e), n = Array.from(a?.querySelectorAll("plate") || []).find((t) => Number(Bt(t, "index") || t.getAttribute("id")) === e), r = Array.from(n?.querySelectorAll("filament") || []).map((e) => ({
+		let t = Array.from(i?.querySelectorAll("plate") || []).find((t) => Number(Ut(t, "plater_id")) === e), n = Array.from(a?.querySelectorAll("plate") || []).find((t) => Number(Ut(t, "index") || t.getAttribute("id")) === e), r = Array.from(n?.querySelectorAll("filament") || []).map((e) => ({
 			id: Number(e.getAttribute("id")),
 			type: e.getAttribute("type") || "",
 			color: e.getAttribute("color") || ""
 		}));
 		return {
 			id: e,
-			name: t && Bt(t, "plater_name") || `Plate ${e}`,
+			name: t && Ut(t, "plater_name") || `Plate ${e}`,
 			filaments: r
 		};
 	});
@@ -1209,24 +1216,24 @@ function Ht(e) {
 		plates: c
 	};
 }
-function Ut(e) {
+function Kt(e) {
 	let t = e.toLowerCase().replace(/bambu\s*lab/g, "").replace(/[^a-z0-9]/g, "");
 	return {
 		x1carbon: "x1c",
 		x1carboncombo: "x1c"
 	}[t] || t;
 }
-function Wt(e, t, n) {
+function qt(e, t, n) {
 	let r = [];
-	return e.model ? Ut(e.model) !== Ut(t) && r.push(`Project model ${e.model} does not match target ${t}.`) : r.push("Project printer model is missing. Re-slice the project with printer metadata."), e.nozzles.length ? n === null ? r.push("Target printer nozzle diameter is unknown.") : e.nozzles.some((e) => e !== n) && r.push(`Project nozzle ${e.nozzles.join("/")} mm does not match target ${n} mm.`) : r.push("Project nozzle diameter is missing."), r;
+	return e.model ? Kt(e.model) !== Kt(t) && r.push(`Project model ${e.model} does not match target ${t}.`) : r.push("Project printer model is missing. Re-slice the project with printer metadata."), e.nozzles.length ? n === null ? r.push("Target printer nozzle diameter is unknown.") : e.nozzles.some((e) => e !== n) && r.push(`Project nozzle ${e.nozzles.join("/")} mm does not match target ${n} mm.`) : r.push("Project nozzle diameter is missing."), r;
 }
-function Gt(e, t) {
+function Jt(e, t) {
 	if (!Number.isInteger(e.plate) || e.plate < 1 || e.plate > 100) throw Error("Plate must be an integer from 1 to 100.");
 	if (t && !t.some((t) => t.id === e.plate)) throw Error("The selected plate has no sliced G-code.");
 	if (e.useAms && !/^-?\d+(,-?\d+)*$/.test(e.amsMapping)) throw Error("Choose the AMS mapping for every project filament.");
 	if (e.useAms && e.amsMapping.split(",").some((e) => !Number.isSafeInteger(Number(e)) || Number(e) < -1)) throw Error("AMS mapping accepts non-negative slot IDs or the -1 sentinel.");
 }
-function Kt(e, t) {
+function Yt(e, t) {
 	if (t.status === "use_legacy_path") {
 		if (!t.detail) throw Error("The integration did not return the legacy project path.");
 		let e = t.detail.replace(/^\//, "");
@@ -1234,40 +1241,40 @@ function Kt(e, t) {
 		return e;
 	}
 	if (t.status !== "present" && t.status !== "uploaded") throw Error(t.detail || `Unexpected file-check result: ${t.status}`);
-	return It(e.path).remote;
+	return zt(e.path).remote;
 }
 // src/ha/client.ts
-var qt = class {
+var Xt = class {
 	constructor(e) {
 		this.hass = e;
 	}
 	async files() {
 		try {
-			return Rt(await this.hass.callApi("GET", "bambu_lab/print_history"));
+			return Vt(await this.hass.callApi("GET", "bambu_lab/print_history"));
 		} catch (e) {
-			let t = B(e).message;
+			let t = R(e).message;
 			throw Error(`Cannot load cached projects. This requires the ha-bambulab cached-file API. ${t}`);
 		}
 	}
 	async fileBytes(e) {
 		if (typeof this.hass.fetchWithAuth != "function") throw Error("This HA frontend does not expose authenticated file requests.");
-		let t = await this.hass.fetchWithAuth(Lt(e));
+		let t = await this.hass.fetchWithAuth(Bt(e));
 		if (!t.ok) throw Error(`Cached file request failed: HTTP ${t.status}.`);
 		return new Uint8Array(await t.arrayBuffer());
 	}
 	async press(e, t) {
 		let n = t === "pause" ? e.status === "running" : t === "resume" ? e.status === "pause" : ["running", "pause"].includes(e.status), r = e[t];
-		if (!n || !H(r)) throw Error(`${t} is not available in the printer's current state.`);
+		if (!n || !B(r)) throw Error(`${t} is not available in the printer's current state.`);
 		this.assertOwner(e, r), await this.hass.callService("button", "press", { entity_id: r.entry.entity_id });
 	}
 	async light(e) {
 		let t = e.light;
-		if (!H(t) || !["on", "off"].includes(t.state.state)) throw Error("Light state is unavailable.");
+		if (!B(t) || !["on", "off"].includes(t.state.state)) throw Error("Light state is unavailable.");
 		this.assertOwner(e, t), await this.hass.callService("light", t.state.state === "on" ? "turn_off" : "turn_on", { entity_id: t.entry.entity_id });
 	}
 	async speed(e, t) {
 		let n = e.speed;
-		if (e.status !== "running" || !H(n)) throw Error("Speed control is available while printing.");
+		if (e.status !== "running" || !B(n)) throw Error("Speed control is available while printing.");
 		let r = n.state.attributes.options;
 		if (!Array.isArray(r) || !r.includes(t)) throw Error("This speed is not offered by the printer.");
 		this.assertOwner(e, n), await this.hass.callService("select", "select_option", {
@@ -1280,8 +1287,8 @@ var qt = class {
 	}
 	async ensureFile(e, t, n) {
 		if (!e.serial) throw Error("The target printer serial is missing from the device registry.");
-		if (!W(e)) throw Error("The target printer is not idle.");
-		if (It(t.path), !Number.isSafeInteger(t.size) || t.size <= 0) throw Error("Invalid cached-project size.");
+		if (!H(e)) throw Error("The target printer is not idle.");
+		if (zt(t.path), !Number.isSafeInteger(t.size) || t.size <= 0) throw Error("Invalid cached-project size.");
 		let r = e.serial, i = await this.hass.connection.subscribeEvents((e) => {
 			let t = e.data;
 			t.serial === r && typeof t.bytes_sent == "number" && typeof t.total == "number" && n?.({
@@ -1290,7 +1297,7 @@ var qt = class {
 			});
 		}, "bambu_upload_progress");
 		try {
-			return Kt(t, await this.hass.callApi("POST", "bambu_lab/ensure_cache_file", {
+			return Yt(t, await this.hass.callApi("POST", "bambu_lab/ensure_cache_file", {
 				serial: r,
 				cache_path: t.path,
 				expected_size: t.size
@@ -1300,10 +1307,10 @@ var qt = class {
 		}
 	}
 	async start(e, t, n) {
-		if (!W(e)) throw Error("The target printer is not idle.");
+		if (!H(e)) throw Error("The target printer is not idle.");
 		if (!t || t.startsWith("/") || t.split("/").some((e) => e === ".." || e === "." || !e) || /[\\\0]/.test(t)) throw Error("Enter a relative path to a sliced 3MF project on the printer SD card.");
 		if (!t.toLowerCase().endsWith(".3mf")) throw Error("Printing requires a sliced .3mf project.");
-		Gt(n), await this.hass.callService("bambu_lab", "print_project_file", {
+		Jt(n), await this.hass.callService("bambu_lab", "print_project_file", {
 			device_id: e.id,
 			filepath: t,
 			plate: n.plate,
@@ -1316,7 +1323,26 @@ var qt = class {
 			ams_mapping: n.useAms ? n.amsMapping : "0"
 		});
 	}
-}, Jt = {
+}, Zt = {
+	h: 36e5,
+	min: 6e4,
+	s: 1e3
+};
+function Qt(e) {
+	let t = z(e.entities, "remaining_time"), n = Xe(t), r = t?.state?.attributes.unit_of_measurement;
+	if (n === null || n < 0 || typeof r != "string" || !Object.hasOwn(Zt, r)) return null;
+	let i = n * Zt[r];
+	return Number.isFinite(i) ? i : null;
+}
+function $t(e, t) {
+	if (!["running", "prepare"].includes(e.status)) return null;
+	let n = Qt(e);
+	if (n === null) return null;
+	let r = t + n;
+	return Number.isNaN(new Date(r).getTime()) ? null : r;
+}
+// src/ui/i18n.ts
+var en = {
 	workspace: ["Your print workspace", "打印工作台"],
 	subtitle: ["Every printer. Every detail. One workspace.", "每台打印机，每个细节，一个工作台。"],
 	allPrinters: ["All printers", "全部打印机"],
@@ -1328,6 +1354,7 @@ var qt = class {
 	ams: ["Filament & AMS", "耗材与 AMS"],
 	files: ["Recent files", "最近文件"],
 	parameters: ["All parameters", "全部参数"],
+	liveParameters: ["Live parameters", "实时参数"],
 	discover: ["Discovering your printers…", "正在发现打印机…"],
 	noPrinters: ["No Bambu printers found. Add them through ha-bambulab, or check the selected devices.", "尚未发现拓竹打印机，请先通过 ha-bambulab 接入，或检查设备筛选。"],
 	registryError: ["Device discovery failed", "设备发现失败"],
@@ -1345,8 +1372,15 @@ var qt = class {
 	notLoaded: ["Not loaded", "未载入"],
 	task: ["Current project", "当前项目"],
 	noTask: ["No active print", "暂无打印任务"],
+	projectPreview: ["Print preview", "打印件预览"],
+	noProjectPreview: ["No print preview available", "暂无打印件缩略图"],
 	progress: ["Progress", "打印进度"],
 	remaining: ["Remaining", "剩余时间"],
+	estimatedFinish: ["Estimated finish", "预估完成时间"],
+	estimatePaused: ["Recalculate after resuming", "恢复打印后重新估算"],
+	haName: ["HA name", "HA 名称"],
+	hourUnit: ["h", "小时"],
+	minuteUnit: ["min", "分钟"],
 	layers: ["Layers", "层数"],
 	nozzle: ["Nozzle", "喷嘴"],
 	bed: ["Bed", "热床"],
@@ -1371,7 +1405,7 @@ var qt = class {
 	live: ["Live stream", "视频流"],
 	cameraHelp: ["Camera transport is provided by Home Assistant.", "使用 Home Assistant 提供的摄像头连接。"],
 	loading: ["Loading…", "加载中…"],
-	external: ["External spool", "外置料盘"],
+	external: ["External spool", "外挂料盘"],
 	active: ["In use", "使用中"],
 	empty: ["Empty", "空槽"],
 	humidity: ["Humidity", "湿度"],
@@ -1421,13 +1455,50 @@ var qt = class {
 	title: ["Title", "标题"],
 	language: ["Language", "语言"],
 	automatic: ["Automatic", "自动"],
-	experimental: ["Development preview", "开发预览"]
+	experimental: ["Development preview", "开发预览"],
+	completionNotifications: ["Print completion reminders", "打印完成提醒"],
+	notifyHelp: ["Choose a phone and save an HA automation for this printer. Reminders continue when this dashboard is closed.", "为这台打印机选择手机并保存 HA 自动化。关闭面板后，提醒仍会生效。"],
+	notifyEnable: ["Remind me when this printer finishes", "这台打印机完成后提醒我"],
+	notifyRecipient: ["Receiving phone / destination", "接收手机 / 通知目标"],
+	notifyMobileApp: ["HA phone app", "HA 手机 App"],
+	notifyEntity: ["Notification entity", "通知实体"],
+	chooseRecipient: ["Choose a destination", "请选择接收目标"],
+	notifyStyle: ["Reminder style", "提醒方式"],
+	notifyAlarm: ["Alarm-style sound (Android)", "闹钟式响铃（安卓）"],
+	notifySpeech: ["Alarm speech (Android)", "闹钟语音播报（安卓）"],
+	notifySpeechHelp: ["Reads the reminder using Android alarm audio and the current alarm volume. Requires a working text-to-speech engine. Ordinary notification sound settings and volume stay unchanged.", "通过安卓闹钟音频流朗读提醒，使用当前闹钟音量。手机需有可用的语音引擎；普通通知的声音设置和音量保持不变。"],
+	notifyStandard: ["Standard notification", "普通通知"],
+	notifyAlarmHelp: ["Uses Android alarm volume. Enable HA notifications and the alarm_stream channel on your phone; allow Do Not Disturb bypass if needed. This does not create a Clock alarm or promise continuous ringing.", "使用安卓闹钟音量。请在手机开启 HA 通知及 alarm_stream 通道，需要时允许绕过勿扰。此方式不创建系统时钟闹钟，也不保证持续循环响铃。"],
+	notifyReliability: ["HA and the printer must stay connected. Completions while HA is stopped or the printer is disconnected are not replayed. Phone delivery depends on the app permissions and connection.", "HA 与打印机需保持连接。HA 停机或打印机断连期间完成的任务不会补发。手机是否响铃还取决于 App 权限与连接。"],
+	notifyAdmin: ["An HA administrator must configure reminders. Existing automations continue running for other viewers.", "需要 HA 管理员配置提醒。其他用户查看面板时，已保存的自动化仍会运行。"],
+	notifyNoTargets: ["No notification destinations were found. Connect the HA Companion App or configure a notify entity first.", "未发现通知目标，请先连接 HA 手机 App 或配置通知实体。"],
+	notifyNoAlarmTarget: ["Alarm-style alerts need a specific notify.mobile_app_* action from the Android HA Companion App. No such action is currently registered.", "闹钟式响铃需要安卓 HA 手机 App 注册的 notify.mobile_app_* 动作，目前未发现此类动作。"],
+	notifyTargetUnavailable: ["The selected destination is unavailable. Choose an available phone before enabling.", "所选目标不可用，请选择可用的手机后再启用。"],
+	saveNotification: ["Save reminder", "保存提醒设置"],
+	saving: ["Saving…", "保存中…"],
+	notifyNotLoaded: ["Settings not loaded", "尚未读取设置"],
+	notifyNotConfigured: ["No reminder configured", "尚未配置提醒"],
+	notifyPending: ["Saved; HA runtime loading is not yet confirmed", "设置已保存，尚未确认 HA 已加载"],
+	notifyActive: ["Saved and enabled in HA", "已保存，HA 后台已启用"],
+	notifyInactive: ["Saved and disabled in HA", "已保存，HA 后台已关闭"],
+	notifyStateMismatch: ["Runtime switch differs from saved startup setting; save again to reapply", "后台开关与保存的启动设置不同，重新保存可同步"],
+	notifyRuntimeUnavailable: ["Automation runtime unavailable", "后台自动化不可用"],
+	notifyUnsaved: ["Unsaved changes", "有未保存的修改"],
+	notifyError: ["Could not load or save reminders", "提醒设置读取或保存失败"],
+	notifyRuntimeError: ["Could not verify loaded automation", "无法核验后台自动化"],
+	notifyViewAutomation: ["View HA automation", "查看 HA 自动化"],
+	notifySettings: ["Settings & test", "设置与测试"],
+	notifyTest: ["Test phone reminder", "测试手机提醒"],
+	notifyTestSending: ["Sending test…", "正在发送测试…"],
+	notifyTestHelp: ["Sends one reminder to the currently selected phone and style. No need to enable or save first.", "点击会按当前选择的手机和提醒方式发送一次提醒，无需先启用或保存。"],
+	notifyTestSubmitted: ["HA accepted the test request. Check whether your phone received it and sounded.", "HA 已接受测试请求，请确认手机是否收到并响铃。"],
+	notifyTestError: ["Test reminder failed", "测试提醒发送失败"]
 };
-function Yt(e, t) {
-	return Jt[t][+(e === "zh")];
+function tn(e, t) {
+	return en[t][+(e === "zh")];
 }
 // src/ui/icons.ts
-var Xt = {
+var nn = {
 	printer: "M5 20V4h14v16M3 20h18M7 7h10M12 7v5m-2 0h4m-6 5h8M6 4V2h12v2",
 	grid: "M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z",
 	arrow: "m9 5 7 7-7 7",
@@ -1449,11 +1520,11 @@ var Xt = {
 	close: "m5 5 14 14M5 19 19 5",
 	search: "M10 3a7 7 0 1 0 0 14 7 7 0 0 0 0-14m5 12 6 6"
 };
-function $(e) {
-	return pe`<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d=${Xt[e] || Xt.printer}></path></svg>`;
+function Z(e) {
+	return he`<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d=${nn[e] || nn.printer}></path></svg>`;
 }
-function Zt() {
-	return pe`<svg viewBox="0 0 320 220" class="printer-art" fill="none" aria-hidden="true">
+function rn() {
+	return he`<svg viewBox="0 0 320 220" class="printer-art" fill="none" aria-hidden="true">
     <ellipse cx="160" cy="193" rx="105" ry="13" fill="currentColor" opacity=".04"/>
     <path d="M88 180V43h144v137M99 180V54h122v126" stroke="currentColor" stroke-width="5" opacity=".7"/>
     <path d="M94 94h132M94 103h132" stroke="currentColor" stroke-width="4" opacity=".45"/>
@@ -1466,14 +1537,14 @@ function Zt() {
   </svg>`;
 }
 // src/ui/select-values.ts
-function Qt(e) {
+function an(e) {
 	for (let t of e.querySelectorAll("select[data-value]")) {
 		let e = t.dataset.value;
 		t.value !== e && (t.value = e);
 	}
 }
 // src/ui/styles.css?inline
-var $t = ":host{color:var(--primary-text-color,#e8eeec);--bd-accent:#28bb8b;--bd-accent-soft:color-mix(in srgb, var(--bd-accent) 12%, transparent);--bd-bg:var(--primary-background-color,#101716);--bd-panel:var(--card-background-color,#19211f);--bd-raised:var(--secondary-background-color,#202a27);--bd-text:var(--primary-text-color,#e8eeec);--bd-muted:var(--secondary-text-color,#93a49d);--bd-line:color-mix(in srgb, var(--bd-text) 10%, transparent);--bd-danger:var(--error-color,#db6e67);font-family:var(--paper-font-body1_-_font-family,Inter, ui-sans-serif, system-ui, sans-serif);font-size:14px;line-height:1.5;display:block}*{box-sizing:border-box}button,input,select{font:inherit}button{color:inherit;cursor:pointer}button:disabled{opacity:.42;cursor:not-allowed}button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--bd-accent);outline-offset:3px}button,input,select{-webkit-tap-highlight-color:transparent}a{color:var(--bd-accent)}.shell{background:var(--bd-bg);border:1px solid var(--bd-line);border-radius:20px;min-height:460px;overflow:hidden}.topbar{background:var(--bd-panel);border-bottom:1px solid var(--bd-line);justify-content:space-between;align-items:center;gap:20px;min-height:72px;padding:17px 28px;display:flex}.brand{align-items:center;gap:12px;display:flex}.brand-mark{background:var(--bd-accent);color:#08291f;border-radius:11px;place-items:center;width:37px;height:37px;display:grid}.brand-title{letter-spacing:-.4px;font-size:16px;font-weight:750}.brand-subtitle,.eyebrow{color:var(--bd-muted);letter-spacing:1.6px;text-transform:uppercase;font-size:10px;font-weight:650}.top-actions{align-items:center;gap:12px;display:flex}.connection{color:var(--bd-muted);align-items:center;gap:7px;font-size:11px;display:flex}.dot{background:var(--bd-muted);border-radius:50%;flex-shrink:0;width:7px;height:7px}.dot.running,.dot.ready,.dot.finish{background:var(--bd-accent)}.dot.pause,.dot.prepare{background:#d8ac5b}.dot.failed{background:var(--bd-danger)}.workspace{grid-template-columns:216px minmax(0,1fr);display:grid}.sidebar{border-right:1px solid var(--bd-line);background:color-mix(in srgb, var(--bd-panel) 55%, var(--bd-bg));padding:25px 13px}.sidebar-label{color:var(--bd-muted);letter-spacing:1.6px;text-transform:uppercase;margin:5px 12px 12px;font-size:10px;font-weight:700}.sidebar button{text-align:left;background:0 0;border:0;border-radius:10px;align-items:center;gap:10px;width:100%;padding:11px 12px;display:flex}.sidebar button:hover{background:var(--bd-line)}.sidebar button.selected{background:var(--bd-accent-soft);color:var(--bd-accent)}.sidebar .icon{flex-shrink:0;width:18px;height:18px}.sidebar .printer-link{margin-top:5px}.sidebar .printer-link .dot{margin-left:auto}.sidebar .name{text-overflow:ellipsis;white-space:nowrap;overflow:hidden}.sidebar .model{color:var(--bd-muted);font-size:11px;display:block}.sidebar-rule{background:var(--bd-line);height:1px;margin:20px 10px}.sidebar-foot{color:var(--bd-muted);margin:28px 12px 0;font-size:11px}.main{min-width:0;padding:29px 30px 35px}.page-heading{justify-content:space-between;align-items:flex-start;gap:18px;margin-bottom:24px;display:flex}h1{letter-spacing:-1.1px;margin:7px 0 8px;font-size:28px;font-weight:720;line-height:1.2}h2{letter-spacing:-.3px;margin:0;font-size:16px}h3{margin:0;font-size:13px}p{margin:0}.muted{color:var(--bd-muted)}.description{color:var(--bd-muted);font-size:12px}.stats{flex-wrap:wrap;gap:8px;margin-top:4px;display:flex}.stat{border:1px solid var(--bd-line);background:var(--bd-panel);color:var(--bd-muted);white-space:nowrap;border-radius:9px;padding:7px 12px;font-size:11px}.stat b{color:var(--bd-text);margin-right:4px;font-size:15px}.tabs{border-bottom:1px solid var(--bd-line);gap:5px;margin-bottom:22px;padding-bottom:12px;display:flex;overflow-x:auto}.tabs button{color:var(--bd-muted);white-space:nowrap;background:0 0;border:0;border-radius:8px;align-items:center;gap:7px;padding:9px 12px;font-size:12px;display:flex}.tabs button.active{background:var(--bd-accent-soft);color:var(--bd-accent)}.icon{vertical-align:middle;flex-shrink:0;width:19px;height:19px;display:inline-block}.icon-button{border:1px solid var(--bd-line);background:0 0;border-radius:9px;place-items:center;width:33px;height:33px;display:inline-grid}.icon-button:hover{background:var(--bd-line)}.button{border:1px solid var(--bd-line);background:var(--bd-raised);border-radius:9px;justify-content:center;align-items:center;gap:8px;padding:10px 14px;font-size:12px;font-weight:600;display:inline-flex}.button.primary{background:var(--bd-accent);border-color:var(--bd-accent);color:#092e22}.button.danger{color:var(--bd-danger);background:color-mix(in srgb, var(--bd-danger) 8%, transparent);border-color:color-mix(in srgb, var(--bd-danger) 28%, transparent)}.button.small{padding:7px 10px;font-size:11px}.panel{background:var(--bd-panel);border:1px solid var(--bd-line);border-radius:14px;overflow:hidden}.panel-head{border-bottom:1px solid var(--bd-line);justify-content:space-between;align-items:center;gap:12px;padding:17px 20px;display:flex}.panel-body{padding:20px}.printer-grid{grid-template-columns:repeat(auto-fit,minmax(min(310px,100%),1fr));gap:18px;display:grid}.printer-card{transition:border-color .15s}.printer-card:hover{border-color:color-mix(in srgb, var(--bd-accent) 50%, var(--bd-line))}.printer-card .card-heading{text-align:left;background:0 0;border:0;align-items:center;gap:10px;width:100%;padding:18px 20px 0;display:flex}.machine-badge{border:1px solid var(--bd-line);width:34px;height:34px;color:var(--bd-muted);border-radius:9px;place-items:center;display:grid}.card-heading .heading-copy{flex:1;min-width:0}.card-heading .heading-copy b{text-overflow:ellipsis;white-space:nowrap;font-size:14px;display:block;overflow:hidden}.card-heading small{color:var(--bd-muted);font-size:10px}.status{border:1px solid var(--bd-line);white-space:nowrap;border-radius:6px;align-items:center;gap:6px;padding:4px 8px;font-size:10px;display:inline-flex}.status.running,.status.finish{color:var(--bd-accent);background:var(--bd-accent-soft);border-color:#0000}.status.pause,.status.prepare{color:#d8ac5b}.status.failed{color:var(--bd-danger)}.preview{background:radial-gradient(ellipse at center, var(--bd-accent-soft), transparent 72%);border-radius:10px;place-items:center;height:208px;margin:8px 10px;display:grid;position:relative;overflow:hidden}.preview bambu-dashboard-camera{width:100%;position:absolute;inset:0}.printer-art{width:90%;max-width:320px;height:100%;color:var(--bd-muted)}.preview-caption{background:var(--bd-panel);border:1px solid var(--bd-line);color:var(--bd-muted);border-radius:4px;padding:3px 7px;font-size:9px;position:absolute;bottom:9px;left:10px}.tile-content{padding:4px 20px 20px}.task-line{align-items:center;gap:9px;margin-bottom:15px;display:flex}.task-line .icon{color:var(--bd-muted);width:15px;height:15px}.task-line span{text-overflow:ellipsis;white-space:nowrap;font-size:12px;overflow:hidden}.progress-label{color:var(--bd-muted);justify-content:space-between;align-items:center;gap:12px;margin:8px 0;font-size:11px;display:flex}.progress-label strong{color:var(--bd-accent);font-size:13px}.progress-track{background:var(--bd-line);border-radius:4px;height:5px;overflow:hidden}.progress-fill{height:100%;width:var(--progress,0%);background:var(--bd-accent);border-radius:inherit;transition:width .3s}.tile-metrics{grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0 14px;display:grid}.tile-metrics span{color:var(--bd-muted);font-size:10px;display:block}.tile-metrics strong{margin-top:3px;font-size:13px;font-weight:600;display:block}.tile-footer{border-top:1px solid var(--bd-line);justify-content:space-between;align-items:center;gap:10px;padding-top:12px;display:flex}.filament-dots{align-items:center;gap:5px;display:flex}.filament-dot{border:2px solid var(--bd-line);background:var(--filament,transparent);border-radius:50%;width:14px;height:14px}.filament-dot.active{outline:1px solid var(--bd-accent);outline-offset:2px}.detail-grid{grid-template-columns:minmax(0,1.5fr) minmax(260px,1fr);gap:18px;display:grid}.camera-large{background:radial-gradient(ellipse at center, var(--bd-accent-soft), transparent);place-items:center;height:330px;display:grid;position:relative}.camera-large bambu-dashboard-camera{width:100%;height:100%}.camera-large .printer-art{max-width:400px}.metric-grid{grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:12px;margin-top:18px;display:grid}.metric{padding:16px 18px}.metric .metric-top{color:var(--bd-muted);align-items:center;gap:7px;font-size:11px;display:flex}.metric strong{letter-spacing:-.6px;margin-top:7px;font-size:22px;font-weight:650;display:block}.metric small{color:var(--bd-muted);font-size:11px}.job-name{overflow-wrap:anywhere;margin:8px 0 18px;font-size:19px;font-weight:650;line-height:1.4}.job-top{align-items:center;gap:14px;margin-bottom:12px;display:flex}.job-cover{border:1px solid var(--bd-line);background:var(--bd-bg);border-radius:10px;flex-shrink:0;width:64px;height:64px;overflow:hidden}.job-top .job-name{margin-bottom:4px}.job-summary{grid-template-columns:1fr 1fr;gap:14px;margin:18px 0;display:grid}.job-summary span{color:var(--bd-muted);font-size:11px;display:block}.job-summary b{margin-top:4px;font-size:15px;display:block}.control-row{gap:8px;margin:12px 0;display:flex}.control-row .button{flex:1}.control-divider{background:var(--bd-line);height:1px;margin:19px 0}.field{flex-direction:column;gap:7px;margin:12px 0;font-size:12px;display:flex}.field label,.field>span{color:var(--bd-muted);font-size:11px}input,select{border:1px solid var(--bd-line);background:var(--bd-bg);width:100%;min-width:0;color:var(--bd-text);border-radius:8px;padding:10px 12px}input[type=checkbox]{width:16px;height:16px;accent-color:var(--bd-accent)}.check{align-items:flex-start;gap:9px;margin:12px 0;font-size:12px;display:flex}.check input{flex-shrink:0;margin-top:2px}.light-control{justify-content:space-between;align-items:center;gap:12px;font-size:12px;display:flex}.light-control .button.on{color:var(--bd-accent);border-color:var(--bd-accent)}.helper{color:var(--bd-muted);margin-top:8px;font-size:11px;line-height:1.6}.ams-section{margin-top:18px}.ams-grid{grid-template-columns:repeat(auto-fit,minmax(min(150px,100%),1fr));gap:12px;padding:20px;display:grid}.spool{border:1px solid var(--bd-line);background:var(--bd-bg);border-radius:11px;min-width:0;padding:16px 13px 13px;position:relative}.spool.active{border-color:color-mix(in srgb, var(--bd-accent) 65%, transparent);background:var(--bd-accent-soft)}.spool-index{color:var(--bd-muted);font-size:10px}.spool-visual{background:repeating-radial-gradient(circle at center, transparent 0 3px, #0002 4px 5px),var(--filament,var(--bd-raised));border:5px solid color-mix(in srgb, var(--filament,var(--bd-muted)) 65%, var(--bd-line));border-radius:50%;width:64px;height:64px;margin:15px auto;position:relative;box-shadow:inset 0 0 0 1px #fff3}.spool-visual:after{content:\"\";background:var(--bd-bg);border:2px solid var(--bd-line);border-radius:50%;position:absolute;inset:18px}.spool h3{white-space:nowrap;text-overflow:ellipsis;overflow:hidden}.spool .material{color:var(--bd-muted);margin-top:4px;font-size:10px}.spool .remain{color:var(--bd-muted);margin-top:11px;font-size:11px}.spool .active-label{color:var(--bd-accent);font-size:9px;position:absolute;top:12px;right:9px}.ams-extra{color:var(--bd-muted);flex-wrap:wrap;gap:15px;padding:0 20px 17px;font-size:11px;display:flex}.file-list{margin-top:18px}.file-row{grid-template-columns:64px minmax(0,1fr) auto;align-items:center;gap:17px;padding:18px 20px;display:grid}.file-row+.file-row{border-top:1px solid var(--bd-line)}.file-preview{border:1px solid var(--bd-line);background:var(--bd-bg);width:64px;height:64px;color:var(--bd-muted);border-radius:10px;place-items:center;display:grid;overflow:hidden}.file-title{overflow-wrap:anywhere;font-size:13px;font-weight:600}.file-meta{color:var(--bd-muted);flex-wrap:wrap;gap:12px;margin-top:5px;font-size:10px;display:flex}.file-actions{gap:8px;display:flex}.section-heading{justify-content:space-between;align-items:flex-start;gap:20px;display:flex}.section-heading .description{max-width:700px;margin-top:6px}.search-box{border:1px solid var(--bd-line);background:var(--bd-panel);color:var(--bd-muted);border-radius:9px;align-items:center;gap:10px;margin:18px 0 13px;padding-left:12px;display:flex}.search-box input{background:0 0;border:0}.parameter-table{border-collapse:collapse;width:100%;font-size:12px}.parameter-table th{text-align:left;color:var(--bd-muted);border-bottom:1px solid var(--bd-line);padding:13px 18px;font-size:10px;font-weight:500}.parameter-table td{vertical-align:top;border-bottom:1px solid var(--bd-line);padding:12px 18px}.parameter-table tr:last-child td{border-bottom:0}.entity-name{font-size:12px;font-weight:550}.entity-id{color:var(--bd-muted);overflow-wrap:anywhere;margin-top:4px;font-size:9px}.entity-value{word-break:break-word;font-weight:650}.parameter-table summary{cursor:pointer;color:var(--bd-muted);font-size:10px}.attribute-grid{grid-template-columns:minmax(80px,auto) minmax(0,1fr);gap:7px 12px;padding:12px 0 0;font-size:10px;display:grid}.attribute-grid dt{color:var(--bd-muted);overflow-wrap:anywhere}.attribute-grid dd{word-break:break-word;white-space:pre-wrap;margin:0}.banner{border:1px solid var(--bd-line);background:var(--bd-panel);border-radius:10px;align-items:flex-start;gap:10px;margin-bottom:18px;padding:13px 15px;font-size:12px;display:flex}.banner.error{border-color:color-mix(in srgb,var(--bd-danger) 35%,transparent);color:var(--bd-danger)}.banner.notice{border-color:color-mix(in srgb,var(--bd-accent) 35%,transparent)}.banner .copy{overflow-wrap:anywhere;flex:1}.empty{text-align:center;color:var(--bd-muted);padding:48px 25px}.empty .icon{opacity:.7;width:30px;height:30px;margin-bottom:12px}.empty p{margin-bottom:15px;font-size:12px}.overlay{z-index:7;-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px);background:#0008;place-items:center;padding:20px;display:grid;position:fixed;inset:0}.dialog{background:var(--bd-panel);border:1px solid var(--bd-line);border-radius:17px;width:min(620px,100%);max-height:90vh;overflow-y:auto;box-shadow:0 20px 90px #0005}.dialog .dialog-body{padding:22px}.dialog-target{background:var(--bd-accent-soft);border:1px solid color-mix(in srgb,var(--bd-accent) 25%,transparent);border-radius:10px;justify-content:space-between;gap:16px;margin-bottom:17px;padding:13px 15px;display:flex}.dialog-target span{color:var(--bd-muted);font-size:10px}.dialog-target b{margin-top:3px;font-size:13px;display:block}.dialog-footer{border-top:1px solid var(--bd-line);justify-content:flex-end;gap:10px;padding:16px 22px;display:flex}.two-fields{grid-template-columns:1fr 1fr;gap:15px;display:grid}.progress-caption{color:var(--bd-accent);margin-top:12px;font-size:11px}.mobile-picker{display:none}@media (max-width:1100px){.workspace{grid-template-columns:180px minmax(0,1fr)}.main{padding:24px 20px}.detail-grid{grid-template-columns:1fr}.camera-large{height:300px}.stats{display:none}}@media (max-width:700px){.shell{border-radius:12px}.topbar{padding:14px 17px}.brand-subtitle{font-size:8px}.connection{display:none}.workspace{display:block}.sidebar{display:none}.main{padding:20px 15px}h1{font-size:24px}.page-heading{margin-bottom:16px}.mobile-picker{margin-bottom:15px;display:block}.tabs button{padding:8px;font-size:11px}.tabs .icon{width:15px;height:15px}.camera-large{height:240px}.file-row{grid-template-columns:48px minmax(0,1fr);gap:12px;padding:15px}.file-preview{width:48px;height:48px}.file-actions{grid-column:2}.parameter-table th,.parameter-table td{padding:11px 10px}.parameter-table th:first-child{width:38%}.overlay{padding:10px}.two-fields{grid-template-columns:1fr;gap:0}}@media (prefers-reduced-motion:reduce){*{transition:none!important}}@media (max-width:700px){.tabs .icon{display:none}.tabs{gap:2px}}", en = class extends R {
+var on = ":host{color:var(--primary-text-color,#e8eeec);--bd-accent:#00ae42;--bd-accent-soft:color-mix(in srgb, var(--bd-accent) 12%, transparent);--bd-bg:var(--primary-background-color,#101716);--bd-panel:var(--card-background-color,#19211f);--bd-raised:var(--secondary-background-color,#202a27);--bd-text:var(--primary-text-color,#e8eeec);--bd-muted:var(--secondary-text-color,#93a49d);--bd-line:color-mix(in srgb, var(--bd-text) 7%, transparent);--bd-surface:color-mix(in srgb, var(--bd-panel) 86%, transparent);--bd-inset:color-mix(in srgb, var(--bd-panel) 62%, var(--bd-raised));--bd-card-radius:22px;--bd-shadow:0 8px 28px #183c3010, 0 1px 3px #183c3006, inset 0 1px 0 #ffffff24;--bd-danger:var(--error-color,#db6e67);font-family:var(--paper-font-body1_-_font-family,Inter, ui-sans-serif, system-ui, sans-serif);font-size:14px;line-height:1.5;display:block}*{box-sizing:border-box}button,input,select{font:inherit}button{color:inherit;cursor:pointer}button:disabled{opacity:.42;cursor:not-allowed}button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--bd-accent);outline-offset:3px}button,input,select{-webkit-tap-highlight-color:transparent}a{color:var(--bd-accent)}.shell{background:radial-gradient(ellipse at 0% 0%, #b8dcea40, transparent 55%), radial-gradient(ellipse at 100% 100%, #ffd8b838, transparent 55%), radial-gradient(ellipse at 70% 0%, #c3ead529, transparent 45%), var(--bd-bg);border:1px solid var(--bd-line);border-radius:28px;min-height:460px;overflow:hidden}.topbar{background:color-mix(in srgb, var(--bd-panel) 58%, transparent);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border-bottom:1px solid var(--bd-line);justify-content:space-between;align-items:center;gap:20px;min-height:72px;padding:17px 28px;display:flex}.brand{align-items:center;gap:12px;display:flex}.brand-mark{background:linear-gradient(145deg, var(--bd-accent), color-mix(in srgb, var(--bd-accent) 80%, #07562b));color:#062b14;border-radius:13px;place-items:center;width:37px;height:37px;display:grid;box-shadow:0 5px 14px #00ae4224}.brand-title{letter-spacing:-.4px;font-size:16px;font-weight:750}.brand-subtitle,.eyebrow{color:var(--bd-muted);letter-spacing:1.6px;text-transform:uppercase;font-size:10px;font-weight:650}.top-actions{align-items:center;gap:12px;display:flex}.connection{color:var(--bd-muted);align-items:center;gap:7px;font-size:11px;display:flex}.dot{background:var(--bd-muted);border-radius:50%;flex-shrink:0;width:7px;height:7px}.dot.running,.dot.ready,.dot.finish{background:var(--bd-accent)}.dot.pause,.dot.prepare{background:#d8ac5b}.dot.failed{background:var(--bd-danger)}.workspace{grid-template-columns:216px minmax(0,1fr);display:grid}.sidebar{border-right:1px solid var(--bd-line);background:color-mix(in srgb, var(--bd-panel) 34%, transparent);padding:25px 13px}.sidebar-label{color:var(--bd-muted);letter-spacing:1.6px;text-transform:uppercase;margin:5px 12px 12px;font-size:10px;font-weight:700}.sidebar button{text-align:left;background:0 0;border:1px solid #0000;border-radius:15px;align-items:center;gap:10px;width:100%;padding:11px 12px;display:flex}.sidebar button:hover{background:var(--bd-line)}.sidebar button.selected{background:color-mix(in srgb, var(--bd-accent) 12%, var(--bd-surface));border-color:color-mix(in srgb, var(--bd-accent) 12%, transparent);color:var(--bd-accent);box-shadow:0 3px 10px #183c3005}.sidebar .icon{flex-shrink:0;width:18px;height:18px}.sidebar .printer-link{margin-top:5px}.sidebar .printer-link .dot{margin-left:auto}.sidebar .name{text-overflow:ellipsis;white-space:nowrap;overflow:hidden}.sidebar .model{color:var(--bd-muted);font-size:11px;display:block}.sidebar-rule{background:var(--bd-line);height:1px;margin:20px 10px}.sidebar-foot{color:var(--bd-muted);margin:28px 12px 0;font-size:11px}.main{min-width:0;padding:29px 30px 35px}.page-heading{justify-content:space-between;align-items:flex-start;gap:18px;margin-bottom:24px;display:flex}h1{letter-spacing:-1.1px;overflow-wrap:anywhere;margin:7px 0 8px;font-size:28px;font-weight:720;line-height:1.2}h2{letter-spacing:-.3px;margin:0;font-size:16px}h3{margin:0;font-size:13px}p{margin:0}.muted{color:var(--bd-muted)}.description{color:var(--bd-muted);font-size:12px}.ha-name{overflow-wrap:anywhere;margin-bottom:5px}.stats{flex-wrap:wrap;gap:8px;margin-top:4px;display:flex}.stat{border:1px solid var(--bd-line);background:var(--bd-surface);color:var(--bd-muted);white-space:nowrap;border-radius:14px;padding:8px 13px;font-size:11px;box-shadow:0 3px 12px #183c3005}.stat b{color:var(--bd-text);margin-right:4px;font-size:15px}.tabs{border:1px solid var(--bd-line);background:color-mix(in srgb, var(--bd-panel) 48%, transparent);border-radius:16px;gap:4px;width:-moz-fit-content;width:fit-content;max-width:100%;margin-bottom:22px;padding:5px;display:flex;overflow-x:auto}.tabs button{color:var(--bd-muted);white-space:nowrap;background:0 0;border:0;border-radius:11px;align-items:center;gap:7px;padding:9px 12px;font-size:12px;display:flex}.tabs button.active{background:var(--bd-accent-soft);color:var(--bd-accent)}.icon{vertical-align:middle;flex-shrink:0;width:19px;height:19px;display:inline-block}.icon-button{background:var(--bd-surface);border:1px solid var(--bd-line);border-radius:50%;place-items:center;width:35px;height:35px;display:inline-grid;box-shadow:0 3px 10px #183c3008}.icon-button:hover{background:var(--bd-line)}.button{border:1px solid var(--bd-line);background:var(--bd-inset);border-radius:12px;justify-content:center;align-items:center;gap:8px;padding:10px 14px;font-size:12px;font-weight:600;display:inline-flex;box-shadow:0 2px 6px #183c3005}.button.primary{background:linear-gradient(145deg, var(--bd-accent), color-mix(in srgb, var(--bd-accent) 86%, #087a32));color:#052b12;border-color:#0000;box-shadow:0 4px 12px #00ae421c}.button.danger{color:var(--bd-danger);background:color-mix(in srgb, var(--bd-danger) 8%, transparent);border-color:color-mix(in srgb, var(--bd-danger) 28%, transparent)}.button.small{padding:7px 10px;font-size:11px}.panel{background:var(--bd-surface);border:1px solid var(--bd-line);border-radius:var(--bd-card-radius);box-shadow:var(--bd-shadow);overflow:hidden}.panel-head{background:linear-gradient(110deg, color-mix(in srgb, var(--bd-panel) 36%, transparent), transparent);border-bottom:1px solid var(--bd-line);justify-content:space-between;align-items:center;gap:12px;padding:17px 20px;display:flex}.panel-body{padding:20px}.printer-grid{grid-template-columns:repeat(auto-fit,minmax(min(310px,100%),1fr));gap:18px;display:grid}.printer-card{transition:border-color .15s,box-shadow .15s}.printer-card:hover{border-color:color-mix(in srgb, var(--bd-accent) 24%, var(--bd-line));box-shadow:0 12px 32px #183c3016,inset 0 1px #ffffff24}.printer-card .card-heading{text-align:left;background:0 0;border:0;align-items:center;gap:10px;width:100%;padding:18px 20px 0;display:flex}.machine-badge{border:1px solid var(--bd-line);background:var(--bd-inset);width:36px;height:36px;color:var(--bd-muted);border-radius:12px;place-items:center;display:grid}.card-heading .heading-copy{flex:1;min-width:0}.card-heading .heading-copy b{text-overflow:ellipsis;white-space:nowrap;font-size:14px;display:block;overflow:hidden}.card-heading small{color:var(--bd-muted);font-size:10px}.status{border:1px solid var(--bd-line);white-space:nowrap;border-radius:999px;align-items:center;gap:6px;padding:5px 9px;font-size:10px;display:inline-flex}.status.running,.status.finish{color:var(--bd-accent);background:var(--bd-accent-soft);border-color:#0000}.status.pause,.status.prepare{color:#d8ac5b}.status.failed{color:var(--bd-danger)}.tile-media{grid-template-columns:minmax(0,3fr) minmax(0,2fr);gap:12px;padding:14px 14px 10px;display:grid}.preview{background:radial-gradient(ellipse at center, var(--bd-accent-soft), transparent 72%);border-radius:16px;place-items:center;height:208px;display:grid;position:relative;overflow:hidden}.preview bambu-dashboard-camera{width:100%;position:absolute;inset:0}.project-preview{border:1px solid var(--bd-line);background:linear-gradient(145deg, color-mix(in srgb, var(--bd-accent) 4%, var(--bd-panel)), color-mix(in srgb, #b8dcea 12%, var(--bd-panel)));border-radius:16px;grid-template-rows:minmax(0,1fr);place-items:center;min-width:0;height:208px;display:grid;position:relative;overflow:hidden}.project-preview bambu-dashboard-file-image{padding:8px 8px 32px}.preview-empty{color:var(--bd-muted);text-align:center;justify-items:center;gap:10px;padding:12px 12px 32px;font-size:11px;display:grid}.printer-art{width:90%;max-width:320px;height:100%;color:var(--bd-muted)}.preview-caption{background:var(--bd-surface);border:1px solid var(--bd-line);color:var(--bd-muted);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-radius:999px;padding:4px 8px;font-size:9px;position:absolute;bottom:9px;left:10px}.tile-content{padding:4px 20px 20px}.task-line{align-items:center;gap:9px;margin-bottom:15px;display:flex}.task-line .icon{color:var(--bd-muted);width:15px;height:15px}.task-line span{text-overflow:ellipsis;white-space:nowrap;font-size:12px;overflow:hidden}.progress-label{color:var(--bd-muted);justify-content:space-between;align-items:center;gap:12px;margin:8px 0;font-size:11px;display:flex}.progress-label strong{color:var(--bd-accent);font-size:13px}.progress-track{background:var(--bd-line);border-radius:4px;height:5px;overflow:hidden}.progress-fill{height:100%;width:var(--progress,0%);background:var(--bd-accent);border-radius:inherit;transition:width .3s}.tile-metrics{grid-template-columns:repeat(auto-fit,minmax(min(100px,100%),1fr));gap:10px;margin:18px 0 14px;display:grid}.tile-metrics span{color:var(--bd-muted);font-size:10px;display:block}.tile-metrics strong{margin-top:3px;font-size:13px;font-weight:600;display:block}.tile-footer{border-top:1px solid var(--bd-line);justify-content:space-between;align-items:flex-end;gap:12px;padding-top:14px;display:flex}.tile-footer>.button{flex-shrink:0}.filament-groups{flex-wrap:wrap;flex:1;gap:8px;min-width:0;display:flex}.filament-group{border:1px solid var(--bd-line);background:color-mix(in srgb, var(--bd-panel) 54%, transparent);border-radius:14px;flex-direction:column;gap:8px;max-width:100%;padding:9px 11px;display:flex}.filament-source{color:var(--bd-muted);overflow-wrap:anywhere;align-items:center;gap:5px;font-size:10px;font-weight:600;display:inline-flex}.filament-source .icon{width:13px;height:13px}.filament-dots{align-items:center;gap:5px;display:flex}.filament-dot{border:2px solid var(--bd-line);background:var(--filament,transparent);border-radius:50%;width:15px;height:15px;box-shadow:0 1px 3px #183c3012}.filament-dot.active{outline:1px solid var(--bd-accent);outline-offset:2px}.detail-grid{grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr));grid-auto-rows:1px;grid-auto-flow:dense;align-items:start;gap:14px;display:grid}.detail-grid>*{align-self:start;min-width:0;margin:0}.detail-grid .panel-head{padding:12px 14px}.detail-grid .panel-head h2{align-items:center;gap:7px;font-size:13px;display:flex}.detail-grid .panel-body{padding:14px}.camera-large{background:radial-gradient(ellipse at center, var(--bd-accent-soft), transparent);position:relative}.camera-large bambu-dashboard-camera{width:100%;height:auto;min-height:120px}.camera-large>.printer-art{max-width:320px;height:200px;margin:auto;display:block}.detail-metrics{grid-template-columns:repeat(2,minmax(0,1fr));padding:6px;display:grid}.detail-metrics .metric{background:color-mix(in srgb, var(--bd-panel) 52%, transparent);border-radius:14px;margin:3px;padding:12px 10px}.detail-metrics .metric strong{font-size:20px}.detail-grid .control-divider{margin:12px 0}.detail-grid .control-row{margin:8px 0}.detail-grid .field{margin:10px 0}.detail-grid .ams-grid{grid-template-columns:repeat(auto-fit,minmax(min(130px,100%),1fr));gap:8px;padding:12px}.detail-grid .spool{padding:12px 10px}.detail-grid .spool-visual{width:52px;height:52px;margin:10px auto}.detail-grid .spool-visual:after{inset:12px}.detail-grid .ams-extra{padding:0 12px 12px}.detail-grid>.ams-section{margin:0}.metric{padding:16px 18px}.metric .metric-top{color:var(--bd-muted);align-items:center;gap:7px;font-size:11px;display:flex}.metric strong{letter-spacing:-.6px;margin-top:7px;font-size:22px;font-weight:650;display:block}.metric small{color:var(--bd-muted);font-size:11px}.job-name{overflow-wrap:anywhere;margin:8px 0 18px;font-size:19px;font-weight:650;line-height:1.4}.job-top{justify-items:center;gap:12px;margin:0 0 14px;display:grid}.job-cover{aspect-ratio:1;border:1px solid var(--bd-line);background:linear-gradient(145deg, var(--bd-panel), color-mix(in srgb, #b8dcea 10%, var(--bd-panel)));border-radius:18px;flex-shrink:0;width:256px;max-width:100%;overflow:hidden}.current-job .job-name{width:100%;margin:0;font-size:17px}.current-job .job-summary{margin:12px 0 0}.current-job .job-summary b{overflow-wrap:anywhere}.job-summary{grid-template-columns:1fr 1fr;gap:14px;margin:18px 0;display:grid}.job-summary span{color:var(--bd-muted);font-size:11px;display:block}.job-summary b{margin-top:4px;font-size:15px;display:block}.completion-estimate{gap:4px;margin-top:10px;display:grid}.completion-estimate time{font-size:12px;font-weight:600}.completion-estimate small{color:var(--bd-muted);font-size:11px}.control-row{gap:8px;margin:12px 0;display:flex}.control-row .button{flex:1}.control-divider{background:var(--bd-line);height:1px;margin:19px 0}.field{flex-direction:column;gap:7px;margin:12px 0;font-size:12px;display:flex}.field label,.field>span{color:var(--bd-muted);font-size:11px}input,select{border:1px solid var(--bd-line);background:var(--bd-inset);width:100%;min-width:0;color:var(--bd-text);border-radius:12px;padding:10px 12px}input[type=checkbox]{width:16px;height:16px;accent-color:var(--bd-accent)}.check{align-items:flex-start;gap:9px;margin:12px 0;font-size:12px;display:flex}.check input{flex-shrink:0;margin-top:2px}.light-control{justify-content:space-between;align-items:center;gap:12px;font-size:12px;display:flex}.light-control .button.on{color:var(--bd-accent);border-color:var(--bd-accent)}.helper{color:var(--bd-muted);margin-top:8px;font-size:11px;line-height:1.6}.ams-section{margin-top:18px}.ams-grid{grid-template-columns:repeat(auto-fit,minmax(min(150px,100%),1fr));gap:12px;padding:20px;display:grid}.spool{border:1px solid var(--bd-line);background:color-mix(in srgb, var(--bd-panel) 64%, var(--bd-raised));border-radius:16px;min-width:0;padding:16px 13px 13px;position:relative;box-shadow:inset 0 1px #ffffff20}.spool.active{border-color:color-mix(in srgb, var(--bd-accent) 65%, transparent);background:var(--bd-accent-soft)}.spool-index{color:var(--bd-muted);font-size:10px}.spool-visual{background:repeating-radial-gradient(circle at center, transparent 0 3px, #0002 4px 5px),var(--filament,var(--bd-raised));border:5px solid color-mix(in srgb, var(--filament,var(--bd-muted)) 65%, var(--bd-line));border-radius:50%;width:64px;height:64px;margin:15px auto;position:relative;box-shadow:inset 0 0 0 1px #fff3}.spool-visual:after{content:\"\";background:var(--bd-bg);border:2px solid var(--bd-line);border-radius:50%;position:absolute;inset:18px}.spool h3{white-space:nowrap;text-overflow:ellipsis;overflow:hidden}.spool .material{color:var(--bd-muted);margin-top:4px;font-size:10px}.spool .remain{color:var(--bd-muted);margin-top:11px;font-size:11px}.spool .active-label{color:var(--bd-accent);font-size:9px;position:absolute;top:12px;right:9px}.ams-extra{color:var(--bd-muted);flex-wrap:wrap;gap:15px;padding:0 20px 17px;font-size:11px;display:flex}.file-list{margin-top:18px}.file-row{grid-template-columns:64px minmax(0,1fr) auto;align-items:center;gap:17px;padding:18px 20px;display:grid}.file-row+.file-row{border-top:1px solid var(--bd-line)}.file-preview{border:1px solid var(--bd-line);background:var(--bd-inset);width:64px;height:64px;color:var(--bd-muted);border-radius:16px;place-items:center;display:grid;overflow:hidden}.file-title{overflow-wrap:anywhere;font-size:13px;font-weight:600}.file-meta{color:var(--bd-muted);flex-wrap:wrap;gap:12px;margin-top:5px;font-size:10px;display:flex}.file-actions{gap:8px;display:flex}.section-heading{justify-content:space-between;align-items:flex-start;gap:20px;display:flex}.section-heading .description{max-width:700px;margin-top:6px}.search-box{border:1px solid var(--bd-line);background:var(--bd-surface);color:var(--bd-muted);border-radius:16px;align-items:center;gap:10px;margin:18px 0 13px;padding-left:12px;display:flex;box-shadow:0 3px 12px #183c3005}.search-box input{background:0 0;border:0}.parameter-table{border-collapse:collapse;width:100%;font-size:12px}.parameter-table th{text-align:left;color:var(--bd-muted);border-bottom:1px solid var(--bd-line);padding:13px 18px;font-size:10px;font-weight:500}.parameter-table td{vertical-align:top;border-bottom:1px solid var(--bd-line);padding:12px 18px}.parameter-table tr:last-child td{border-bottom:0}.entity-name{font-size:12px;font-weight:550}.entity-id{color:var(--bd-muted);overflow-wrap:anywhere;margin-top:4px;font-size:9px}.entity-value{word-break:break-word;font-weight:650}.parameter-table summary{cursor:pointer;color:var(--bd-muted);font-size:10px}.attribute-grid{grid-template-columns:minmax(80px,auto) minmax(0,1fr);gap:7px 12px;padding:12px 0 0;font-size:10px;display:grid}.attribute-grid dt{color:var(--bd-muted);overflow-wrap:anywhere}.attribute-grid dd{word-break:break-word;white-space:pre-wrap;margin:0}.banner{border:1px solid var(--bd-line);background:var(--bd-surface);border-radius:16px;align-items:flex-start;gap:10px;margin-bottom:18px;padding:13px 15px;font-size:12px;display:flex;box-shadow:0 3px 12px #183c3005}.banner.error{border-color:color-mix(in srgb,var(--bd-danger) 35%,transparent);color:var(--bd-danger)}.banner.notice{border-color:color-mix(in srgb,var(--bd-accent) 35%,transparent)}.banner .copy{overflow-wrap:anywhere;flex:1}.empty{text-align:center;color:var(--bd-muted);padding:48px 25px}.empty .icon{opacity:.7;width:30px;height:30px;margin-bottom:12px}.empty p{margin-bottom:15px;font-size:12px}.overlay{z-index:7;-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px);background:#0008;place-items:center;padding:20px;display:grid;position:fixed;inset:0}.dialog{background:var(--bd-panel);border:1px solid var(--bd-line);border-radius:24px;width:min(620px,100%);max-height:90vh;overflow-y:auto;box-shadow:0 20px 90px #0005}.dialog .dialog-body{padding:22px}.dialog-target{background:var(--bd-accent-soft);border:1px solid color-mix(in srgb,var(--bd-accent) 25%,transparent);border-radius:10px;justify-content:space-between;gap:16px;margin-bottom:17px;padding:13px 15px;display:flex}.dialog-target span{color:var(--bd-muted);font-size:10px}.dialog-target b{margin-top:3px;font-size:13px;display:block}.dialog-footer{border-top:1px solid var(--bd-line);justify-content:flex-end;gap:10px;padding:16px 22px;display:flex}.two-fields{grid-template-columns:1fr 1fr;gap:15px;display:grid}.progress-caption{color:var(--bd-accent);margin-top:12px;font-size:11px}.mobile-picker{display:none}@media (max-width:1100px){.workspace{grid-template-columns:180px minmax(0,1fr)}.main{padding:24px 20px}.stats{display:none}}@media (max-width:700px){.shell{border-radius:12px}.topbar{padding:14px 17px}.brand-subtitle{font-size:8px}.connection{display:none}.workspace{display:block}.sidebar{display:none}.main{padding:20px 15px}h1{font-size:24px}.page-heading{margin-bottom:16px}.mobile-picker{margin-bottom:15px;display:block}.tabs button{padding:8px;font-size:11px}.tabs .icon{width:15px;height:15px}.file-row{grid-template-columns:48px minmax(0,1fr);gap:12px;padding:15px}.file-preview{width:48px;height:48px}.file-actions{grid-column:2}.parameter-table th,.parameter-table td{padding:11px 10px}.overlay{padding:10px}.two-fields{grid-template-columns:1fr;gap:0}}@media (prefers-reduced-motion:reduce){*{transition:none!important}}@media (max-width:700px){.tabs .icon{display:none}.tabs{gap:2px}}", sn = class extends I {
 	constructor(...e) {
 		super(...e), this.entity = "", this._error = "", this._visible = !1, this.generation = 0;
 	}
@@ -1490,14 +1561,17 @@ var $t = ":host{color:var(--primary-text-color,#e8eeec);--bd-accent:#28bb8b;--bd
 	}
 	connectedCallback() {
 		super.connectedCallback(), this.observer = new IntersectionObserver(([e]) => {
-			this._visible = e.isIntersecting, e.isIntersecting || (this.card = void 0);
+			if (this._visible = e.isIntersecting, !e.isIntersecting) {
+				let { width: t, height: n } = e.boundingClientRect;
+				this.card && t > 0 && n > 0 && (this.style.aspectRatio = `${t} / ${n}`), this.card = void 0;
+			}
 		}), this.observer.observe(this);
 	}
 	disconnectedCallback() {
 		super.disconnectedCallback(), this.generation++, this.observer?.disconnect(), this.card = void 0, this._visible = !1;
 	}
 	updated(e) {
-		e.has("entity") && (this.card = void 0, this._error = ""), this._visible && (this.card ? this.card.hass = this.hass : this.entity && this.hass && !this._error && this.load());
+		e.has("entity") && (this.card = void 0, this._error = "", this.style.aspectRatio = ""), this._visible && (this.card ? this.card.hass = this.hass : this.entity && this.hass && !this._error && this.load());
 	}
 	async load() {
 		let e = ++this.generation;
@@ -1514,13 +1588,13 @@ var $t = ":host{color:var(--primary-text-color,#e8eeec);--bd-accent:#28bb8b;--bd
 				show_state: !1
 			}), this.card.hass = this.hass, this.requestUpdate();
 		} catch (t) {
-			e === this.generation && (this._error = B(t).message);
+			e === this.generation && (this._error = R(t).message);
 		}
 	}
 	render() {
-		return this._error ? N`<div class="message error">${this._error}</div>` : this._visible ? this.card || N`<div class="message">Camera · …</div>` : F;
+		return this._error ? j`<div class="message error">${this._error}</div>` : this._visible ? this.card || j`<div class="message">Camera · …</div>` : N;
 	}
-}, tn = class extends R {
+}, cn = class extends I {
 	constructor(...e) {
 		super(...e), this.path = "", this.entity = "", this.version = "", this._url = "", this._error = "";
 	}
@@ -1552,21 +1626,475 @@ var $t = ":host{color:var(--primary-text-color,#e8eeec);--bd-accent:#28bb8b;--bd
 		let e = this.request = new AbortController();
 		try {
 			if (this.entity && !/^image\.[a-z0-9_]+$/.test(this.entity)) throw Error("Expected an HA image entity.");
-			let t = this.entity ? `/api/image_proxy/${encodeURIComponent(this.entity)}` : Lt(this.path), n = this.version ? `${t}?v=${encodeURIComponent(this.version)}` : t, r = await this.hass.fetchWithAuth(n, { signal: e.signal });
+			let t = this.entity ? `/api/image_proxy/${encodeURIComponent(this.entity)}` : Bt(this.path), n = this.version ? `${t}?v=${encodeURIComponent(this.version)}` : t, r = await this.hass.fetchWithAuth(n, { signal: e.signal });
 			if (!r.ok) throw Error(`Image: HTTP ${r.status}`);
 			let i = await r.blob();
 			e.signal.aborted || (this._url = URL.createObjectURL(i));
 		} catch (t) {
-			e.signal.aborted || (this._error = B(t).message);
+			e.signal.aborted || (this._error = R(t).message);
 		}
 	}
 	render() {
-		return this._url ? N`<img src=${this._url} alt="Project preview"/>` : this._error ? N`<span class="error">${this._error}</span>` : F;
+		return this._url ? j`<img src=${this._url} alt="Project preview"/>` : this._error ? j`<span class="error">${this._error}</span>` : N;
 	}
 };
-customElements.define("bambu-dashboard-camera", en), customElements.define("bambu-dashboard-file-image", tn);
+customElements.define("bambu-dashboard-camera", sn), customElements.define("bambu-dashboard-file-image", cn);
+// src/domain/notifications.ts
+var ln = "Managed by Bambu Dashboard Card: completion-notification/v1/";
+function un(e) {
+	if (!/^[a-zA-Z0-9_-]+$/.test(e)) throw Error("Invalid registered device identifier.");
+	return e;
+}
+function dn(e) {
+	if (!/^sensor\.[a-z0-9_]+$/.test(e)) throw Error("Invalid registered sensor entity ID.");
+	return e;
+}
+function fn(e) {
+	return `bambu_dashboard_finish_${un(e)}`;
+}
+function Q(e) {
+	return `${e.kind}:${e.id}`;
+}
+function pn(e, t, n) {
+	let r = e.entities.filter((e) => e.entity_id.startsWith("notify.") && !e.disabled_by).map((r) => {
+		let i = t[r.entity_id], a = e.devices.find((e) => e.id === r.device_id);
+		return {
+			kind: "entity",
+			id: r.entity_id,
+			label: r.name || String(i?.attributes.friendly_name || a?.name_by_user || a?.name || r.original_name || r.entity_id),
+			available: !!(i && i.state !== "unavailable" && n.notify?.send_message)
+		};
+	});
+	for (let e of Object.keys(n.notify || {})) /^mobile_app_[a-z0-9_]+$/.test(e) && r.push({
+		kind: "service",
+		id: `notify.${e}`,
+		label: e.slice(11).replaceAll("_", " "),
+		available: !0
+	});
+	return r.sort((e, t) => e.label.localeCompare(t.label) || e.id.localeCompare(t.id));
+}
+function mn(e, t) {
+	let n = e.target;
+	if (n.kind === "entity" ? !/^notify\.[a-z0-9_]+$/.test(n.id) : n.kind !== "service" || !/^notify\.mobile_app_[a-z0-9_]+$/.test(n.id)) throw Error("Select a specific notification entity or mobile-app destination.");
+	if (e.style !== "standard" && n.kind !== "service") throw Error("Android alarm alerts require a specific mobile_app service; notify.send_message does not accept channel data.");
+	let r = e.style === "android_tts" ? {
+		title: t.title,
+		message: "TTS",
+		data: {
+			ttl: 0,
+			priority: "high",
+			media_stream: "alarm_stream",
+			tts_text: t.message
+		}
+	} : {
+		...t,
+		...e.style === "android_alarm" ? { data: {
+			ttl: 0,
+			priority: "high",
+			channel: "alarm_stream"
+		} } : {}
+	};
+	return n.kind === "entity" ? {
+		action: "notify.send_message",
+		target: { entity_id: n.id },
+		data: r
+	} : {
+		action: n.id,
+		data: r
+	};
+}
+function hn(e, t) {
+	return mn(t, {
+		title: t.language === "zh" ? "打印提醒测试" : "Print reminder test",
+		message: t.language === "zh" ? `${e.name}：这是一条测试提醒，请确认手机是否响铃。` : `Test reminder for ${e.name}. Please check whether your phone sounds.`
+	});
+}
+function gn(e, t) {
+	let n = z(e.entities, "print_status");
+	if (!n || n.entry.device_id !== e.id) throw Error("The printer has no registered print-status sensor.");
+	let r = un(e.id), i = z(e.entities, "subtask_name");
+	if (i && i.entry.device_id !== e.id) throw Error("The project sensor does not belong to this printer.");
+	let a = `{{ device_attr('${r}', 'name_by_user') or device_attr('${r}', 'name') or 'Bambu Lab' }}`, o = i ? `{{ states('${dn(i.entry.entity_id)}') }}` : "", s = mn(t, {
+		title: t.language === "zh" ? "3D 打印已完成" : "3D print completed",
+		message: t.language === "zh" ? `${a} 已完成打印。${o}` : `${a} finished printing. ${o}`
+	});
+	return {
+		id: fn(r),
+		alias: `Bambu Dashboard · Print complete · ${e.name}`,
+		description: `${ln}${r}`,
+		initial_state: t.enabled,
+		triggers: [{
+			trigger: "state",
+			entity_id: dn(n.entry.entity_id),
+			from: ["running", "pause"],
+			to: "finish"
+		}],
+		conditions: [],
+		actions: [s],
+		mode: "queued"
+	};
+}
+function $(e) {
+	return typeof e == "object" && !!e && !Array.isArray(e);
+}
+function _n(e, t) {
+	if (e === t) return !0;
+	if (Array.isArray(e) && Array.isArray(t)) return e.length === t.length && e.every((e, n) => _n(e, t[n]));
+	if (!$(e) || !$(t)) return !1;
+	let n = Object.keys(e);
+	return n.length === Object.keys(t).length && n.every((n) => Object.hasOwn(t, n) && _n(e[n], t[n]));
+}
+function vn(e, t) {
+	if (!$(t) || t.id !== fn(e.id) || t.description !== `${ln}${e.id}`) throw Error("This automation ID is owned by another configuration. It will not be overwritten.");
+	let n = t.actions, r = Array.isArray(n) && n.length === 1 && $(n[0]) ? n[0] : void 0, i = r && $(r.target) ? r.target.entity_id : void 0, a = r?.action === "notify.send_message" && typeof i == "string" ? {
+		kind: "entity",
+		id: i
+	} : {
+		kind: "service",
+		id: String(r?.action)
+	}, o = r && $(r.data) ? r.data.title : void 0, s = r && $(r.data) ? r.data : void 0, c = s?.message === "TTS" && $(s.data) && s.data.media_stream === "alarm_stream" ? "android_tts" : s?.data === void 0 ? "standard" : "android_alarm", l = o === "3D 打印已完成" ? "zh" : o === "3D print completed" ? "en" : void 0;
+	if (typeof t.initial_state != "boolean" || !l || typeof t.alias != "string") throw Error("The managed notification automation was customized or has an unsupported version. Duplicate it before editing.");
+	let u = {
+		enabled: t.initial_state,
+		target: a,
+		language: l,
+		style: c
+	};
+	if (!_n(t, {
+		...gn(e, u),
+		alias: t.alias
+	})) throw Error("The managed notification automation was customized or its sensor IDs changed. Review it in HA before saving.");
+	return {
+		config: t,
+		settings: u
+	};
+}
+function yn(e, t) {
+	let n = fn(t);
+	return Object.values(e).find((e) => e.entity_id.startsWith("automation.") && e.attributes.id === n);
+}
+// src/ha/notifications.ts
+var bn = class {
+	constructor(e) {
+		this.hass = e;
+	}
+	async services() {
+		let e = await this.hass.callWS({ type: "get_services" });
+		if (!$(e) || !Object.values(e).every((e) => $(e) && Object.values(e).every((e) => $(e) && (e.name === void 0 || typeof e.name == "string")))) throw Error("HA returned an invalid service catalog.");
+		return e;
+	}
+	async load(e) {
+		let t = await this.request(e.id, "GET");
+		return t === null ? null : vn(e, t);
+	}
+	async save(e, t, n) {
+		let r = await this.load(e);
+		if (!_n(r?.config ?? null, n)) throw Error("Notification settings changed in HA. Refresh before saving again.");
+		let i = gn(e, t), a = await this.request(e.id, "POST", i);
+		if (!$(a) || a.result !== "ok") throw Error("HA did not confirm saving the notification automation.");
+		let o = yn(this.hass.states, e.id);
+		return _n(r?.config, i) && o && o.state !== (t.enabled ? "on" : "off") && await this.hass.callService("automation", t.enabled ? "turn_on" : "turn_off", { entity_id: o.entity_id }), {
+			config: i,
+			settings: t
+		};
+	}
+	async loadedConfig(e) {
+		let t = await this.hass.callWS({
+			type: "automation/config",
+			entity_id: e
+		});
+		if (!$(t) || !$(t.config)) throw Error("HA returned an invalid loaded automation configuration.");
+		return t.config;
+	}
+	async test(e, t) {
+		let n = hn(e, t);
+		await this.hass.callService("notify", n.action.slice(7), {
+			...n.data,
+			...n.target ? { entity_id: n.target.entity_id } : {}
+		});
+	}
+	async request(e, t, n) {
+		let r = await this.hass.fetchWithAuth(`/api/config/automation/config/${encodeURIComponent(fn(e))}`, t === "GET" ? void 0 : {
+			method: t,
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify(n)
+		}), i;
+		try {
+			i = await r.json();
+		} catch (e) {
+			throw Error(`Notification configuration: HTTP ${r.status}; invalid JSON response. ${R(e).message}`);
+		}
+		if (t === "GET" && r.status === 404 && $(i) && i.message === "Resource not found") return null;
+		if (!r.ok) {
+			let e = $(i) && typeof i.message == "string" ? i.message : r.statusText;
+			throw Error(`Notification configuration: HTTP ${r.status}. ${e}`);
+		}
+		return i;
+	}
+}, xn = class extends I {
+	constructor(...e) {
+		super(...e), this.language = "en", this.compact = !1, this._services = {}, this._enabled = !1, this._recipient = "", this._style = "android_alarm", this._loading = !1, this._saving = !1, this._error = "", this._runtimeError = "", this._dirty = !1, this.generation = 0, this.runtimeSequence = 0;
+	}
+	static {
+		this.properties = {
+			hass: { attribute: !1 },
+			printer: { attribute: !1 },
+			registry: { attribute: !1 },
+			language: { attribute: !1 },
+			compact: {
+				type: Boolean,
+				reflect: !0
+			},
+			_saved: { state: !0 },
+			_services: { state: !0 },
+			_enabled: { state: !0 },
+			_recipient: { state: !0 },
+			_style: { state: !0 },
+			_loading: { state: !0 },
+			_saving: { state: !0 },
+			_error: { state: !0 },
+			_runtimeConfig: { state: !0 },
+			_runtimeError: { state: !0 },
+			_dirty: { state: !0 },
+			_test: { state: !0 }
+		};
+	}
+	static {
+		this.styles = o`
+    :host { display: block; margin-top: 18px; }
+    * { box-sizing: border-box; }
+    section { background: var(--bd-surface); border: 1px solid var(--bd-line); border-radius: var(--bd-card-radius); box-shadow: var(--bd-shadow); overflow: hidden; }
+    header { display: flex; gap: 12px; align-items: center; justify-content: space-between; padding: 18px 20px; background: linear-gradient(110deg, color-mix(in srgb, var(--bd-panel) 36%, transparent), transparent); border-bottom: 1px solid var(--bd-line); }
+    h2 { font-size: 13px; font-weight: 650; margin: 0; }
+    .body { padding: 18px 20px; }
+    p { margin: 0 0 14px; color: var(--bd-muted); font-size: 12px; line-height: 1.6; }
+    .fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(170px, 100%), 1fr)); gap: 12px; margin: 12px 0; }
+    label { display: flex; flex-direction: column; gap: 7px; font-size: 11px; color: var(--bd-muted); min-width: 0; }
+    .check { flex-direction: row; align-items: center; color: var(--bd-text); font-size: 13px; }
+    input { accent-color: var(--bd-accent); width: 17px; height: 17px; }
+    select { width: 100%; min-width: 0; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--bd-line); background: var(--bd-inset); color: var(--bd-text); font: inherit; font-size: 12px; }
+    button { border: 1px solid var(--bd-line); background: var(--bd-inset); color: var(--bd-text); padding: 8px 13px; border-radius: 12px; box-shadow: 0 2px 6px #183c3005; cursor: pointer; font: inherit; font-size: 12px; }
+    button.primary { background: linear-gradient(145deg, var(--bd-accent), color-mix(in srgb, var(--bd-accent) 86%, #087a32)); color: #052b12; border-color: transparent; box-shadow: 0 4px 12px #00ae421c; font-weight: 650; }
+    button:disabled, select:disabled, input:disabled { opacity: .5; cursor: not-allowed; }
+    button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px solid var(--bd-accent); outline-offset: 3px; }
+    .footer { display: flex; align-items: center; flex-wrap: wrap; gap: 14px; }
+    .status { font-size: 12px; color: var(--bd-muted); }
+    .status.active { color: var(--bd-accent); }
+    .error { color: var(--bd-danger); overflow-wrap: anywhere; margin-bottom: 14px; font-size: 12px; }
+    .helper { font-size: 11px; margin: 12px 0 0; }
+    .automation { color: var(--bd-accent); border: 0; background: none; padding: 0; margin-top: 12px; }
+    .compact-summary { display: grid; gap: 5px; margin-bottom: 12px; font-size: 12px; overflow-wrap: anywhere; }
+    .compact-summary small { color: var(--bd-muted); }
+    summary { color: var(--bd-accent); cursor: pointer; font-size: 12px; }
+    details[open] > summary { margin-bottom: 14px; }
+    :host([compact]) header { padding: 12px 14px; }
+    :host([compact]) .body { padding: 14px; }
+    @media (max-width:700px) { .fields { grid-template-columns: 1fr; } }
+  `;
+	}
+	connectedCallback() {
+		super.connectedCallback(), this.requestUpdate();
+	}
+	disconnectedCallback() {
+		super.disconnectedCallback(), this.generation++, this.unsubscribe?.(), this.unsubscribe = void 0, this.context = void 0;
+	}
+	willUpdate(e) {
+		if (!this.hass || !this.printer || !this.registry) return;
+		let { connection: t, user: n } = this.hass;
+		if (this.context?.connection !== t || this.context?.printerId !== this.printer.id || this.context?.admin !== n?.is_admin) {
+			this.unsubscribe?.(), this.unsubscribe = void 0, this.context = {
+				connection: t,
+				printerId: this.printer.id,
+				admin: n?.is_admin
+			};
+			let e = ++this.generation;
+			this._saved = void 0, this._saving = !1, this._enabled = !1, this._recipient = "", this._style = "android_alarm", this._dirty = !1, this._test = void 0, this._runtimeConfig = void 0, this._runtimeError = "", this.runtimeId = void 0, n?.is_admin !== !1 && this.initialize(e);
+		} else e.has("hass") && this._saved && yn(this.hass.states, this.printer.id)?.entity_id !== this.runtimeId && this.verifyRuntime(this.generation);
+	}
+	updated() {
+		an(this.renderRoot);
+	}
+	t(e) {
+		return tn(this.language, e);
+	}
+	get targets() {
+		return this.hass && this.registry ? pn(this.registry, this.hass.states, this._services).filter((e) => this._style === "standard" || e.kind === "service") : [];
+	}
+	async initialize(e) {
+		this._loading = !0, this._error = "", this._test = void 0;
+		let t = this.hass;
+		try {
+			let n = await t.connection.subscribeEvents(() => {
+				this.verifyRuntime(e);
+			}, "automation_reloaded");
+			if (e !== this.generation) {
+				n();
+				return;
+			}
+			this.unsubscribe = n, await this.load(e);
+		} catch (t) {
+			e === this.generation && (this._error = R(t).message);
+		} finally {
+			e === this.generation && (this._loading = !1);
+		}
+	}
+	async load(e = this.generation) {
+		let t = this.hass, n = this.printer;
+		this._loading = !0, this._error = "", this._test = void 0;
+		try {
+			let r = new bn(t), [i, a] = await Promise.all([r.load(n), r.services()]);
+			if (e !== this.generation) return;
+			this._saved = i, this._services = a, this._enabled = i?.settings.enabled ?? !1, this._recipient = i ? Q(i.settings.target) : "", this._style = i?.settings.style ?? "android_alarm", this._dirty = !1, await this.verifyRuntime(e);
+		} catch (t) {
+			e === this.generation && (this._error = R(t).message);
+		} finally {
+			e === this.generation && (this._loading = !1);
+		}
+	}
+	async verifyRuntime(e) {
+		if (e !== this.generation) return;
+		let t = ++this.runtimeSequence, n = this.hass && this.printer ? yn(this.hass.states, this.printer.id) : void 0;
+		if (this.runtimeId = n?.entity_id, this._runtimeConfig = void 0, this._runtimeError = "", n && this._saved) try {
+			let r = await new bn(this.hass).loadedConfig(n.entity_id);
+			e === this.generation && t === this.runtimeSequence && (this._runtimeConfig = r);
+		} catch (n) {
+			e === this.generation && t === this.runtimeSequence && (this._runtimeError = R(n).message);
+		}
+	}
+	async save() {
+		let e = this.generation, t = this.printer, n = this.hass;
+		this._saving = !0, this._error = "";
+		try {
+			let r = this.targets.find((e) => Q(e) === this._recipient);
+			if (!r && (this._enabled || !this._saved || Q(this._saved.settings.target) !== this._recipient)) throw Error(this.t("chooseRecipient"));
+			if (this._enabled && !r?.available) throw Error(this.t("notifyTargetUnavailable"));
+			let i = {
+				enabled: this._enabled,
+				target: r ? {
+					kind: r.kind,
+					id: r.id
+				} : this._saved.settings.target,
+				language: this.language,
+				style: this._style
+			}, a = await new bn(n).save(t, i, this._saved?.config ?? null);
+			if (e !== this.generation) return;
+			this._saved = a, this._dirty = !1, this._runtimeConfig = void 0, await this.verifyRuntime(e);
+		} catch (t) {
+			e === this.generation && (this._error = R(t).message);
+		} finally {
+			e === this.generation && (this._saving = !1);
+		}
+	}
+	async testNotification() {
+		if (this._test?.phase === "sending") return;
+		let e = this.generation, t = this.printer, n = this.hass, r = this.targets.find((e) => Q(e) === this._recipient), i = r?.label || this._recipient;
+		this._test = {
+			phase: "sending",
+			recipient: i
+		};
+		try {
+			if (!r?.available) throw Error(this.t("notifyTargetUnavailable"));
+			await new bn(n).test(t, {
+				target: {
+					kind: r.kind,
+					id: r.id
+				},
+				style: this._style,
+				language: this.language
+			}), e === this.generation && (this._test = {
+				phase: "submitted",
+				recipient: i
+			});
+		} catch (t) {
+			e === this.generation && (this._test = {
+				phase: "error",
+				recipient: i,
+				error: R(t).message
+			});
+		}
+	}
+	runtimeStatus() {
+		if (this._saved === void 0) return "notifyNotLoaded";
+		if (this._saved === null) return "notifyNotConfigured";
+		if (!_n(this._runtimeConfig, this._saved.config)) return "notifyPending";
+		let e = yn(this.hass.states, this.printer.id);
+		return !e || !["on", "off"].includes(e.state) ? "notifyRuntimeUnavailable" : e.state === "on" === this._saved.settings.enabled ? this._saved.settings.enabled ? "notifyActive" : "notifyInactive" : "notifyStateMismatch";
+	}
+	render() {
+		if (!this.hass || !this.printer || !this.registry) return N;
+		let e = this.hass.user?.is_admin !== !1, t = this._loading || this._saving || this._test?.phase === "sending", n = this.targets.find((e) => Q(e) === this._recipient), r = yn(this.hass.states, this.printer.id), i = this.runtimeStatus();
+		return j`<section aria-label=${this.t("completionNotifications")}>
+      <header><h2>${this.t("completionNotifications")}</h2><button ?disabled=${t || !e} @click=${() => void (this.unsubscribe ? this.load() : this.initialize(this.generation))}>${this.t("refresh")}</button></header>
+      <div class="body">
+        ${this.compact ? j`<div class="compact-summary"><span class="status ${i === "notifyActive" ? "active" : ""}" role="status">${this.t(e ? i : "notifyAdmin")}</span>${this._saved ? j`<small>${this.targets.find((e) => Q(e) === Q(this._saved.settings.target))?.label || this._saved.settings.target.id}</small>` : N}</div>` : N}
+        <details ?open=${!this.compact || !!(this._error || this._runtimeError)}><summary ?hidden=${!this.compact}>${this.t("notifySettings")}</summary><p>${this.t("notifyHelp")}</p>
+        ${e ? j`
+          ${this._error ? j`<div class="error" role="alert">${this.t("notifyError")}: ${this._error}</div>` : N}
+          ${this._loading ? j`<p role="status">${this.t("loading")}</p>` : N}
+          <label class="check"><input type="checkbox" .checked=${this._enabled} ?disabled=${t || this._saved === void 0} @change=${(e) => {
+			this._enabled = e.target.checked, this._dirty = !0;
+		}}>${this.t("notifyEnable")}</label>
+          <div class="fields">
+            <label>${this.t("notifyStyle")}<select aria-label=${this.t("notifyStyle")} data-value=${this._style} ?disabled=${t || this._saved === void 0} @change=${(e) => {
+			this._style = e.target.value, this._recipient = "", this._dirty = !0, this._test = void 0;
+		}}><option value="android_alarm">${this.t("notifyAlarm")}</option><option value="android_tts">${this.t("notifySpeech")}</option><option value="standard">${this.t("notifyStandard")}</option></select></label>
+            <label>${this.t("notifyRecipient")}<select aria-label=${this.t("notifyRecipient")} data-value=${this._recipient} ?disabled=${t || this._saved === void 0} @change=${(e) => {
+			this._recipient = e.target.value, this._dirty = !0, this._test = void 0;
+		}}>
+              <option value="">${this.t("chooseRecipient")}</option>${this._recipient && !n ? j`<option value=${this._recipient} disabled>${this._recipient} · ${this.t("unavailable")}</option>` : N}
+              ${this.targets.map((e) => j`<option value=${Q(e)} title=${e.id} ?disabled=${!e.available}>${e.label} · ${this.t(e.kind === "service" ? "notifyMobileApp" : "notifyEntity")}${e.available ? "" : ` · ${this.t("unavailable")}`}</option>`)}
+            </select></label>
+          </div>
+          ${!this.targets.length && this._saved !== void 0 ? j`<p>${this.t(this._style === "standard" ? "notifyNoTargets" : "notifyNoAlarmTarget")}</p>` : N}
+          <div class="footer"><button class="primary" ?disabled=${t || this._saved === void 0 || !this._recipient || this._enabled && !n?.available} @click=${() => void this.save()}>${this._saving ? this.t("saving") : this.t("saveNotification")}</button><button class="test-notification" ?disabled=${t || !n?.available} @click=${() => void this.testNotification()}>${this.t(this._test?.phase === "sending" ? "notifyTestSending" : "notifyTest")}</button><span role="status" class="status ${i === "notifyActive" ? "active" : ""}">${this._dirty ? this.t("notifyUnsaved") : this.t(i)}</span></div>
+          <p class="helper">${this.t("notifyTestHelp")}</p>
+          ${this._test ? j`<p class="helper ${this._test.phase === "error" ? "error" : ""}" role=${this._test.phase === "error" ? "alert" : "status"}>${this._test.recipient} · ${this._test.phase === "error" ? `${this.t("notifyTestError")}: ${this._test.error}` : this.t(this._test.phase === "sending" ? "notifyTestSending" : "notifyTestSubmitted")}</p>` : N}
+          ${this._runtimeError ? j`<div class="error" role="alert">${this.t("notifyRuntimeError")}: ${this._runtimeError}</div>` : N}
+          ${this._style === "android_alarm" ? j`<p class="helper">${this.t("notifyAlarmHelp")}</p>` : N}
+          ${this._style === "android_tts" ? j`<p class="helper">${this.t("notifySpeechHelp")}</p>` : N}
+          <p class="helper">${this.t("notifyReliability")}</p>
+          ${r ? j`<button class="automation" @click=${() => this.dispatchEvent(new CustomEvent("hass-more-info", {
+			detail: { entityId: r.entity_id },
+			bubbles: !0,
+			composed: !0
+		}))}>${this.t("notifyViewAutomation")} · ${r.state}</button>` : N}
+        ` : j`<p role="status">${this.t("notifyAdmin")}</p>`}
+        </details>
+      </div></section>`;
+	}
+};
+customElements.define("bambu-completion-notifications", xn);
+// src/ui/masonry.ts
+var Sn = class extends HTMLElement {
+	constructor(...e) {
+		super(...e), this.items = /* @__PURE__ */ new Set();
+	}
+	connectedCallback() {
+		this.resize = new ResizeObserver(() => this.schedule()), this.mutation = new MutationObserver(() => this.syncChildren()), this.mutation.observe(this, { childList: !0 }), this.syncChildren();
+	}
+	disconnectedCallback() {
+		this.resize?.disconnect(), this.mutation?.disconnect(), this.frame !== void 0 && cancelAnimationFrame(this.frame), this.frame = void 0, this.items.clear();
+	}
+	syncChildren() {
+		let e = new Set(Array.from(this.children).filter((e) => e instanceof HTMLElement));
+		for (let t of this.items) e.has(t) || this.resize.unobserve(t);
+		for (let t of e) this.items.has(t) || this.resize.observe(t);
+		this.items = e, this.schedule();
+	}
+	schedule() {
+		this.isConnected && this.frame === void 0 && (this.frame = requestAnimationFrame(() => {
+			this.frame = void 0;
+			let e = getComputedStyle(this), t = Number.parseFloat(e.gridAutoRows), n = Number.parseFloat(e.rowGap);
+			for (let e of this.items) {
+				let r = `span ${Math.ceil((e.getBoundingClientRect().height + n) / (t + n))}`;
+				e.style.gridRowEnd !== r && (e.style.gridRowEnd = r);
+			}
+		}));
+	}
+};
+customElements.define("bambu-detail-masonry", Sn);
 // src/editor.ts
-var nn = class extends R {
+var Cn = class extends I {
 	constructor(...e) {
 		super(...e), this._config = {
 			type: "custom:bambu-dashboard-card",
@@ -1592,7 +2120,7 @@ var nn = class extends R {
 		this._config = { ...e };
 	}
 	updated(e) {
-		Qt(this.renderRoot), e.has("hass") && this.hass && this.connection !== this.hass.connection && (this.unsubscribe?.(), this.connection = this.hass.connection, this.unsubscribe = Ge(this.hass).subscribe((e) => {
+		an(this.renderRoot), e.has("hass") && this.hass && this.connection !== this.hass.connection && (this.unsubscribe?.(), this.connection = this.hass.connection, this.unsubscribe = qe(this.hass).subscribe((e) => {
 			this._catalog = e;
 		}));
 	}
@@ -1614,28 +2142,28 @@ var nn = class extends R {
 		r < 0 || i < 0 || i >= n.length || ([n[r], n[i]] = [n[i], n[r]], this.change({ devices: n }));
 	}
 	render() {
-		let e = this.hass?.language.startsWith("zh") ? "zh" : "en", t = (t) => Yt(e, t), n = this._config.devices || [], r = this._catalog.snapshot && this.hass ? Qe(this._catalog.snapshot, this.hass, {
+		let e = this.hass?.language.startsWith("zh") ? "zh" : "en", t = (t) => tn(e, t), n = this._config.devices || [], r = this._catalog.snapshot && this.hass ? tt(this._catalog.snapshot, this.hass, {
 			...this._config,
 			discovery: "auto"
 		}) : [];
-		return N`<label>${t("title")}<input type="text" .value=${this._config.title || ""} @input=${(e) => this.change({ title: e.target.value })}/></label>
+		return j`<label>${t("title")}<input type="text" .value=${this._config.title || ""} @input=${(e) => this.change({ title: e.target.value })}/></label>
       <label>${t("language")}<select data-value=${this._config.language || "auto"} @change=${(e) => this.change({ language: e.target.value })}><option value="auto">${t("automatic")}</option><option value="en">English</option><option value="zh">简体中文</option></select></label>
       <label class="check"><input type="checkbox" .checked=${this._config.discovery === "selected"} @change=${(e) => this.change({
 			discovery: e.target.checked ? "selected" : "auto",
 			devices: this._config.devices || []
 		})}/>${t("selectedDevices")}</label>
-      ${this._config.discovery === "selected" ? N`${r.map((e) => N`<div class="row"><label class="check"><input type="checkbox" .checked=${n.includes(e.id)} @change=${(t) => this.change({ devices: t.target.checked ? [...n, e.id] : n.filter((t) => t !== e.id) })}/>${e.name} <small>${e.model}</small></label>${n.includes(e.id) ? N`<button aria-label="Move up" @click=${() => this.move(e.id, -1)}>↑</button><button aria-label="Move down" @click=${() => this.move(e.id, 1)}>↓</button>` : F}</div>`)}` : N`<small>${t("allPrinters")} · ${r.length}</small>`}
-      ${this._catalog.error ? N`<p class="error">${this._catalog.error.message}</p>` : F}`;
+      ${this._config.discovery === "selected" ? j`${r.map((e) => j`<div class="row"><label class="check"><input type="checkbox" .checked=${n.includes(e.id)} @change=${(t) => this.change({ devices: t.target.checked ? [...n, e.id] : n.filter((t) => t !== e.id) })}/>${e.name} <small>${e.model}</small></label>${n.includes(e.id) ? j`<button aria-label="Move up" @click=${() => this.move(e.id, -1)}>↑</button><button aria-label="Move down" @click=${() => this.move(e.id, 1)}>↓</button>` : N}</div>`)}` : j`<small>${t("allPrinters")} · ${r.length}</small>`}
+      ${this._catalog.error ? j`<p class="error">${this._catalog.error.message}</p>` : N}`;
 	}
 };
-customElements.define("bambu-dashboard-card-editor", nn);
+customElements.define("bambu-dashboard-card-editor", Cn);
 // src/card.ts
-var rn = class extends R {
+var wn = 6e4, Tn = class extends I {
 	constructor(...e) {
 		super(...e), this._config = {
 			type: "custom:bambu-dashboard-card",
 			discovery: "auto"
-		}, this._catalogState = { loading: !0 }, this._selected = null, this._tab = "overview", this._search = "", this._error = "", this._notice = "", this._filesError = "", this._filesLoading = !1, this._pending = /* @__PURE__ */ new Map(), this._transfer = "", this.dialogGeneration = 0;
+		}, this._catalogState = { loading: !0 }, this._selected = null, this._tab = "overview", this._search = "", this._error = "", this._notice = "", this._filesError = "", this._filesLoading = !1, this._pending = /* @__PURE__ */ new Map(), this._transfer = "", this.dialogGeneration = 0, this._now = Date.now();
 	}
 	static {
 		this.properties = {
@@ -1651,15 +2179,16 @@ var rn = class extends R {
 			_filesLoading: { state: !0 },
 			_dialog: { state: !0 },
 			_pending: { state: !0 },
-			_transfer: { state: !0 }
+			_transfer: { state: !0 },
+			_now: { state: !0 }
 		};
 	}
 	static {
-		this.styles = a($t);
+		this.styles = a(on);
 	}
 	set hass(e) {
 		let t = this._hass;
-		this._hass = e, this.isConnected && this.attachCatalog(), this.requestUpdate("hass", t);
+		this._hass = e, this._now = Date.now(), this.isConnected && this.attachCatalog(), this.requestUpdate("hass", t);
 	}
 	get hass() {
 		return this._hass;
@@ -1687,13 +2216,15 @@ var rn = class extends R {
 		};
 	}
 	connectedCallback() {
-		super.connectedCallback(), this.attachCatalog();
+		super.connectedCallback(), this.attachCatalog(), this._now = Date.now(), this.clock = setInterval(() => {
+			this._now = Date.now();
+		}, wn);
 	}
 	disconnectedCallback() {
-		super.disconnectedCallback(), this.unsubscribe?.(), this.unsubscribe = void 0, this.connection = void 0, this.downloadUrl && URL.revokeObjectURL(this.downloadUrl);
+		super.disconnectedCallback(), this.unsubscribe?.(), this.unsubscribe = void 0, this.connection = void 0, clearInterval(this.clock), this.clock = void 0, this.downloadUrl && URL.revokeObjectURL(this.downloadUrl);
 	}
 	attachCatalog() {
-		this._hass && this.connection !== this._hass.connection && (this.unsubscribe?.(), this.connection = this._hass.connection, this.unsubscribe = Ge(this._hass).subscribe((e) => {
+		this._hass && this.connection !== this._hass.connection && (this.unsubscribe?.(), this.connection = this._hass.connection, this.unsubscribe = qe(this._hass).subscribe((e) => {
 			this._catalogState = e;
 		}));
 	}
@@ -1701,20 +2232,20 @@ var rn = class extends R {
 		return this._config.language && this._config.language !== "auto" ? this._config.language : this._hass?.language.startsWith("zh") ? "zh" : "en";
 	}
 	t(e) {
-		return Yt(this.language, e);
+		return tn(this.language, e);
 	}
 	get printers() {
-		return this._catalogState.snapshot && this._hass ? Qe(this._catalogState.snapshot, this._hass, this._config) : [];
+		return this._catalogState.snapshot && this._hass ? tt(this._catalogState.snapshot, this._hass, this._config) : [];
 	}
 	get currentPrinters() {
 		return this.printers.filter((e) => !this._selected || e.id === this._selected);
 	}
 	get client() {
 		if (!this._hass) throw Error("Home Assistant is not connected.");
-		return new qt(this._hass);
+		return new Xt(this._hass);
 	}
 	target(e) {
-		let t = (this._catalogState.snapshot && this._hass ? Qe(this._catalogState.snapshot, this._hass, {
+		let t = (this._catalogState.snapshot && this._hass ? tt(this._catalogState.snapshot, this._hass, {
 			type: this._config.type,
 			discovery: "auto"
 		}) : []).find((t) => t.id === e);
@@ -1723,7 +2254,7 @@ var rn = class extends R {
 	}
 	willUpdate(e) {
 		if (!e.has("hass") && !e.has("_catalogState")) return;
-		let t = this.printers, n = this._catalogState.snapshot && this._hass ? Qe(this._catalogState.snapshot, this._hass, {
+		let t = this.printers, n = this._catalogState.snapshot && this._hass ? tt(this._catalogState.snapshot, this._hass, {
 			type: this._config.type,
 			discovery: "auto"
 		}) : [];
@@ -1734,7 +2265,7 @@ var rn = class extends R {
 		}
 	}
 	updated() {
-		Qt(this.renderRoot);
+		an(this.renderRoot);
 	}
 	value(e) {
 		if (!e) return this.t("unsupported");
@@ -1746,7 +2277,24 @@ var rn = class extends R {
 		return `${e.state.state}${t ? ` ${String(t)}` : ""}`;
 	}
 	sensor(e, t) {
-		return this.value(V(e.entities, t));
+		return this.value(z(e.entities, t));
+	}
+	remaining(e) {
+		let t = z(e.entities, "remaining_time"), n = Qt(e);
+		if (n === null) return this.value(t);
+		let r = Math.round(n / 6e4), i = Math.floor(r / 60), a = r % 60;
+		return [i ? `${i} ${this.t("hourUnit")}` : "", a || !i ? `${a} ${this.t("minuteUnit")}` : ""].filter(Boolean).join(" ");
+	}
+	completionEstimate(e) {
+		let t = $t(e, this._now), n = t === null ? null : new Intl.DateTimeFormat(this.language, {
+			month: "2-digit",
+			day: "2-digit",
+			hour: "2-digit",
+			minute: "2-digit",
+			hour12: !1,
+			timeZone: this._hass?.config?.time_zone
+		}).format(t);
+		return j`<div class="completion-estimate"><span>${this.t("estimatedFinish")}</span>${t === null ? j`<small>${e.status === "pause" ? this.t("estimatePaused") : "—"}</small>` : j`<time datetime=${new Date(t).toISOString()}>${n}</time>`}</div>`;
 	}
 	status(e) {
 		let t = {
@@ -1763,7 +2311,7 @@ var rn = class extends R {
 		return t[e.status] ? this.t(t[e.status]) : e.status;
 	}
 	statusBadge(e) {
-		return N`<span class="status ${e.status}"><span class="dot ${e.status}"></span>${this.status(e)}</span>`;
+		return j`<span class="status ${e.status}"><span class="dot ${e.status}"></span>${this.status(e)}</span>`;
 	}
 	selectPrinter(e) {
 		this._selected = e, this._search = "";
@@ -1773,8 +2321,8 @@ var rn = class extends R {
 	}
 	progress(e) {
 		let t = e.progress !== null && e.progress >= 0 && e.progress <= 100;
-		return N`<div class="progress-label"><span>${this.t("progress")}</span><strong>${e.progress === null ? "—" : `${e.progress}%`}</strong></div>
-      <div class="progress-track" role="progressbar" aria-label=${this.t("progress")} aria-valuenow=${t ? e.progress : F} style=${`--progress:${t ? e.progress : 0}%`}><div class="progress-fill"></div></div>`;
+		return j`<div class="progress-label"><span>${this.t("progress")}</span><strong>${e.progress === null ? "—" : `${e.progress}%`}</strong></div>
+      <div class="progress-track" role="progressbar" aria-label=${this.t("progress")} aria-valuenow=${t ? e.progress : N} style=${`--progress:${t ? e.progress : 0}%`}><div class="progress-fill"></div></div>`;
 	}
 	async runAction(e, t, n, r) {
 		if (!this._pending.has(e)) {
@@ -1791,7 +2339,7 @@ var rn = class extends R {
 					confirmed: r
 				});
 			} catch (n) {
-				this.clearPending(e), this._error = `${t}: ${B(n).message}`;
+				this.clearPending(e), this._error = `${t}: ${R(n).message}`;
 			}
 		}
 	}
@@ -1809,7 +2357,7 @@ var rn = class extends R {
 		try {
 			this._files = await this.client.files();
 		} catch (e) {
-			this._filesError = B(e).message;
+			this._filesError = R(e).message;
 		} finally {
 			this._filesLoading = !1;
 		}
@@ -1821,7 +2369,7 @@ var rn = class extends R {
 			let n = document.createElement("a");
 			n.href = this.downloadUrl, n.download = e.filename, n.click();
 		} catch (e) {
-			this._error = B(e).message;
+			this._error = R(e).message;
 		}
 	}
 	async openStart(e, t) {
@@ -1844,7 +2392,7 @@ var rn = class extends R {
 				amsMapping: ""
 			}
 		}, t) try {
-			let e = Ht(await this.client.fileBytes(t.path));
+			let e = Gt(await this.client.fileBytes(t.path));
 			if (n !== this.dialogGeneration || this._dialog?.kind !== "start") return;
 			this._dialog = {
 				...this._dialog,
@@ -1859,7 +2407,7 @@ var rn = class extends R {
 			n === this.dialogGeneration && this._dialog?.kind === "start" && (this._dialog = {
 				...this._dialog,
 				loading: !1,
-				error: B(e).message
+				error: R(e).message
 			});
 		}
 	}
@@ -1881,16 +2429,16 @@ var rn = class extends R {
 		if (e?.kind !== "start") return;
 		let t = e.printerId, n = this.target(t);
 		try {
-			if (Gt(e.options, e.metadata?.plates), e.file) {
+			if (Jt(e.options, e.metadata?.plates), e.file) {
 				if (!e.metadata) throw Error("Project metadata has not been verified.");
-				let t = Wt(e.metadata, n.model, Je(V(n.entities, "nozzle_diameter")));
+				let t = qt(e.metadata, n.model, Xe(z(n.entities, "nozzle_diameter")));
 				if (t.length) throw Error(t.join(" "));
 			} else if (!e.acknowledged) throw Error(this.t("manualConfirm"));
 			if (e.options.useAms && !n.ams.some((e) => !e.external)) throw Error("No AMS is registered for this printer.");
 		} catch (t) {
 			this._dialog = {
 				...e,
-				error: B(t).message
+				error: R(t).message
 			};
 			return;
 		}
@@ -1903,21 +2451,21 @@ var rn = class extends R {
 	}
 	render() {
 		let e = this.printers, t = e.find((e) => e.id === this._selected);
-		return N`<div class="shell">
-      <header class="topbar"><div class="brand"><span class="brand-mark">${$("printer")}</span><div><div class="brand-title">${this._config.title || "Bambu Dashboard"}</div><div class="brand-subtitle">HOME ASSISTANT · PRINT WORKSPACE</div></div></div>
-      <div class="top-actions"><span class="connection"><span class="dot ${this._catalogState.error ? "failed" : "ready"}"></span>ha-bambulab</span><button class="icon-button" aria-label=${this.t("refresh")} @click=${() => this._hass && void Ge(this._hass).refresh()}>${$("refresh")}</button></div></header>
+		return j`<div class="shell">
+      <header class="topbar"><div class="brand"><span class="brand-mark">${Z("printer")}</span><div><div class="brand-title">${this._config.title || "Bambu Dashboard"}</div><div class="brand-subtitle">HOME ASSISTANT · PRINT WORKSPACE</div></div></div>
+      <div class="top-actions"><span class="connection"><span class="dot ${this._catalogState.error ? "failed" : "ready"}"></span>ha-bambulab</span><button class="icon-button" aria-label=${this.t("refresh")} @click=${() => this._hass && void qe(this._hass).refresh()}>${Z("refresh")}</button></div></header>
       <div class="workspace">${this.renderSidebar(e)}<main class="main">
-        <div class="mobile-picker"><select aria-label=${this.t("printers")} data-value=${this._selected || ""} @change=${(e) => this.selectPrinter(e.target.value || null)}><option value="">${this.t("allPrinters")}</option>${e.map((e) => N`<option value=${e.id}>${e.name}</option>`)}</select></div>
-        <div class="page-heading"><div><div class="eyebrow">${t ? t.model : "YOUR PRINT FARM"}</div><h1>${t?.name || this.t("workspace")}</h1><p class="description">${t ? `${this.status(t)} · ${this.value(t.stage)}` : this.t("subtitle")}</p></div>
+        <div class="mobile-picker"><select aria-label=${this.t("printers")} data-value=${this._selected || ""} @change=${(e) => this.selectPrinter(e.target.value || null)}><option value="">${this.t("allPrinters")}</option>${e.map((e) => j`<option value=${e.id}>${e.name}</option>`)}</select></div>
+        <div class="page-heading"><div><div class="eyebrow">${t ? t.model : "YOUR PRINT FARM"}</div><h1>${t?.name || this.t("workspace")}</h1>${t ? j`<p class="description ha-name">${this.t("haName")}: ${t.haName}</p>` : N}<p class="description">${t ? `${this.status(t)} · ${this.value(t.stage)}` : this.t("subtitle")}</p></div>
         <div class="stats"><span class="stat"><b>${e.length}</b>${this.t("printers")}</span><span class="stat"><b>${e.filter((e) => e.status === "running").length}</b>${this.t("printing")}</span></div></div>
         ${this.renderBanners()}
-        ${this._catalogState.error ? N`<div class="banner error">${$("alert")}<div>${this.t("registryError")}: ${this._catalogState.error.message}</div></div>` : F}
+        ${this._catalogState.error ? j`<div class="banner error">${Z("alert")}<div>${this.t("registryError")}: ${this._catalogState.error.message}</div></div>` : N}
         <nav class="tabs" aria-label="Workspace">${[
 			"overview",
 			"ams",
 			"files",
 			"parameters"
-		].map((e, t) => N`<button class=${this._tab === e ? "active" : ""} @click=${() => this.setTab(e)}>${$([
+		].map((e, t) => j`<button class=${this._tab === e ? "active" : ""} @click=${() => this.setTab(e)}>${Z([
 			"grid",
 			"spool",
 			"folder",
@@ -1927,36 +2475,42 @@ var rn = class extends R {
       </main></div></div>${this.renderDialog()}`;
 	}
 	renderSidebar(e) {
-		return N`<aside class="sidebar"><div class="sidebar-label">WORKSPACE</div><button class=${this._selected ? "" : "selected"} @click=${() => this.selectPrinter(null)}>${$("grid")}${this.t("allPrinters")}</button><div class="sidebar-rule"></div><div class="sidebar-label">${this.t("printers")}</div>
-      ${He(e, (e) => e.id, (e) => N`<button class="printer-link ${this._selected === e.id ? "selected" : ""}" @click=${() => this.selectPrinter(e.id)}>${$("printer")}<span class="name">${e.name}<small class="model">${e.model}</small></span><span class="dot ${e.status}"></span></button>`)}
+		return j`<aside class="sidebar"><div class="sidebar-label">WORKSPACE</div><button class=${this._selected ? "" : "selected"} @click=${() => this.selectPrinter(null)}>${Z("grid")}${this.t("allPrinters")}</button><div class="sidebar-rule"></div><div class="sidebar-label">${this.t("printers")}</div>
+      ${We(e, (e) => e.id, (e) => j`<button class="printer-link ${this._selected === e.id ? "selected" : ""}" title=${`${e.name} · ${e.haName}`} @click=${() => this.selectPrinter(e.id)}>${Z("printer")}<span class="name">${e.name}<small class="model">${e.haName === e.name ? e.model : e.haName}</small></span><span class="dot ${e.status}"></span></button>`)}
       <div class="sidebar-foot">Bambu Dashboard Card<br>v0.1 · Community project</div></aside>`;
 	}
 	renderBanners() {
-		return N`${this._error ? N`<div class="banner error" role="alert">${$("alert")}<div class="copy">${this._error}</div><button class="icon-button" aria-label=${this.t("close")} @click=${() => {
+		return j`${this._error ? j`<div class="banner error" role="alert">${Z("alert")}<div class="copy">${this._error}</div><button class="icon-button" aria-label=${this.t("close")} @click=${() => {
 			this._error = "";
-		}}>${$("close")}</button></div>` : F}
-      ${this._notice ? N`<div class="banner notice" role="status">${$("check")}<div class="copy">${this._notice}</div><button class="icon-button" aria-label=${this.t("close")} @click=${() => {
+		}}>${Z("close")}</button></div>` : N}
+      ${this._notice ? j`<div class="banner notice" role="status">${Z("check")}<div class="copy">${this._notice}</div><button class="icon-button" aria-label=${this.t("close")} @click=${() => {
 			this._notice = "";
-		}}>${$("close")}</button></div>` : F}
-      ${[...this._pending].map(([e, t]) => N`<div class="banner notice" role="status">${$("clock")}<div class="copy"><b>${t.name}</b><br>${t.phase === "request" ? this._transfer || this.t("loading") : this.t("submitted")}</div>${t.phase === "submitted" ? N`<button class="button small" @click=${() => this.clearPending(e)}>${this.t("dismiss")}</button>` : F}</div>`)}`;
+		}}>${Z("close")}</button></div>` : N}
+      ${[...this._pending].map(([e, t]) => j`<div class="banner notice" role="status">${Z("clock")}<div class="copy"><b>${t.name}</b><br>${t.phase === "request" ? this._transfer || this.t("loading") : this.t("submitted")}</div>${t.phase === "submitted" ? j`<button class="button small" @click=${() => this.clearPending(e)}>${this.t("dismiss")}</button>` : N}</div>`)}`;
 	}
 	renderEmpty(e, t) {
-		return N`<div class="panel empty">${$(e)}<p>${t}</p></div>`;
+		return j`<div class="panel empty">${Z(e)}<p>${t}</p></div>`;
 	}
 	renderContent(e) {
-		return this._tab === "files" ? this.renderFiles() : this._tab === "parameters" ? this.renderParameters() : this._tab === "ams" ? N`${this.currentPrinters.map((e) => this.renderAms(e, !0))}` : e ? this.renderDetail(e) : N`<div class="printer-grid">${He(this.printers, (e) => e.id, (e) => this.renderTile(e))}</div>`;
+		return this._tab === "files" ? this.renderFiles() : this._tab === "parameters" ? this.renderParameters() : this._tab === "ams" ? j`${this.currentPrinters.map((e) => this.renderAms(e, !0))}` : e ? this.renderDetail(e) : j`<div class="printer-grid">${We(this.printers, (e) => e.id, (e) => this.renderTile(e))}</div>`;
 	}
 	renderTile(e) {
-		let t = U(V(e.entities, "subtask_name"));
-		return N`<article class="panel printer-card"><button class="card-heading" @click=${() => this.selectPrinter(e.id)}><span class="machine-badge">${$("printer")}</span><span class="heading-copy"><b>${e.name}</b><small>${e.model}</small></span>${this.statusBadge(e)}</button>
-      <div class="preview">${Zt()}${e.camera && H(e.camera) ? N`<bambu-dashboard-camera .hass=${this._hass} .entity=${e.camera.entry.entity_id}></bambu-dashboard-camera>` : F}<span class="preview-caption">${e.camera ? this.t("camera") : this.t("unsupported")}</span></div>
-      <div class="tile-content"><div class="task-line">${$("folder")}<span>${t || this.t("noTask")}</span></div>${this.progress(e)}<div class="tile-metrics"><div><span>${this.t("remaining")}</span><strong>${this.sensor(e, "remaining_time")}</strong></div><div><span>${this.t("nozzle")}</span><strong>${this.sensor(e, "nozzle_temp")}</strong></div><div><span>${this.t("bed")}</span><strong>${this.sensor(e, "bed_temp")}</strong></div></div>
-      <div class="tile-footer"><div class="filament-dots">${e.ams.flatMap((e) => e.slots).map(({ entity: e }) => N`<span title=${Ye(e)} class="filament-dot ${e.state?.attributes.active ? "active" : ""}" style=${`--filament:${nt(e.state?.attributes.color) || "transparent"}`}></span>`)}</div><button class="button small" @click=${() => this.selectPrinter(e.id)}>${this.t("details")}${$("arrow")}</button></div></div></article>`;
+		let t = V(z(e.entities, "subtask_name")), n = Ze(e), r = z(e.entities, "speed_profile"), i = n === null ? V(r) === null ? this.value(r) : this.t("unknown") : `${n}%`;
+		return j`<article class="panel printer-card"><button class="card-heading" @click=${() => this.selectPrinter(e.id)}><span class="machine-badge">${Z("printer")}</span><span class="heading-copy"><b>${e.name}</b><small>${e.haName === e.name ? e.model : `${e.model} · ${e.haName}`}</small></span>${this.statusBadge(e)}</button>
+      <div class="tile-media"><div class="preview" aria-label=${this.t("camera")}>${rn()}${e.camera && B(e.camera) ? j`<bambu-dashboard-camera .hass=${this._hass} .entity=${e.camera.entry.entity_id}></bambu-dashboard-camera>` : N}<span class="preview-caption">${e.camera ? this.t("camera") : this.t("unsupported")}</span></div>
+      <div class="project-preview" aria-label=${this.t("projectPreview")}>${e.cover && V(e.cover) ? j`<bambu-dashboard-file-image .hass=${this._hass} .entity=${e.cover.entry.entity_id} .version=${V(e.cover) || ""}></bambu-dashboard-file-image>` : j`<div class="preview-empty">${Z("folder")}<span>${this.t("noProjectPreview")}</span></div>`}<span class="preview-caption">${this.t("projectPreview")}</span></div></div>
+      <div class="tile-content"><div class="task-line">${Z("folder")}<span>${t || this.t("noTask")}</span></div>${this.progress(e)}<div class="tile-metrics"><div><span>${this.t("remaining")}</span><strong>${this.remaining(e)}</strong>${this.completionEstimate(e)}</div><div><span>${this.t("nozzle")}</span><strong>${this.sensor(e, "nozzle_temp")}</strong></div><div><span>${this.t("bed")}</span><strong>${this.sensor(e, "bed_temp")}</strong></div><div class="tile-speed"><span>${this.t("speed")}</span><strong>${i}</strong></div></div>
+      <div class="tile-footer"><div class="filament-groups">${e.ams.map((e) => j`<div class="filament-group" role="group" aria-label=${this.filamentSourceLabel(e)} title=${e.device.name_by_user || e.device.name || this.filamentSourceLabel(e)}><span class="filament-source">${Z("spool")}${this.filamentSourceLabel(e)}</span><div class="filament-dots">${e.slots.map(({ entity: e }) => j`<span title=${Qe(e)} class="filament-dot ${e.state?.attributes.active ? "active" : ""}" style=${`--filament:${at(e.state?.attributes.color) || "transparent"}`}></span>`)}</div></div>`)}</div><button class="button small" @click=${() => this.selectPrinter(e.id)}>${this.t("details")}${Z("arrow")}</button></div></div></article>`;
+	}
+	filamentSourceLabel(e) {
+		return e.external ? this.t("external") : e.device.model || e.device.name_by_user || e.device.name || "AMS";
 	}
 	renderDetail(e) {
-		return N`<div class="detail-grid"><section class="panel"><div class="panel-head"><h2>${$("camera")} ${this.t("camera")}</h2><span class="description">${e.camera && Number(e.camera.state?.attributes.supported_features) & 2 ? this.t("live") : this.t("snapshot")}</span></div><div class="camera-large">${e.camera ? N`<bambu-dashboard-camera .hass=${this._hass} .entity=${e.camera.entry.entity_id}></bambu-dashboard-camera>` : N`${Zt()}<span class="preview-caption">${this.t("unsupported")}</span>`}</div></section>
-      <section class="panel"><div class="panel-head"><h2>${this.t("controls")}</h2>${this.statusBadge(e)}</div><div class="panel-body"><div class="job-top">${e.cover && U(e.cover) ? N`<div class="job-cover"><bambu-dashboard-file-image .hass=${this._hass} .entity=${e.cover.entry.entity_id} .version=${U(e.cover) || ""}></bambu-dashboard-file-image></div>` : F}<div><div class="eyebrow">${this.t("task")}</div><div class="job-name">${U(V(e.entities, "subtask_name")) || this.t("noTask")}</div></div></div>${this.progress(e)}<div class="job-summary"><div><span>${this.t("remaining")}</span><b>${this.sensor(e, "remaining_time")}</b></div><div><span>${this.t("layers")}</span><b>${this.sensor(e, "current_layer")} / ${this.sensor(e, "total_layers")}</b></div></div>${this.renderControls(e)}</div></section></div>
-      <div class="metric-grid">${[
+		return j`<bambu-detail-masonry class="detail-grid">
+      <section class="panel camera-panel"><div class="panel-head"><h2>${Z("camera")} ${this.t("camera")}</h2><span class="description">${e.camera && Number(e.camera.state?.attributes.supported_features) & 2 ? this.t("live") : this.t("snapshot")}</span></div><div class="camera-large">${e.camera ? j`<bambu-dashboard-camera .hass=${this._hass} .entity=${e.camera.entry.entity_id}></bambu-dashboard-camera>` : j`${rn()}<span class="preview-caption">${this.t("unsupported")}</span>`}</div></section>
+      <section class="panel current-job"><div class="panel-head"><h2>${Z("folder")} ${this.t("task")}</h2>${this.statusBadge(e)}</div><div class="panel-body"><div class="job-top">${e.cover && V(e.cover) ? j`<div class="job-cover"><bambu-dashboard-file-image .hass=${this._hass} .entity=${e.cover.entry.entity_id} .version=${V(e.cover) || ""}></bambu-dashboard-file-image></div>` : N}<div class="job-name">${V(z(e.entities, "subtask_name")) || this.t("noTask")}</div></div>${this.progress(e)}<div class="job-summary"><div><span>${this.t("remaining")}</span><b>${this.remaining(e)}</b>${this.completionEstimate(e)}</div><div><span>${this.t("layers")}</span><b>${this.sensor(e, "current_layer")} / ${this.sensor(e, "total_layers")}</b></div></div></div></section>
+      <section class="panel controls-panel"><div class="panel-head"><h2>${Z("tune")} ${this.t("controls")}</h2></div><div class="panel-body">${this.renderControls(e)}</div></section>
+      <section class="panel live-metrics"><div class="panel-head"><h2>${Z("heat")} ${this.t("liveParameters")}</h2></div><div class="detail-metrics">${[
 			[
 				"nozzle",
 				"nozzle_temp",
@@ -1982,38 +2536,41 @@ var rn = class extends R {
 				"print_length",
 				""
 			]
-		].map(([t, n, r]) => N`<div class="panel metric"><div class="metric-top">${$(t === "nozzle" || t === "bed" ? "heat" : "tune")}${this.t(t)}</div><strong>${this.sensor(e, n)}</strong>${r ? N`<small>→ ${this.sensor(e, r)}</small>` : F}</div>`)}</div>${this.renderAms(e, !1)}`;
+		].map(([t, n, r]) => j`<div class="metric"><div class="metric-top">${Z(t === "nozzle" || t === "bed" ? "heat" : "tune")}${this.t(t)}</div><strong>${this.sensor(e, n)}</strong>${r ? j`<small>→ ${this.sensor(e, r)}</small>` : N}</div>`)}</div></section>
+      ${e.ams.length ? e.ams.map((t) => this.renderAmsUnit(e, t, !1)) : j`<section class="panel empty">${Z("spool")}<p>${this.t("noAms")}</p></section>`}
+      <bambu-completion-notifications .hass=${this._hass} .printer=${e} .registry=${this._catalogState.snapshot} .language=${this.language} .compact=${!0}></bambu-completion-notifications>
+    </bambu-detail-masonry>`;
 	}
 	renderControls(e) {
 		let t = this._pending.has(e.id), n = e.speed?.state?.attributes.options;
-		return N`<button class="button primary" style="width:100%" ?disabled=${!W(e) || t} @click=${() => void this.openStart(e)}>${$("play")}${this.t("start")}</button><div class="control-row"><button class="button" ?disabled=${t || !(e.status === "running" ? H(e.pause) : e.status === "pause" && H(e.resume))} @click=${() => this.press(e, e.status === "pause" ? "resume" : "pause")}>${$(e.status === "pause" ? "play" : "pause")}${this.t(e.status === "pause" ? "resumeAction" : "pauseAction")}</button><button class="button danger" ?disabled=${t || !["running", "pause"].includes(e.status) || !H(e.stop)} @click=${() => this.press(e, "stop")}>${$("stop")}${this.t("stopAction")}</button></div>
-      <div class="control-divider"></div><label class="field"><span>${this.t("speed")}</span><select data-value=${U(e.speed) || ""} ?disabled=${t || e.status !== "running" || !H(e.speed)} @change=${(t) => {
+		return j`<button class="button primary" style="width:100%" ?disabled=${!H(e) || t} @click=${() => void this.openStart(e)}>${Z("play")}${this.t("start")}</button><div class="control-row"><button class="button" ?disabled=${t || !(e.status === "running" ? B(e.pause) : e.status === "pause" && B(e.resume))} @click=${() => this.press(e, e.status === "pause" ? "resume" : "pause")}>${Z(e.status === "pause" ? "play" : "pause")}${this.t(e.status === "pause" ? "resumeAction" : "pauseAction")}</button><button class="button danger" ?disabled=${t || !["running", "pause"].includes(e.status) || !B(e.stop)} @click=${() => this.press(e, "stop")}>${Z("stop")}${this.t("stopAction")}</button></div>
+      <div class="control-divider"></div><label class="field"><span>${this.t("speed")}</span><select data-value=${V(e.speed) || ""} ?disabled=${t || e.status !== "running" || !B(e.speed)} @change=${(t) => {
 			let n = t.target.value;
-			this.runAction(e.id, `${e.name} · ${this.t("speed")}`, (e) => this.client.speed(e, n), (e) => U(e.speed) === n);
-		}}><option value="" disabled>${this.value(e.speed)}</option>${Array.isArray(n) ? n.map((e) => N`<option value=${String(e)}>${String(e)}</option>`) : F}</select></label><div class="helper">${this.t("speedHelp")}</div>
-      <div class="control-divider"></div><div class="light-control"><span>${$("light")} ${this.t("light")}</span><button class="button small ${U(e.light) === "on" ? "on" : ""}" ?disabled=${t || !H(e.light) || !["on", "off"].includes(U(e.light) || "")} @click=${() => {
-			let t = U(e.light) === "on" ? "off" : "on";
-			this.runAction(e.id, `${e.name} · ${this.t("light")}`, (e) => this.client.light(e), (e) => U(e.light) === t);
-		}}>${U(e.light) === "on" ? this.t("on") : U(e.light) === "off" ? this.t("off") : this.value(e.light)}</button></div><div class="helper">${this.t("lightHelp")}</div>`;
+			this.runAction(e.id, `${e.name} · ${this.t("speed")}`, (e) => this.client.speed(e, n), (e) => V(e.speed) === n);
+		}}><option value="" disabled>${this.value(e.speed)}</option>${Array.isArray(n) ? n.map((e) => j`<option value=${String(e)}>${String(e)}</option>`) : N}</select></label><div class="helper">${this.t("speedHelp")}</div>
+      <div class="control-divider"></div><div class="light-control"><span>${Z("light")} ${this.t("light")}</span><button class="button small ${V(e.light) === "on" ? "on" : ""}" ?disabled=${t || !B(e.light) || !["on", "off"].includes(V(e.light) || "")} @click=${() => {
+			let t = V(e.light) === "on" ? "off" : "on";
+			this.runAction(e.id, `${e.name} · ${this.t("light")}`, (e) => this.client.light(e), (e) => V(e.light) === t);
+		}}>${V(e.light) === "on" ? this.t("on") : V(e.light) === "off" ? this.t("off") : this.value(e.light)}</button></div><div class="helper">${this.t("lightHelp")}</div>`;
 	}
 	renderAms(e, t) {
-		return e.ams.length ? N`${e.ams.map((n) => this.renderAmsUnit(e, n, t))}` : N`<div class="ams-section">${this.renderEmpty("spool", `${t ? `${e.name} · ` : ""}${this.t("noAms")}`)}</div>`;
+		return e.ams.length ? j`${e.ams.map((n) => this.renderAmsUnit(e, n, t))}` : j`<div class="ams-section">${this.renderEmpty("spool", `${t ? `${e.name} · ` : ""}${this.t("noAms")}`)}</div>`;
 	}
 	renderAmsUnit(e, t, n) {
-		let r = V(t.entities, "humidity"), i = V(t.entities, "ams_temp");
-		return N`<section class="panel ams-section"><div class="panel-head"><h2>${$("spool")} ${n ? `${e.name} · ` : ""}${t.external ? this.t("external") : t.device.name_by_user || t.device.model}</h2><span class="description">${t.slots.length} ${t.external ? "" : "slots"}</span></div><div class="ams-grid">${t.slots.map(({ index: e, entity: n }) => {
-			let r = n.state?.attributes || {}, i = rt(n);
-			return N`<div class="spool ${r.active === !0 ? "active" : ""}" style=${`--filament:${nt(r.color) || "var(--bd-raised)"}`}><div class="spool-index">${t.external ? this.t("external") : `SLOT ${String(e).padStart(2, "0")}`}</div>${r.active === !0 ? N`<span class="active-label">● ${this.t("active")}</span>` : F}<div class="spool-visual"></div><h3>${r.empty === !0 ? this.t("empty") : this.value(n)}</h3><div class="material">${typeof r.type == "string" ? r.type : "—"} ${nt(r.color) || ""}</div><div class="remain">${i === null ? this.t("remainingUnknown") : `${i}%`}</div></div>`;
-		})}</div>${r || i ? N`<div class="ams-extra">${r ? N`<span>${this.t("humidity")}: ${this.value(r)}</span>` : F}${i ? N`<span>${this.t("temperature")}: ${this.value(i)}</span>` : F}</div>` : F}</section>`;
+		let r = z(t.entities, "humidity"), i = z(t.entities, "ams_temp");
+		return j`<section class="panel ams-section"><div class="panel-head"><h2>${Z("spool")} ${n ? `${e.name} · ` : ""}${t.external ? this.t("external") : t.device.name_by_user || t.device.model}</h2><span class="description">${t.slots.length} ${t.external ? "" : "slots"}</span></div><div class="ams-grid">${t.slots.map(({ index: e, entity: n }) => {
+			let r = n.state?.attributes || {}, i = ot(n);
+			return j`<div class="spool ${r.active === !0 ? "active" : ""}" style=${`--filament:${at(r.color) || "var(--bd-raised)"}`}><div class="spool-index">${t.external ? this.t("external") : `SLOT ${String(e).padStart(2, "0")}`}</div>${r.active === !0 ? j`<span class="active-label">● ${this.t("active")}</span>` : N}<div class="spool-visual"></div><h3>${r.empty === !0 ? this.t("empty") : this.value(n)}</h3><div class="material">${typeof r.type == "string" ? r.type : "—"} ${at(r.color) || ""}</div><div class="remain">${i === null ? this.t("remainingUnknown") : `${i}%`}</div></div>`;
+		})}</div>${r || i ? j`<div class="ams-extra">${r ? j`<span>${this.t("humidity")}: ${this.value(r)}</span>` : N}${i ? j`<span>${this.t("temperature")}: ${this.value(i)}</span>` : N}</div>` : N}</section>`;
 	}
 	renderFiles() {
 		let e = this._files?.filter((e) => !this._selected || e.printer_device_id === this._selected);
-		return N`<div class="section-heading"><div><h2>${this.t("cachedFiles")}</h2><p class="description">${this.t("cacheHelp")}</p></div><button class="button small" ?disabled=${this._filesLoading} @click=${() => void this.loadFiles()}>${$("refresh")}${this.t("refresh")}</button></div>
-      ${this._filesError ? N`<div class="banner error" style="margin-top:18px" role="alert">${$("alert")}<div>${this._filesError}</div></div>` : F}
-      ${this._filesLoading ? this.renderEmpty("refresh", this.t("loading")) : e?.length ? N`<section class="panel file-list">${e.map((e) => {
-			let t = this.printers.find((t) => t.id === (this._selected || e.printer_device_id)), n = t && W(t) ? t : this.printers.find((e) => W(e) && !this._pending.has(e.id));
-			return N`<div class="file-row"><div class="file-preview">${e.thumbnail_path ? N`<bambu-dashboard-file-image .hass=${this._hass} .path=${e.thumbnail_path}></bambu-dashboard-file-image>` : $("folder")}</div><div><div class="file-title">${e.filename}</div><div class="file-meta"><span>${e.printer_name}</span><span>${e.size_human || `${e.size.toLocaleString()} B`}</span><span>${this.date(e.modified)}</span></div></div><div class="file-actions"><button class="icon-button" aria-label=${this.t("download")} @click=${() => void this.download(e)}>${$("download")}</button><button class="button small" ?disabled=${!n || !W(n) || this._pending.has(n.id)} @click=${() => n && void this.openStart(n, e)}>${$("play")}${this.t("printAgain")}</button></div></div>`;
-		})}</section>` : this._filesError ? F : this.renderEmpty("folder", this.t("noFiles"))}`;
+		return j`<div class="section-heading"><div><h2>${this.t("cachedFiles")}</h2><p class="description">${this.t("cacheHelp")}</p></div><button class="button small" ?disabled=${this._filesLoading} @click=${() => void this.loadFiles()}>${Z("refresh")}${this.t("refresh")}</button></div>
+      ${this._filesError ? j`<div class="banner error" style="margin-top:18px" role="alert">${Z("alert")}<div>${this._filesError}</div></div>` : N}
+      ${this._filesLoading ? this.renderEmpty("refresh", this.t("loading")) : e?.length ? j`<section class="panel file-list">${e.map((e) => {
+			let t = this.printers.find((t) => t.id === (this._selected || e.printer_device_id)), n = t && H(t) ? t : this.printers.find((e) => H(e) && !this._pending.has(e.id));
+			return j`<div class="file-row"><div class="file-preview">${e.thumbnail_path ? j`<bambu-dashboard-file-image .hass=${this._hass} .path=${e.thumbnail_path}></bambu-dashboard-file-image>` : Z("folder")}</div><div><div class="file-title">${e.filename}</div><div class="file-meta"><span>${e.printer_name}</span><span>${e.size_human || `${e.size.toLocaleString()} B`}</span><span>${this.date(e.modified)}</span></div></div><div class="file-actions"><button class="icon-button" aria-label=${this.t("download")} @click=${() => void this.download(e)}>${Z("download")}</button><button class="button small" ?disabled=${!n || !H(n) || this._pending.has(n.id)} @click=${() => n && void this.openStart(n, e)}>${Z("play")}${this.t("printAgain")}</button></div></div>`;
+		})}</section>` : this._filesError ? N : this.renderEmpty("folder", this.t("noFiles"))}`;
 	}
 	date(e) {
 		if (!e) return "—";
@@ -2028,11 +2585,11 @@ var rn = class extends R {
 		let e = this._search.toLocaleLowerCase(), t = this.currentPrinters.flatMap((e) => e.allEntities.map((t) => ({
 			printer: e,
 			entity: t
-		}))).filter(({ printer: t, entity: n }) => `${t.name} ${Ye(n)} ${n.entry.entity_id} ${n.state?.state || ""}`.toLocaleLowerCase().includes(e));
-		return N`<div class="section-heading"><div><h2>${this.t("parameters")}</h2><p class="description">${t.length} entities · ha-bambulab</p></div></div><label class="search-box">${$("search")}<input aria-label=${this.t("search")} placeholder=${this.t("search")} .value=${this._search} @input=${(e) => {
+		}))).filter(({ printer: t, entity: n }) => `${t.name} ${t.haName} ${Qe(n)} ${n.entry.entity_id} ${n.state?.state || ""}`.toLocaleLowerCase().includes(e));
+		return j`<div class="section-heading"><div><h2>${this.t("parameters")}</h2><p class="description">${t.length} entities · ha-bambulab</p></div></div><label class="search-box">${Z("search")}<input aria-label=${this.t("search")} placeholder=${this.t("search")} .value=${this._search} @input=${(e) => {
 			this._search = e.target.value;
 		}}/></label>
-      ${t.length ? N`<section class="panel" style="overflow-x:auto"><table class="parameter-table"><thead><tr><th>${this.t("entity")}</th><th>${this.t("value")}</th><th>${this.t("details")}</th></tr></thead><tbody>${He(t, ({ entity: e }) => e.entry.entity_id, ({ printer: e, entity: t }) => N`<tr><td><div class="entity-name">${Ye(t)}</div><div class="entity-id">${e.name} · ${Ke(t.entry.entity_id)}</div></td><td><span class="entity-value">${this.value(t)}</span></td><td><details><summary>${this.t("attributes")}</summary><div class="entity-id">${t.entry.entity_id}</div><dl class="attribute-grid"><dt>${this.t("updated")}</dt><dd>${this.date(t.state?.last_updated)}</dd>${Object.entries($e(t)).map(([e, t]) => N`<dt>${e}</dt><dd>${typeof t == "object" ? JSON.stringify(t, null, 2) : String(t)}</dd>`)}</dl><button class="button small" @click=${() => this.dispatchEvent(new CustomEvent("hass-more-info", {
+      ${t.length ? j`<section class="panel" style="overflow-x:auto"><table class="parameter-table"><thead><tr><th>${this.t("entity")}</th><th>${this.t("value")}</th><th>${this.t("details")}</th></tr></thead><tbody>${We(t, ({ entity: e }) => e.entry.entity_id, ({ printer: e, entity: t }) => j`<tr><td><div class="entity-name">${Qe(t)}</div><div class="entity-id">${e.name} · ${Je(t.entry.entity_id)}</div></td><td><span class="entity-value">${this.value(t)}</span></td><td><details><summary>${this.t("attributes")}</summary><div class="entity-id">${t.entry.entity_id}</div><dl class="attribute-grid"><dt>${this.t("updated")}</dt><dd>${this.date(t.state?.last_updated)}</dd>${Object.entries(nt(t)).map(([e, t]) => j`<dt>${e}</dt><dd>${typeof t == "object" ? JSON.stringify(t, null, 2) : String(t)}</dd>`)}</dl><button class="button small" @click=${() => this.dispatchEvent(new CustomEvent("hass-more-info", {
 			detail: { entityId: t.entry.entity_id },
 			bubbles: !0,
 			composed: !0
@@ -2040,25 +2597,25 @@ var rn = class extends R {
 	}
 	renderDialog() {
 		let e = this._dialog;
-		if (!e) return F;
+		if (!e) return N;
 		let t = this.printers.find((t) => t.id === e.printerId);
-		if (!t) return N`<div class="overlay"><section class="dialog" role="dialog" aria-modal="true"><div class="dialog-body">The target printer was removed.</div><div class="dialog-footer"><button class="button" @click=${() => this.closeDialog()}>${this.t("close")}</button></div></section></div>`;
-		let n = this._pending.has(t.id), r = e.kind === "start" && e.metadata ? Wt(e.metadata, t.model, Je(V(t.entities, "nozzle_diameter"))).length > 0 : !1;
-		return N`<div class="overlay" @keydown=${(e) => {
+		if (!t) return j`<div class="overlay"><section class="dialog" role="dialog" aria-modal="true"><div class="dialog-body">The target printer was removed.</div><div class="dialog-footer"><button class="button" @click=${() => this.closeDialog()}>${this.t("close")}</button></div></section></div>`;
+		let n = this._pending.has(t.id), r = e.kind === "start" && e.metadata ? qt(e.metadata, t.model, Xe(z(t.entities, "nozzle_diameter"))).length > 0 : !1;
+		return j`<div class="overlay" @keydown=${(e) => {
 			e.key === "Escape" && !n && this.closeDialog();
-		}}><section class="dialog" role="dialog" aria-modal="true" aria-label=${this.t(e.kind === "stop" ? "stopAction" : "start")}><div class="panel-head"><h2>${this.t(e.kind === "stop" ? "stopAction" : "start")}</h2><button class="icon-button" ?disabled=${n} aria-label=${this.t("close")} @click=${() => this.closeDialog()}>${$("close")}</button></div><div class="dialog-body"><div class="dialog-target"><div><span>${this.t("target")}</span><b>${t.name}</b></div><div><span>${t.model}</span><b>${this.sensor(t, "nozzle_diameter")}</b></div></div>
-      ${e.kind === "stop" ? N`<p>${this.t("stopHelp")}</p>` : this.renderStartFields(t, e, n)}</div><div class="dialog-footer"><button class="button" ?disabled=${n} @click=${() => this.closeDialog()}>${this.t("cancel")}</button>${e.kind === "stop" ? N`<button class="button danger" ?disabled=${n} @click=${() => {
+		}}><section class="dialog" role="dialog" aria-modal="true" aria-label=${this.t(e.kind === "stop" ? "stopAction" : "start")}><div class="panel-head"><h2>${this.t(e.kind === "stop" ? "stopAction" : "start")}</h2><button class="icon-button" ?disabled=${n} aria-label=${this.t("close")} @click=${() => this.closeDialog()}>${Z("close")}</button></div><div class="dialog-body"><div class="dialog-target"><div><span>${this.t("target")}</span><b>${t.name}</b></div><div><span>${t.model}</span><b>${this.sensor(t, "nozzle_diameter")}</b></div></div>
+      ${e.kind === "stop" ? j`<p>${this.t("stopHelp")}</p>` : this.renderStartFields(t, e, n)}</div><div class="dialog-footer"><button class="button" ?disabled=${n} @click=${() => this.closeDialog()}>${this.t("cancel")}</button>${e.kind === "stop" ? j`<button class="button danger" ?disabled=${n} @click=${() => {
 			this.closeDialog(), this.runAction(t.id, `${t.name} · ${this.t("stopAction")}`, (e) => this.client.press(e, "stop"), (e) => [
 				"idle",
 				"finish",
 				"failed"
 			].includes(e.status));
-		}}>${this.t("stopAction")}</button>` : N`<button class="button primary" ?disabled=${n || r || e.loading || !(!e.file || e.metadata && !e.error) || !W(t)} @click=${() => void this.confirmStart()}>${$("play")}${this.t("confirmStart")}</button>`}</div></section></div>`;
+		}}>${this.t("stopAction")}</button>` : j`<button class="button primary" ?disabled=${n || r || e.loading || !(!e.file || e.metadata && !e.error) || !H(t)} @click=${() => void this.confirmStart()}>${Z("play")}${this.t("confirmStart")}</button>`}</div></section></div>`;
 	}
 	renderStartFields(e, t, n) {
-		if (t.loading) return N`<p>${this.t("checking")}</p>`;
-		let r = t.metadata ? Wt(t.metadata, e.model, Je(V(e.entities, "nozzle_diameter"))) : [];
-		return N`<label class="field"><span>${this.t("target")}</span><select aria-label=${this.t("target")} data-value=${e.id} ?disabled=${n} @change=${(e) => {
+		if (t.loading) return j`<p>${this.t("checking")}</p>`;
+		let r = t.metadata ? qt(t.metadata, e.model, Xe(z(e.entities, "nozzle_diameter"))) : [];
+		return j`<label class="field"><span>${this.t("target")}</span><select aria-label=${this.t("target")} data-value=${e.id} ?disabled=${n} @change=${(e) => {
 			this._dialog = {
 				...t,
 				printerId: e.target.value,
@@ -2070,9 +2627,9 @@ var rn = class extends R {
 					amsMapping: ""
 				}
 			};
-		}}>${this.printers.map((e) => N`<option value=${e.id} ?disabled=${!W(e) || this._pending.has(e.id)}>${e.name} · ${e.model}</option>`)}</select></label>
-      ${t.error ? N`<div class="banner error" role="alert">${t.error}</div>` : F}${r.length ? N`<div class="banner error">${r.join(" ")}</div>` : F}
-      ${t.file ? N`<div class="field"><span>${this.t("task")}</span><b>${t.file.filename}</b></div>` : N`<label class="field"><span>${this.t("sdPath")}</span><input placeholder="cache/project.3mf" .value=${t.path} ?disabled=${n} @input=${(e) => {
+		}}>${this.printers.map((e) => j`<option value=${e.id} ?disabled=${!H(e) || this._pending.has(e.id)}>${e.name} · ${e.model}</option>`)}</select></label>
+      ${t.error ? j`<div class="banner error" role="alert">${t.error}</div>` : N}${r.length ? j`<div class="banner error">${r.join(" ")}</div>` : N}
+      ${t.file ? j`<div class="field"><span>${this.t("task")}</span><b>${t.file.filename}</b></div>` : j`<label class="field"><span>${this.t("sdPath")}</span><input placeholder="cache/project.3mf" .value=${t.path} ?disabled=${n} @input=${(e) => {
 			this._dialog = {
 				...t,
 				path: e.target.value
@@ -2083,21 +2640,21 @@ var rn = class extends R {
 				acknowledged: e.target.checked
 			};
 		}}/>${this.t("manualConfirm")}</label>`}
-      <label class="field"><span>${this.t("plate")}</span>${t.metadata ? N`<select data-value=${String(t.options.plate)} ?disabled=${n} @change=${(e) => this.updateOptions({ plate: Number(e.target.value) })}>${t.metadata.plates.map((e) => N`<option value=${e.id}>${e.id} · ${e.name}</option>`)}</select>` : N`<input type="number" min="1" max="100" .value=${String(t.options.plate)} ?disabled=${n} @input=${(e) => this.updateOptions({ plate: Number(e.target.value) })}/>`}</label>
+      <label class="field"><span>${this.t("plate")}</span>${t.metadata ? j`<select data-value=${String(t.options.plate)} ?disabled=${n} @change=${(e) => this.updateOptions({ plate: Number(e.target.value) })}>${t.metadata.plates.map((e) => j`<option value=${e.id}>${e.id} · ${e.name}</option>`)}</select>` : j`<input type="number" min="1" max="100" .value=${String(t.options.plate)} ?disabled=${n} @input=${(e) => this.updateOptions({ plate: Number(e.target.value) })}/>`}</label>
       <div class="two-fields">${[
 			["bedLeveling", "bedLevel"],
 			["timelapse", "timelapse"],
 			["flowCalibration", "flowCali"],
 			["vibrationCalibration", "vibrationCali"]
-		].map(([e, r]) => N`<label class="check"><input type="checkbox" .checked=${!!t.options[e]} ?disabled=${n} @change=${(t) => this.updateOptions({ [e]: t.target.checked })}/>${this.t(r)}</label>`)}</div>
-      ${e.ams.some((e) => !e.external) ? N`<div class="control-divider"></div><label class="check"><input type="checkbox" .checked=${t.options.useAms} ?disabled=${n} @change=${(e) => this.updateOptions({ useAms: e.target.checked })}/>${this.t("useAms")}</label>${t.options.useAms ? N`<label class="field"><span>${this.t("mapping")}</span><input placeholder="0,1,2" .value=${t.options.amsMapping} ?disabled=${n} @input=${(e) => this.updateOptions({ amsMapping: e.target.value })}/></label><p class="helper">${this.t("mappingHelp")}</p>` : F}` : F}
-      <div class="control-divider"></div><p class="helper">${this.t("startHelp")}</p>${this._transfer ? N`<p class="progress-caption">${this._transfer}</p>` : F}`;
+		].map(([e, r]) => j`<label class="check"><input type="checkbox" .checked=${!!t.options[e]} ?disabled=${n} @change=${(t) => this.updateOptions({ [e]: t.target.checked })}/>${this.t(r)}</label>`)}</div>
+      ${e.ams.some((e) => !e.external) ? j`<div class="control-divider"></div><label class="check"><input type="checkbox" .checked=${t.options.useAms} ?disabled=${n} @change=${(e) => this.updateOptions({ useAms: e.target.checked })}/>${this.t("useAms")}</label>${t.options.useAms ? j`<label class="field"><span>${this.t("mapping")}</span><input placeholder="0,1,2" .value=${t.options.amsMapping} ?disabled=${n} @input=${(e) => this.updateOptions({ amsMapping: e.target.value })}/></label><p class="helper">${this.t("mappingHelp")}</p>` : N}` : N}
+      <div class="control-divider"></div><p class="helper">${this.t("startHelp")}</p>${this._transfer ? j`<p class="progress-caption">${this._transfer}</p>` : N}`;
 	}
 };
-customElements.define("bambu-dashboard-card", rn), window.customCards = window.customCards || [], window.customCards.push({
+customElements.define("bambu-dashboard-card", Tn), window.customCards = window.customCards || [], window.customCards.push({
 	type: "bambu-dashboard-card",
 	name: "Bambu Dashboard",
 	preview: !0,
 	description: "Complete multi-printer workspace for ha-bambulab."
-}), console.info("%c BAMBU DASHBOARD %c 0.1.0 ", "background:#28bb8b;color:#08291f;font-weight:bold;padding:4px", "background:#15201b;color:#cfe9de;padding:4px");
-export { rn as BambuDashboardCard };
+}), console.info("%c BAMBU DASHBOARD %c 0.1.0 ", "background:#00ae42;color:#08291f;font-weight:bold;padding:4px", "background:#15201b;color:#cfe9de;padding:4px");
+export { Tn as BambuDashboardCard };
