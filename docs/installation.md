@@ -28,6 +28,8 @@ The main printer label uses ha-bambulab's **Printer name** sensor. Its HA device
 
 During printing/preparation, the overview and detail show **Estimated finish** below remaining time, calculated from the current clock plus the remaining duration. Dates/times use HA's configured timezone. A paused print needs resuming before a running estimate is shown. This is a changing estimate, not a completed-print timestamp.
 
+The overview filters printers by **All printers**, **Active jobs**, **Faults**, **Idle** or **Offline**, with counts that update from HA. Active jobs include preparation, printing and pauses; idle includes completed jobs with no reported fault. Reported print failures/HMS/print errors count as faults, while offline printers show their last reports as offline. Unknown states are not called healthy. Filters preserve printer order and apply only to the overview. Select a tile's diagnostic strip to open and focus its alert block; hidden or collapsed alert blocks are temporarily revealed without saving layout preferences.
+
 ## External HA cameras
 
 Each overview camera has an **External camera** entry; the detail camera header provides the same picker. First connect the external camera through a Home Assistant integration and verify that HA exposes a `camera.*` entity. Open the picker for the desired printer, choose the external entity and select **Save camera**. The overview and detail then use that same entity and label the source as external. Select **Built-in camera** and save to restore the printer's original source.
@@ -42,12 +44,14 @@ Authentication and image/video transport remain HA-native. The existing picture-
 
 Each printer's detail overview includes four additional draggable blocks:
 
-- **Alert center:** HMS and print-error states, reported error codes/details and official Bambu troubleshooting links when provided. The summary is scoped to those reports, not a full hardware inspection. Offline, unknown, missing and disabled diagnostics remain explicit; they cannot produce an all-clear badge. Incompatible diagnostic details remain visible as an error rather than hiding an asserted fault.
-- **Temperature trend:** the past hour of actual and target nozzle/bed temperatures. Targets use dashed lines. Historical °C, °F and K samples normalize to °C per record; unknown/unavailable values or missing units leave gaps. Legend values describe the last recorded sample, while live readings remain in **Live parameters**.
+- **Alert center:** print failure status, HMS and print-error states, reported error codes/details and official Bambu troubleshooting links when provided. The summary is scoped to those reports, not a full hardware inspection. Offline, unknown, missing and disabled diagnostics remain explicit; they cannot produce an all-clear badge. Incompatible diagnostic details remain visible as an error rather than hiding an asserted fault.
+- **Temperature trend:** select the past 1, 6 or 24 hours of actual and target nozzle/bed temperatures. Targets use dashed lines. Historical °C, °F and K samples normalize to °C per record; unknown/unavailable values or missing units leave gaps. Legend values describe the last recorded sample, while live readings remain in **Live parameters**. Click a legend to hide/show that curve; hiding all curves shows an explicit prompt so they can be restored.
 - **Device & connection:** online state, Wi-Fi, local/cloud connection mode, SD card, nozzle diameter/material, firmware availability and integration-estimated usage. Usage may need calibration and does not represent component lifetime. Unsupported or disabled fields are labeled explicitly.
 - **Recent events:** the past 24 hours of print-status, HMS and print-error changes, newest first. Repeated states are deduplicated and the query's initial carried state is excluded. All events remain accessible by scrolling; this is a state-change timeline, not a complete print archive.
 
 The current job also shows its reported stage, with common stages translated and unfamiliar values preserved. Live parameters include hotend fan speed when reported.
+
+Point at or touch the temperature chart to inspect the recorded state at that time, with each value's actual sample timestamp. Readings use the last state at or before the selected time; they do not interpolate over unknown values. The readout floats inside the plot and cannot move the legend or surrounding cards. Focus the chart and use Left/Right to move one minute, Page Up/Down one hour, or Home/End for the range edges. Range and legend selections are local to the mounted view. Wide charts gain horizontal plot space while retaining text size and height.
 
 History uses the current authenticated HA session and explicitly filters to the selected printer's entities. HA History/Recorder must be enabled and record these entities. The card does not enable entities, change Recorder exclusions, create automations or collect its own history. Successful queries with no data show an empty-state explanation; transport, permission and schema failures show a separate error with **Retry**. A failed refresh retains the last successful result with its timestamp and an explicit stale-data label.
 
@@ -61,9 +65,13 @@ Full-card dragging uses the standard HTML Popover API to display the original li
 
 Gaps and empty grid edges retain the current order. Once the pointer enters a target card, its hover region remains anchored while masonry reflows. A margin equal to half the actual grid spacing prevents fine edge/center jitter from repeatedly reversing the move. Move clearly across the insertion boundary or into another card to change the destination. Actual scrolling adjusts the hover coordinates; there is no timing debounce or delay in the floating card's movement. Already-current orders do not restart reflow animations.
 
-Choose **Save layout** to persist the order, or **Cancel** to discard the draft. **Restore default** previews the original order; save to keep that reset. The responsive masonry still determines the number of columns and fills available space. Positions represent card order rather than fixed coordinates, so the same order adapts to desktop and phone widths.
+Each card's edit controls include **Visible**, **Start collapsed** and **Normal/Wide**. Hidden cards remain available as editable settings tiles. Collapsed cards show an Expand/Collapse summary during normal viewing; opening it temporarily does not change its saved default. Hidden/collapsed content is unmounted, stopping camera/history work and discarding unsaved forms inside that content. Reordering alone preserves live content. Presentation controls are locked while a drag is active. Wide cards span two columns when space fits two 320px columns plus the existing 14px gap; narrow screens retain one column.
+
+Choose **Save layout** to persist order and presentation, or **Cancel** to discard the draft. **Restore default** previews original order, all cards visible/expanded and normal widths; save to keep that reset. The responsive masonry still determines the number of columns and fills available space. Positions represent card order rather than fixed coordinates, so the same order adapts to desktop and phone widths.
 
 Preferences use HA's native frontend user-data store, independently for each printer and authenticated HA user. The same account restores the order when it opens or refreshes the detail view on another client. This does not subscribe already-open tabs to live layout changes. Newly discovered cards append, and temporarily missing feeder cards retain their saved place when they return. Saving layouts does not require HA administrator privileges. Read/write failures appear in the layout toolbar; a failed save retains the draft.
+
+Legacy v1 order-only values load into the v2 presentation schema without changing the saved order or writing during load. The existing storage key remains the sole source. Saving writes v2; older builds that only support v1 cannot read that value, so update/refresh other clients before editing the same printer there.
 
 ## Manual installation / local development
 

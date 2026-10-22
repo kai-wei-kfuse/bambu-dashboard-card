@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { celsius, historySpecs, parseHistoryResponse, recentPrinterEvents, temperatureSegments } from '../src/domain/history';
+import { celsius, historySpecs, parseHistoryResponse, recentPrinterEvents, temperatureSegments, recordedTemperatureAt } from '../src/domain/history';
 import type { HistoryPoint } from '../src/domain/history';
 import { HistoryClient } from '../src/ha/history';
 import { diagnosticFixture } from './diagnostic-fixtures';
@@ -10,6 +10,13 @@ const start = end - 3_600_000;
 const point = (state: string, time = start, unit = '°C'): HistoryPoint => ({ entityId: 'sensor.temperature', state, time, unit });
 
 describe('recorded printer history', () => {
+  it('inspects recorded states without interpolating over unknown gaps or future samples', () => {
+    const points = [point('20', start), point('unknown', start + 1000), point('30', start + 2000)];
+    expect(recordedTemperatureAt(points, start - 1)).toBeUndefined();
+    expect(recordedTemperatureAt(points, start + 500)).toBe(points[0]);
+    expect(celsius(recordedTemperatureAt(points, start + 1500)!)).toBeNull();
+    expect(recordedTemperatureAt(points, end)).toBe(points[2]);
+  });
   it('parses only requested state data, sorts it and keeps an actual empty response distinct from invalid responses', () => {
     const result = parseHistoryResponse([[{ entity_id: 'sensor.temperature', state: '31', last_changed: new Date(end).toISOString(), attributes: { unit_of_measurement: '°C', irrelevant: 'SYNTHETIC_SECRET' } }, { entity_id: 'sensor.temperature', state: '0', last_changed: new Date(start).toISOString(), attributes: { unit_of_measurement: '°C' } }]], ['sensor.temperature']);
     expect(result.get('sensor.temperature')!.map((entry) => entry.state)).toEqual(['0', '31']);

@@ -1,8 +1,8 @@
 # Stage 2 — completion notifications and release validation
 
-Version: 1.14
+Version: 1.15
 
-## Current Plan (v1.14)
+## Current Plan (v1.15)
 
 The prior Stage 2 release-validation-only scope in development order v1.0 is superseded by the user-requested notification scope in [change proposal 002](../initial-changes/002-completion-notifications.md) and [ADR 002](../adr/002-native-completion-notifications.md). Existing release checks remain required.
 
@@ -23,6 +23,7 @@ The prior Stage 2 release-validation-only scope in development order v1.0 is sup
 - [x] Add per-printer external HA camera discovery, overview/detail source selection, explicit source/status labels and native user-data persistence (v1.13). See [ADR 007](../adr/007-external-ha-cameras.md). All 117 tests, types/build and real HA overview/detail empty-state and desktop/narrow picker checks pass. External hardware playback remains a follow-up.
 - [x] Add alerts, one-hour temperature trends, device/connection status and 24-hour recent state events, preserving draggable layout and explicit data/error states (v1.14). See [ADR 008](../adr/008-printer-diagnostics-and-history.md). Extend task stage/heatbreak metrics using existing entities. All 136 tests, types/build and real HA history/device/drag/desktop/narrow checks pass. Recent events do not change the Stage 3 archive boundary.
 - [ ] Verify phone delivery during a real print with the user's chosen destination.
+- [x] Add overview diagnostic navigation/status filters, persisted per-card visibility/collapse/width with v1 migration, and 1/6/24-hour interactive temperature inspection (v1.15). See [ADR 009](../adr/009-workspace-navigation-and-card-presentation.md). Preserve full-card drag stability, saved preferences and explicit history states. All 145 tests, types/build and real HA filter/reveal/persistence/wide-drag/desktop/narrow checks pass.
 - [ ] Validate physical print/light/speed controls with an operator.
 - [ ] Check broader model compatibility, accessibility and clean HACS installation.
 - [ ] Publish a versioned release after validation.
@@ -46,3 +47,4 @@ The prior Stage 2 release-validation-only scope in development order v1.0 is sup
 | 1.12 | 2026-10-23 | Correct geometric feedback in ADR 006's drag hit testing: reflow must not retarget a stationary pointer. Add gap-derived hysteresis, gap retention and no-op suppression without a timing debounce or persistence change. All 105 tests, typing/build and real HA edge checks pass. |
 | 1.13 | 2026-10-23 | Add user-requested external HA camera selection per ADR 007. Reuse HA-native media and centralize frontend preference transport; no new backend or direct camera connection. All 117 tests, typing/build and real HA empty-state/desktop/narrow checks pass. |
 | 1.14 | 2026-10-23 | Implement the four approved diagnostic/history detail blocks per ADR 008 using existing entities and read-only HA history. Preserve saved layout schema and the complete-print-archive boundary. All 136 tests, types/build and real HA 10/11-card, recorded-history, drag/cancel and desktop/narrow checks pass. |
+| 1.15 | 2026-10-23 | Extend the approved workspace usability scope per ADR 009: overview diagnostics, card presentation and interactive history. Supersede ADR 005's v1-only schema and ADR 008's fixed temperature window; retain their other invariants. All 145 tests, types/build and real HA interaction/persistence/desktop/narrow checks pass. |

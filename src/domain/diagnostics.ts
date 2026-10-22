@@ -74,7 +74,7 @@ export function alertGroup(printer: Printer, kind: AlertGroup['kind']): AlertGro
 export function printerAlerts(printer: Printer) {
   const groups = [alertGroup(printer, 'hms_errors'), alertGroup(printer, 'print_error')];
   const online = binaryReading(diagnosticEntity(printer, 'online', 'binary_sensor'));
-  const status = online === false || ['offline', 'unavailable'].includes(printer.status) ? 'offline' : groups.some((group) => group.active === true) ? 'alert'
+  const status = online === false || ['offline', 'unavailable'].includes(printer.status) ? 'offline' : printer.status === 'failed' || groups.some((group) => group.active === true) ? 'alert'
     : online === true && printer.status !== 'unknown' && groups.every((group) => group.active === false && !group.invalid) ? 'clear' : 'unknown';
   return { groups, online, status };
 }

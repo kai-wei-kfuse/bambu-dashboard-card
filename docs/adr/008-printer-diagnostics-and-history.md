@@ -2,6 +2,8 @@
 
 Status: accepted, 2026-10-23
 
+The fixed one-hour temperature window is superseded by [ADR 009](009-workspace-navigation-and-card-presentation.md): users can select 1/6/24 hours and inspect/toggle series. Its overview navigation also includes explicit print-failure status in diagnostic summaries. Other data/error and history-scope decisions remain active.
+
 ## Context
 
 The user approved four additional blocks: alerts, temperature trends, device/connection status and recent events. Registered diagnostics exist on the current A1 installation but previously appeared mainly in the raw parameter list. History must distinguish successful empty queries from transport/schema errors and must not imply a complete print archive.

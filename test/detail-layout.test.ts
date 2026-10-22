@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { BambuDetailLayout } from '../src/ui/detail-layout';
 import { fixtureHass } from './fixtures';
 
-afterEach(() => document.body.replaceChildren());
+afterEach(() => { document.body.replaceChildren(); vi.restoreAllMocks(); });
 
 function backend() {
   const stored = new Map<string, unknown>();
@@ -75,7 +75,7 @@ describe('detail layout editing', () => {
     await element.updateComplete;
     expect(order(element)).toEqual(['job', 'camera', 'controls']);
     expect(card.hasAttribute('popover')).toBe(true);
-    expect(element.querySelector('input')).toBe(input);
+    expect(element.querySelector('[aria-label="Draft"]')).toBe(input);
     expect(input.value).toBe('Live camera form');
     expect(api.stored.size).toBe(0);
     window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
@@ -91,7 +91,7 @@ describe('detail layout editing', () => {
     expect(order(element)).toEqual(['job', 'camera', 'controls']);
     button(element, 'Save layout').click();
     await vi.waitFor(() => expect(element.textContent).toContain('Layout saved'));
-    expect(api.stored.get('bambu_dashboard.detail_layout.v1.printer-one')).toEqual({ version: 1, order: ['job', 'camera', 'controls'] });
+    expect(api.stored.get('bambu_dashboard.detail_layout.v1.printer-one')).toEqual({ version: 2, order: ['job', 'camera', 'controls'], cards: {} });
     expect(api.hass.callService).not.toHaveBeenCalled();
   });
 
@@ -130,7 +130,7 @@ describe('detail layout editing', () => {
     await element.updateComplete;
     expect(order(element)).toEqual(['job', 'camera', 'controls']);
     expect(camera.style.gridRowEnd).toBe('span 24');
-    expect(element.querySelector('input')).toBe(input);
+    expect(element.querySelector('[aria-label="Draft"]')).toBe(input);
     expect(input.value).toBe('Unsaved card form');
     expect(api.stored.size).toBe(0);
     button(element, 'Save layout').click();
@@ -160,7 +160,7 @@ describe('detail layout editing', () => {
     await element.updateComplete;
     button(element, 'Save layout').click();
     await vi.waitFor(() => expect(element.textContent).toContain('Layout saved'));
-    expect(api.stored.get('bambu_dashboard.detail_layout.v1.printer-one')).toEqual({ version: 1, order: [] });
+    expect(api.stored.get('bambu_dashboard.detail_layout.v1.printer-one')).toEqual({ version: 2, order: [], cards: {} });
     element.printerId = 'printer-two';
     await element.updateComplete;
     await vi.waitFor(() => expect(button(element, 'Edit layout').disabled).toBe(false));
@@ -213,6 +213,63 @@ describe('detail layout editing', () => {
     expect(element.textContent).not.toContain('Layout saved');
   });
 
+  it('persists presentation, unmounts hidden/collapsed contents and restores them through editing or temporary expansion', async () => {
+    const api = backend();
+    const element = await api.mount();
+    button(element, 'Edit layout').click();
+    await element.updateComplete;
+    const visible = element.querySelector<HTMLInputElement>('[aria-label="Visible Camera"]')!;
+    visible.checked = false;
+    visible.dispatchEvent(new Event('change'));
+    const collapsed = element.querySelector<HTMLInputElement>('[aria-label="Start collapsed Job"]')!;
+    collapsed.checked = true;
+    collapsed.dispatchEvent(new Event('change'));
+    const width = element.querySelector<HTMLSelectElement>('[aria-label="Card width Controls"]')!;
+    width.value = 'wide';
+    width.dispatchEvent(new Event('change'));
+    await element.updateComplete;
+    expect(element.querySelector('[aria-label="Draft"]')).toBeNull();
+    expect(element.querySelector('[data-layout-id="controls"]')!.classList.contains('layout-wide')).toBe(true);
+    button(element, 'Save layout').click();
+    await vi.waitFor(() => expect(element.textContent).toContain('Layout saved'));
+    const second = await api.mount();
+    expect(second.querySelector('[data-layout-id="camera"]')).toBeNull();
+    const job = second.querySelector('[data-layout-id="job"]')!;
+    expect(job.querySelector('.layout-card-content')!.textContent).toBe('');
+    job.querySelector<HTMLButtonElement>('.layout-fold-toggle')!.click();
+    await second.updateComplete;
+    expect(job.querySelector('.layout-card-content')!.textContent).toContain('Job');
+    expect(api.callWS.mock.calls.filter(([request]) => request.type === 'frontend/set_user_data')).toHaveLength(1);
+    button(second, 'Edit layout').click();
+    await second.updateComplete;
+    expect(second.querySelector('[aria-label="Visible Camera"]')).not.toBeNull();
+    button(second, 'Restore default').click();
+    await second.updateComplete;
+    expect(second.querySelector('[aria-label="Draft"]')).not.toBeNull();
+    button(second, 'Cancel').click();
+    await second.updateComplete;
+    expect(second.querySelector('[data-layout-id="camera"]')).toBeNull();
+    expect(api.hass.callService).not.toHaveBeenCalled();
+  });
+
+  it('temporarily reveals a hidden/collapsed card without writing or changing its saved settings', async () => {
+    const api = backend();
+    const preference = { version: 2, order: ['controls', 'job'], cards: { job: { hidden: true, collapsed: true, width: 'wide' } } };
+    api.stored.set('bambu_dashboard.detail_layout.v1.printer-one', preference);
+    const element = await api.mount();
+    expect(element.querySelector('[data-layout-id="job"]')).toBeNull();
+    vi.spyOn(HTMLElement.prototype, 'scrollIntoView').mockImplementation(() => {});
+    await element.revealCard('job');
+    expect(element.querySelector('[data-layout-id="job"] .layout-card-content')!.textContent).toContain('Job');
+    expect(element.querySelector('.layout-revealed')).not.toBeNull();
+    expect(api.stored.get('bambu_dashboard.detail_layout.v1.printer-one')).toEqual(preference);
+    expect(api.callWS.mock.calls.some(([request]) => request.type === 'frontend/set_user_data')).toBe(false);
+    element.printerId = 'printer-two';
+    await element.updateComplete;
+    await vi.waitFor(() => expect(button(element, 'Edit layout').disabled).toBe(false));
+    expect(element.querySelector('.layout-revealed')).toBeNull();
+  });
+
   it('keeps an in-flight save targeted to its original printer after switching views', async () => {
     const api = backend();
     const element = await api.mount();
@@ -237,7 +294,7 @@ describe('detail layout editing', () => {
     finish();
     await delayed;
     await element.updateComplete;
-    expect(api.stored.get('bambu_dashboard.detail_layout.v1.printer-one')).toEqual({ version: 1, order: ['job', 'camera', 'controls'] });
+    expect(api.stored.get('bambu_dashboard.detail_layout.v1.printer-one')).toEqual({ version: 2, order: ['job', 'camera', 'controls'], cards: {} });
     expect(api.stored.has('bambu_dashboard.detail_layout.v1.printer-two')).toBe(false);
     expect(order(element)).toEqual(['camera', 'controls', 'job']);
     expect(button(element, 'Save layout').disabled).toBe(false);

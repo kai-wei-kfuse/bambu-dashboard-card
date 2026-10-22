@@ -8,6 +8,8 @@ import { BambuClient } from './ha/client';
 import { canStart, discoverPrinters, domainOf, entityName, filamentColor, filamentRemaining, findEntity, isAvailable, numeric, parameterAttributes, scalar, speedPercentage } from './domain/printers';
 import type { AmsUnit, EntityBinding, Printer } from './domain/printers';
 import { estimateCompletion, remainingDuration } from './domain/timing';
+import { fleetCounts, fleetState, matchesFleetFilter } from './domain/fleet';
+import type { FleetFilter } from './domain/fleet';
 import { inspectProject, projectCompatibility, validatePrintOptions } from './domain/projects';
 import type { CachedProject, PrintOptions, ProjectMetadata } from './domain/projects';
 import { text } from './ui/i18n';
@@ -15,7 +17,7 @@ import type { Language, Message } from './ui/i18n';
 import { icon } from './ui/icons';
 import { syncSelectValues } from './ui/select-values';
 import { entityValue, stageValue } from './ui/entity-value';
-import type { DetailCard } from './ui/detail-layout';
+import type { BambuDetailLayout, DetailCard } from './ui/detail-layout';
 import styles from './ui/styles.css?inline';
 import './ui/media';
 import './ui/printer-camera';
@@ -41,7 +43,7 @@ export class BambuDashboardCard extends LitElement {
     _tab: { state: true }, _search: { state: true }, _error: { state: true }, _notice: { state: true },
     _files: { state: true }, _filesError: { state: true }, _filesLoading: { state: true },
     _dialog: { state: true }, _pending: { state: true }, _transfer: { state: true },
-    _now: { state: true },
+    _now: { state: true }, _fleetFilter: { state: true },
   };
   static styles = unsafeCSS(styles);
   private _hass?: HomeAssistant;
@@ -50,6 +52,7 @@ export class BambuDashboardCard extends LitElement {
   private _selected: string | null = null;
   private _tab: Tab = 'overview';
   private _search = '';
+  private _fleetFilter: FleetFilter = 'all';
   private _error = '';
   private _notice = '';
   private _files?: CachedProject[];
@@ -183,6 +186,16 @@ export class BambuDashboardCard extends LitElement {
     return html`<span class="status ${printer.status}"><span class="dot ${printer.status}"></span>${this.status(printer)}</span>`;
   }
   private selectPrinter(id: string | null): void { this._selected = id; this._search = ''; }
+  private async openPrinterAlerts(id: string): Promise<void> {
+    this.selectPrinter(id);
+    this._tab = 'overview';
+    await this.updateComplete;
+    if (this._selected !== id || !this.isConnected) return;
+    const layout = this.renderRoot.querySelector<BambuDetailLayout>('bambu-detail-layout');
+    if (!layout || layout.printerId !== id) return;
+    await layout.updateComplete;
+    if (this._selected === id && this._tab === 'overview' && layout.isConnected) await layout.revealCard('alerts');
+  }
   private setTab(tab: Tab): void {
     this._tab = tab;
     if (tab === 'files' && !this._files && !this._filesLoading) void this.loadFiles();
@@ -285,13 +298,14 @@ export class BambuDashboardCard extends LitElement {
   protected render() {
     const printers = this.printers;
     const active = printers.find((printer) => printer.id === this._selected);
+    const counts = fleetCounts(printers);
     return html`<div class="shell">
       <header class="topbar"><div class="brand"><span class="brand-mark">${icon('printer')}</span><div><div class="brand-title">${this._config.title || 'Bambu Dashboard'}</div><div class="brand-subtitle">HOME ASSISTANT · PRINT WORKSPACE</div></div></div>
       <div class="top-actions"><span class="connection"><span class="dot ${this._catalogState.error ? 'failed' : 'ready'}"></span>ha-bambulab</span><button class="icon-button" aria-label=${this.t('refresh')} @click=${() => this._hass && void catalogFor(this._hass).refresh()}>${icon('refresh')}</button></div></header>
       <div class="workspace">${this.renderSidebar(printers)}<main class="main">
         <div class="mobile-picker"><select aria-label=${this.t('printers')} data-value=${this._selected || ''} @change=${(event: Event) => this.selectPrinter((event.target as HTMLSelectElement).value || null)}><option value="">${this.t('allPrinters')}</option>${printers.map((printer) => html`<option value=${printer.id}>${printer.name}</option>`)}</select></div>
         <div class="page-heading"><div><div class="eyebrow">${active ? active.model : 'YOUR PRINT FARM'}</div><h1>${active?.name || this.t('workspace')}</h1>${active ? html`<p class="description ha-name">${this.t('haName')}: ${active.haName}</p>` : nothing}<p class="description">${active ? `${this.status(active)} · ${this.value(active.stage)}` : this.t('subtitle')}</p></div>
-        <div class="stats"><span class="stat"><b>${printers.length}</b>${this.t('printers')}</span><span class="stat"><b>${printers.filter((printer) => printer.status === 'running').length}</b>${this.t('printing')}</span></div></div>
+        <div class="stats"><span class="stat"><b>${printers.length}</b>${this.t('printers')}</span><span class="stat"><b>${counts.printing}</b>${this.t('fleetPrinting')}</span><button class="stat ${counts.attention ? 'stat-alert' : ''}" @click=${() => { this.selectPrinter(null); this._tab = 'overview'; this._fleetFilter = 'attention'; }}><b>${counts.attention}</b>${this.t('fleetAttention')}</button><button class="stat" @click=${() => { this.selectPrinter(null); this._tab = 'overview'; this._fleetFilter = 'offline'; }}><b>${counts.offline}</b>${this.t('offline')}</button></div></div>
         ${this.renderBanners()}
         ${this._catalogState.error ? html`<div class="banner error">${icon('alert')}<div>${this.t('registryError')}: ${this._catalogState.error.message}</div></div>` : nothing}
         <nav class="tabs" aria-label="Workspace">${(['overview', 'ams', 'files', 'parameters'] as Tab[]).map((tab, index) => html`<button class=${this._tab === tab ? 'active' : ''} @click=${() => this.setTab(tab)}>${icon(['grid', 'spool', 'folder', 'tune'][index])}${this.t(tab)}</button>`)}</nav>
@@ -314,14 +328,20 @@ export class BambuDashboardCard extends LitElement {
     if (this._tab === 'files') return this.renderFiles();
     if (this._tab === 'parameters') return this.renderParameters();
     if (this._tab === 'ams') return html`${this.currentPrinters.map((printer) => this.renderAms(printer, true))}`;
-    return active ? this.renderDetail(active) : html`<div class="printer-grid">${repeat(this.printers, (printer) => printer.id, (printer) => this.renderTile(printer))}</div>`;
+    if (active) return this.renderDetail(active);
+    const counts = fleetCounts(this.printers);
+    const filters: { id: FleetFilter; label: Message }[] = [{ id: 'all', label: 'allPrinters' }, { id: 'printing', label: 'fleetPrinting' }, { id: 'attention', label: 'fleetAttention' }, { id: 'idle', label: 'idle' }, { id: 'offline', label: 'offline' }];
+    const printers = this.printers.filter((printer) => matchesFleetFilter(printer, this._fleetFilter));
+    return html`<div class="fleet-filters" role="group" aria-label=${this.t('fleetFilter')}>${filters.map(({ id, label }) => html`<button class="button small ${this._fleetFilter === id ? 'selected' : ''}" aria-pressed=${this._fleetFilter === id} @click=${() => { this._fleetFilter = id; }}>${this.t(label)}<b>${counts[id]}</b></button>`)}</div>${printers.length ? html`<div class="printer-grid">${repeat(printers, (printer) => printer.id, (printer) => this.renderTile(printer))}</div>` : this.renderEmpty('search', this.t('fleetNoMatches'))}`;
   }
   private renderTile(printer: Printer) {
+    const state = fleetState(printer);
     const task = scalar(findEntity(printer.entities, 'subtask_name'));
     const speed = speedPercentage(printer);
     const profile = findEntity(printer.entities, 'speed_profile');
     const speedText = speed === null ? (scalar(profile) === null ? this.value(profile) : this.t('unknown')) : `${speed}%`;
     return html`<article class="panel printer-card"><button class="card-heading" @click=${() => this.selectPrinter(printer.id)}><span class="machine-badge">${icon('printer')}</span><span class="heading-copy"><b>${printer.name}</b><small>${printer.haName === printer.name ? printer.model : `${printer.model} · ${printer.haName}`}</small></span>${this.statusBadge(printer)}</button>
+      <button class="tile-diagnostics ${state.attention ? 'fault' : state.diagnostic.status}" aria-label=${`${this.t('openAlerts')} · ${printer.name}`} @click=${() => void this.openPrinterAlerts(printer.id)}>${icon('alert')}<span>${this.t(state.offline ? 'alertsOffline' : state.attention ? 'alertsActive' : state.diagnostic.status === 'clear' ? 'alertsClear' : 'alertsUnknown')}</span>${icon('arrow')}</button>
       <div class="tile-media"><bambu-printer-camera .hass=${this._hass} .printer=${printer} .registry=${this._catalogState.snapshot} .language=${this.language}></bambu-printer-camera>
       <div class="project-preview" aria-label=${this.t('projectPreview')}>${printer.cover && scalar(printer.cover) ? html`<bambu-dashboard-file-image .hass=${this._hass} .entity=${printer.cover.entry.entity_id} .version=${scalar(printer.cover) || ''}></bambu-dashboard-file-image>` : html`<div class="preview-empty">${icon('folder')}<span>${this.t('noProjectPreview')}</span></div>`}<span class="preview-caption">${this.t('projectPreview')}</span></div></div>
       <div class="tile-content"><div class="task-line">${icon('folder')}<span>${task || this.t('noTask')}</span></div>${this.progress(printer)}<div class="tile-metrics"><div><span>${this.t('remaining')}</span><strong>${this.remaining(printer)}</strong>${this.completionEstimate(printer)}</div><div><span>${this.t('nozzle')}</span><strong>${this.sensor(printer, 'nozzle_temp')}</strong></div><div><span>${this.t('bed')}</span><strong>${this.sensor(printer, 'bed_temp')}</strong></div><div class="tile-speed"><span>${this.t('speed')}</span><strong>${speedText}</strong></div></div>

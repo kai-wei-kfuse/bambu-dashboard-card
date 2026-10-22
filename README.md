@@ -14,8 +14,9 @@ The deliverable includes both the custom frontend component and a complete dashb
 
 - Multi-printer overview and a responsive masonry detail workspace with independent camera, job, control, parameter and filament cards.
 - Alert center with HMS/print-error details and official troubleshooting links; device/connection readings, translated task stages and hotend fan speed.
-- One-hour nozzle/bed temperature trends and a 24-hour state-change timeline from HA History, with explicit empty/error states and minute/manual refresh.
-- Drag complete detail cards by their edit-mode handles while neighboring cards make room in real time, or use arrow buttons; save an independent layout for each printer in your HA account.
+- Filter the overview by active jobs, faults, idle or offline status; open a printer's alerts directly, even if its alert block is hidden.
+- Interactive 1/6/24-hour nozzle/bed temperature trends, series toggles and mouse/touch/keyboard readings, plus a 24-hour state-change timeline from HA History.
+- Drag complete detail cards while neighboring cards make room, or use arrow buttons. Save order, visibility, collapsed defaults and normal/wide presentation independently per printer in your HA account.
 - Complete entity and attribute explorer.
 - Camera, light, speed, pause, resume, stop, and sliced-project printing.
 - Per-printer external HA camera selection from the overview or detail, with source labels and explicit offline/missing states. Connect the camera to HA first; no direct stream credentials are stored in the card.

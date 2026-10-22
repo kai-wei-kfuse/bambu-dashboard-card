@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { BambuPrinterHistory } from '../src/ui/history-panel';
 import { diagnosticFixture } from './diagnostic-fixtures';
 
-afterEach(() => { document.body.replaceChildren(); vi.useRealTimers(); });
+afterEach(() => { document.body.replaceChildren(); vi.useRealTimers(); vi.unstubAllGlobals(); });
 const now = Date.parse('2026-01-01T01:00:00Z');
 
 function response(path: string) {
@@ -23,12 +23,79 @@ function setup(callApi = vi.fn().mockImplementation(async (_method, path) => res
 }
 
 describe('history information blocks', () => {
+  it('adapts chart coordinates to wide cards and disconnects its resize observer', async () => {
+    let resize!: ResizeObserverCallback;
+    const disconnect = vi.fn();
+    vi.stubGlobal('ResizeObserver', class { constructor(callback: ResizeObserverCallback) { resize = callback; } observe() {} disconnect = disconnect; });
+    const { element } = setup();
+    await vi.waitFor(() => expect(element.querySelector('.temperature-chart')).not.toBeNull());
+    resize([{ contentRect: { width: 740 } } as ResizeObserverEntry], {} as ResizeObserver);
+    await element.updateComplete;
+    expect(element.querySelector('.temperature-chart svg')!.getAttribute('viewBox')).toBe('0 0 720 174');
+    expect(element.querySelector('.chart-grid')!.getAttribute('x2')).toBe('708');
+    element.remove();
+    expect(disconnect).toHaveBeenCalledOnce();
+  });
+  it('inspects actual samples by touch/keyboard and toggles series without additional history requests', async () => {
+    const { element, callApi } = setup();
+    await vi.waitFor(() => expect(element.querySelectorAll('.temperature-chart path')).toHaveLength(4));
+    const chart = element.querySelector<SVGSVGElement>('.temperature-chart svg')!;
+    vi.spyOn(chart, 'getBoundingClientRect').mockReturnValue(new DOMRect(0, 0, 320, 174));
+    chart.dispatchEvent(new PointerEvent('pointerdown', { pointerType: 'touch', clientX: 200 }));
+    await element.updateComplete;
+    expect(element.querySelector('.chart-inspection')!.textContent).toContain('25 °C');
+    expect(element.querySelector('.chart-inspection')!.textContent).toContain('Recorded at');
+    chart.dispatchEvent(new KeyboardEvent('keydown', { key: 'End', cancelable: true }));
+    await element.updateComplete;
+    expect(element.querySelector('.chart-inspection')!.textContent).toContain('31 °C');
+    chart.dispatchEvent(new KeyboardEvent('keydown', { key: 'Home', cancelable: true }));
+    await element.updateComplete;
+    expect(element.querySelector('.chart-inspection')!.textContent).toContain('No valid record');
+    const legends = [...element.querySelectorAll<HTMLButtonElement>('.chart-legend button')];
+    legends[1].click();
+    await element.updateComplete;
+    expect(element.querySelectorAll('.temperature-chart path')).toHaveLength(3);
+    expect(legends[1].getAttribute('aria-pressed')).toBe('false');
+    for (const index of [0, 2, 3]) legends[index].click();
+    await element.updateComplete;
+    expect(element.textContent).toContain('All curves are hidden');
+    legends[0].click();
+    await element.updateComplete;
+    expect(element.querySelectorAll('.temperature-chart path')).toHaveLength(1);
+    expect(callApi).toHaveBeenCalledOnce();
+  });
+
+  it('queries chosen 6/24-hour windows and ignores a late response for the preceding range', async () => {
+    const { element, callApi } = setup();
+    await vi.waitFor(() => expect(element.querySelector('.temperature-chart')).not.toBeNull());
+    let finish!: (value: unknown) => void;
+    const delayed = new Promise((resolve) => { finish = resolve; });
+    callApi.mockReturnValueOnce(delayed);
+    const ranges = element.querySelectorAll<HTMLButtonElement>('.history-ranges button');
+    ranges[1].click();
+    await vi.waitFor(() => expect(callApi).toHaveBeenCalledTimes(2));
+    const sixHourPath = callApi.mock.calls[1][1];
+    const sixHour = new URL(sixHourPath, 'https://ha.invalid/api/');
+    expect(Date.parse(decodeURIComponent(sixHour.pathname.split('/').at(-1)!))).toBe(now - 6 * 3_600_000);
+    ranges[2].click();
+    await vi.waitFor(() => expect(callApi).toHaveBeenCalledTimes(3));
+    const day = new URL(callApi.mock.calls[2][1], 'https://ha.invalid/api/');
+    expect(Date.parse(decodeURIComponent(day.pathname.split('/').at(-1)!))).toBe(now - 24 * 3_600_000);
+    await vi.waitFor(() => expect(element.querySelector('.temperature-chart')).not.toBeNull());
+    const chart = element.querySelector('.temperature-chart svg')!.innerHTML;
+    finish(response(sixHourPath));
+    await delayed;
+    await element.updateComplete;
+    expect(element.querySelector('.temperature-chart svg')!.innerHTML).toBe(chart);
+    expect(element.querySelector('.history-meta')!.textContent).toContain('Past 24 hours');
+  });
+
   it('renders real recorded curves and zero targets, and refreshes from the existing minute clock without its own timer', async () => {
     vi.useFakeTimers();
     const { api, element, callApi } = setup();
     await vi.waitFor(() => expect(element.querySelectorAll('.temperature-chart path')).toHaveLength(4));
     expect(element.textContent).toContain('0 °C');
-    expect(element.querySelector('svg')!.innerHTML).not.toContain('NaN');
+    expect(element.querySelector('.temperature-chart svg')!.innerHTML).not.toContain('NaN');
     expect(vi.getTimerCount()).toBe(0);
     element.now = now + 30_000;
     await element.updateComplete;
@@ -54,11 +121,11 @@ describe('history information blocks', () => {
   it('keeps the last successful result visibly dated when a refresh fails instead of fabricating a new graph', async () => {
     const { element, callApi } = setup();
     await vi.waitFor(() => expect(element.querySelector('.temperature-chart')).not.toBeNull());
-    const graph = element.querySelector('svg')!.innerHTML;
+    const graph = element.querySelector('.temperature-chart svg')!.innerHTML;
     callApi.mockRejectedValueOnce(new Error('Recorder unavailable'));
     element.now = now + 60_000;
     await vi.waitFor(() => expect(element.querySelector('[role="alert"]')?.textContent).toContain('Recorder unavailable'));
-    expect(element.querySelector('svg')!.innerHTML).toBe(graph);
+    expect(element.querySelector('.temperature-chart svg')!.innerHTML).toBe(graph);
     expect(element.textContent).toContain('Showing the last successful result');
   });
 

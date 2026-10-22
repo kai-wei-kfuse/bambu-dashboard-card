@@ -42,6 +42,7 @@ export class BambuPrinterDiagnostics extends LitElement {
     const headings: Record<typeof status, Message> = { offline: 'alertsOffline', alert: 'alertsActive', clear: 'alertsClear', unknown: 'alertsUnknown' };
     return html`<section class="panel alerts-panel"><div class="panel-head"><h2>${icon('alert')} ${this.t('alerts')}</h2><span class="diagnostic-state ${status}">${this.t(headings[status])}</span></div><div class="diagnostic-body">
       ${status === 'offline' ? html`<p class="diagnostic-warning">${this.t('alertsOfflineHelp')}</p>` : nothing}
+      ${this.printer.status === 'failed' ? html`<p class="diagnostic-warning">${this.t('printStatusFailed')}</p>` : nothing}
       ${groups.map((group) => html`<div class="diagnostic-group"><div class="diagnostic-group-title"><b>${this.t(group.kind === 'hms_errors' ? 'hmsErrors' : 'printError')}</b><span class=${group.active ? 'diagnostic-warning' : 'description'}>${group.active === null ? (group.invalid ? this.t('diagnosticInvalid') : this.t(group.availability === 'ready' ? 'unknown' : group.availability)) : this.t(group.active ? 'reportedFault' : 'noReportedFault')}</span></div>
         ${group.invalid ? html`<p class="diagnostic-warning" role="alert">${this.t('diagnosticDetailsInvalid')}${group.detailError ? ` · ${group.detailError}` : ''}</p>` : nothing}
         ${group.active && !group.alerts.length ? html`<p class="description">${this.t('diagnosticDetailsMissing')}</p>` : nothing}

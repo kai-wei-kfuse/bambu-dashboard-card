@@ -39,6 +39,17 @@ export function celsius(point: HistoryPoint): number | null {
   return null;
 }
 
+/** Recorder states remain in effect until the next sample, including unknown/unavailable gaps. */
+export function recordedTemperatureAt(points: readonly HistoryPoint[], time: number): HistoryPoint | undefined {
+  let low = 0;
+  let high = points.length;
+  while (low < high) {
+    const middle = Math.floor((low + high) / 2);
+    if (points[middle].time <= time) low = middle + 1; else high = middle;
+  }
+  return points[low - 1];
+}
+
 export function temperatureSegments(points: readonly HistoryPoint[], start: number, end: number): { time: number; value: number }[][] {
   const segments: { time: number; value: number }[][] = [];
   let current: { time: number; value: number }[] = [];

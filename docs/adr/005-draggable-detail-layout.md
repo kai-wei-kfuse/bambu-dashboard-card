@@ -4,6 +4,8 @@ Status: accepted, 2026-10-23
 
 Gesture presentation and update timing are superseded by [ADR 006](006-full-card-live-reordering.md): full original cards follow the pointer and surrounding cards reflow during the gesture. The persistence and editing decisions below remain active.
 
+The v1-only value schema is superseded by [ADR 009](009-workspace-navigation-and-card-presentation.md), which adds card presentation and legacy migration while retaining the same storage key and explicit editing semantics.
+
 ## Context
 
 The user wants to reposition the detail information cards. The existing content-sized masonry should remain responsive, and moving cards must not trigger printer actions or lose camera/reminder state.
