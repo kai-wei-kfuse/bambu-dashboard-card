@@ -4,4 +4,4 @@
 2. **Stage 2 — release validation:** controlled hardware tests, more printer models, accessibility and installation testing, HACS release validation.
 3. **Stage 3 — additional history capabilities:** only when explicitly requested and backed by a supported backend contract.
 
-Current stage: Stage 1. See `stages/stage-1.md` for the active checklist.
+Current stage: Stage 2. Stage 1 implementation and read-only HA verification are complete; physical controls and release installation remain to be verified. See `current-status.md` and `stage-follow-ups.md`.

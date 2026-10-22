@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bambu Dashboard · Read-only development preview</title>
+  <style>
+    :root { color-scheme: dark; --primary-background-color:#101716; --card-background-color:#19211f; --secondary-background-color:#202a27; --primary-text-color:#e8eeec; --secondary-text-color:#93a49d; --divider-color:#34403a; }
+    body { margin:0; padding:30px; background:#0c1210; font-family:system-ui,sans-serif; color:var(--primary-text-color); }
+    .demo-note { max-width:1440px; margin:0 auto 16px; display:flex; justify-content:space-between; gap:16px; font-size:12px; color:#a7bbb0; }
+    .demo-note b { color:#46c59a; } main { max-width:1440px; margin:auto; }
+    @media(max-width:700px) { body{padding:12px} .demo-note{font-size:10px;display:block} }
+  </style>
+</head>
+<body>
+  <div class="demo-note"><span><b>READ-ONLY DEVELOPMENT PREVIEW</b> · Synthetic printers and camera illustrations</span><span>No printer connection · No commands are executed</span></div>
+  <main id="app"></main>
+  <script type="module" src="/demo/preview.ts"></script>
+</body>
+</html>

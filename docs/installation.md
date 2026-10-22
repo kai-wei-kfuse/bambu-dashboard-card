@@ -1,0 +1,42 @@
+# Installation
+
+## Requirements
+
+- Home Assistant with authenticated frontend file requests and the device/entity registries. The initial implementation is tested on HA 2026.10.2; older versions have not been verified rather than being blocked by an arbitrary version gate.
+- [ha-bambulab](https://github.com/greghesp/ha-bambulab) with your printers already configured.
+- Permission to read the device/entity registries and invoke the required HA services.
+
+The first implementation targets the entity and file API contracts inspected in ha-bambulab v2.2.26. A1 and AMS Lite are the initial hardware targets. Other models require verification; do not assume identical controls or slicing compatibility.
+
+## HACS custom repository
+
+1. In HACS, open **Custom repositories**.
+2. Add `https://github.com/kai-wei-kfuse/bambu-dashboard-card`, type **Dashboard**.
+3. Download the component. Until a release is available, choose the default branch.
+4. Check that the resource `/hacsfiles/bambu-dashboard-card/bambu-dashboard-card.js` is registered as a JavaScript module.
+5. Refresh the HA frontend and add **Bambu Dashboard** through the card picker.
+
+HACS default-store inclusion has not been requested. This repository can be used as a custom repository once the built artifact is published.
+
+## Complete dashboard
+
+Create a new blank dashboard in Home Assistant, open its raw configuration editor, and paste [the complete dashboard configuration](../dashboards/bambu-dashboard.yaml). This creates a full-width multi-printer workspace with built-in navigation, not a collection of cards to assemble manually.
+
+Automatic discovery includes all registered Bambu printers. The visual editor can select a subset, change the title/language, and reorder selected devices. Adding a printer through ha-bambulab updates the directory without editing entity IDs.
+
+## Manual installation / local development
+
+Build with `npm ci` and `npm run build`. Copy `dist/bambu-dashboard-card.js` into `<HA config>/www/bambu-dashboard/`, then register `/local/bambu-dashboard/bambu-dashboard-card.js` as a JavaScript module. A query parameter such as `?v=0.1.0` can identify a new build after deployment.
+
+Do not register both the HACS resource and a manual resource at the same time: both register the same custom element.
+
+## Existing integration behavior
+
+- A1 cameras use the integration's image camera. The component delegates rendering and authentication to HA's picture-entity card.
+- A registered light does not prove the physical printer has a working controllable lamp. This is explicitly a hardware validation item.
+- Speed options come from the actual select entity and are available while printing.
+- The cached-file list is not a complete print log. Missing file APIs produce an explicit compatibility/error message.
+- Cached projects are inspected for sliced plates, printer model and nozzle before reprinting. Known SD paths require explicit operator verification.
+- New print commands and stop operations use a confirmation dialog. A command response is displayed as submitted until a matching HA state is observed.
+
+No printer credentials, HA tokens, PVE access, or Samba service are required in this component's configuration.

@@ -7,7 +7,7 @@ export default defineConfig({
       formats: ['es'],
       fileName: () => 'bambu-dashboard-card.js',
     },
-    sourcemap: true,
+    sourcemap: false,
     target: 'es2022',
   },
 });

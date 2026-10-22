@@ -4,9 +4,13 @@ A complete multi-printer dashboard for Home Assistant, built with TypeScript and
 
 **Development status:** initial implementation. No stable release yet. Real printer controls must be verified on the target hardware before treating a release as production ready.
 
+![Multi-printer development preview](docs/images/overview.jpg)
+
+The screenshot uses explicitly labeled synthetic devices and camera illustrations. It does not expose a real installation.
+
 The deliverable includes both the custom frontend component and a complete dashboard configuration. Device discovery is dynamic; printer IDs, addresses, credentials, and a fixed printer count are not embedded in the source.
 
-## Planned first release
+## Implemented initial version
 
 - Multi-printer overview and detailed control workspace.
 - Complete entity and attribute explorer.
@@ -25,6 +29,10 @@ npm run build
 ```
 
 The build produces `dist/bambu-dashboard-card.js`. Runtime data and commands use the Home Assistant session. There is no separate MQTT client or service to deploy.
+
+Run `npm run dev` for a labeled, read-only development preview with synthetic data. Commands are rejected in this preview; it cannot connect to a printer.
+
+See the [installation guide](docs/installation.md) and [complete dashboard configuration](dashboards/bambu-dashboard.yaml). The built JavaScript is committed so a HACS custom repository can install the default branch during development.
 
 ## Scope and compatibility
 
