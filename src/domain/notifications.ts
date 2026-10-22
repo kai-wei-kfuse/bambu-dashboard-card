@@ -4,7 +4,7 @@ import type { HassEntity, RegistrySnapshot } from '../ha/types';
 import type { Language } from '../ui/i18n';
 
 export type NotifyDestination = { kind: 'entity' | 'service'; id: string };
-export type NotificationStyle = 'standard' | 'android_alarm';
+export type NotificationStyle = 'standard' | 'android_alarm' | 'android_tts';
 export interface NotifyTarget extends NotifyDestination { label: string; available: boolean }
 export interface NotificationSettings { enabled: boolean; target: NotifyDestination; language: Language; style: NotificationStyle }
 export type AutomationConfig = Record<string, unknown>;
@@ -13,7 +13,7 @@ export type ServiceCatalog = Record<string, Record<string, { name?: string }>>;
 export interface NotificationAction {
   action: string;
   target?: { entity_id: string };
-  data: { title: string; message: string; data?: { ttl: number; priority: string; channel: string } };
+  data: { title: string; message: string; data?: { ttl: number; priority: string; channel?: string; media_stream?: string; tts_text?: string } };
 }
 
 const OWNER = 'Managed by Bambu Dashboard Card: completion-notification/v1/';
@@ -56,9 +56,11 @@ function notificationAction(settings: Pick<NotificationSettings, 'target' | 'sty
   if (target.kind === 'entity' ? !/^notify\.[a-z0-9_]+$/.test(target.id) : target.kind !== 'service' || !/^notify\.mobile_app_[a-z0-9_]+$/.test(target.id)) {
     throw new Error('Select a specific notification entity or mobile-app destination.');
   }
-  if (settings.style === 'android_alarm' && target.kind !== 'service') throw new Error('Android alarm alerts require a specific mobile_app service; notify.send_message does not accept channel data.');
+  if (settings.style !== 'standard' && target.kind !== 'service') throw new Error('Android alarm alerts require a specific mobile_app service; notify.send_message does not accept channel data.');
   // Companion's documented alarm payload uses immediate delivery; ttl=0 can drop an offline cloud push instead of sounding late.
-  const data = { ...content, ...(settings.style === 'android_alarm' ? { data: { ttl: 0, priority: 'high', channel: 'alarm_stream' } } : {}) };
+  const data = settings.style === 'android_tts'
+    ? { title: content.title, message: 'TTS', data: { ttl: 0, priority: 'high', media_stream: 'alarm_stream', tts_text: content.message } }
+    : { ...content, ...(settings.style === 'android_alarm' ? { data: { ttl: 0, priority: 'high', channel: 'alarm_stream' } } : {}) };
   return target.kind === 'entity' ? { action: 'notify.send_message', target: { entity_id: target.id }, data } : { action: target.id, data };
 }
 
@@ -115,7 +117,9 @@ export function parseNotificationAutomation(printer: Printer, value: unknown): S
   const target: NotifyDestination = action?.action === 'notify.send_message' && typeof entityId === 'string'
     ? { kind: 'entity', id: entityId } : { kind: 'service', id: String(action?.action) };
   const title = action && isRecord(action.data) ? action.data.title : undefined;
-  const style: NotificationStyle = action && isRecord(action.data) && action.data.data !== undefined ? 'android_alarm' : 'standard';
+  const data = action && isRecord(action.data) ? action.data : undefined;
+  const style: NotificationStyle = data?.message === 'TTS' && isRecord(data.data) && data.data.media_stream === 'alarm_stream'
+    ? 'android_tts' : data?.data !== undefined ? 'android_alarm' : 'standard';
   const language = title === '3D 打印已完成' ? 'zh' : title === '3D print completed' ? 'en' : undefined;
   if (typeof value.initial_state !== 'boolean' || !language || typeof value.alias !== 'string') {
     throw new Error('The managed notification automation was customized or has an unsupported version. Duplicate it before editing.');

@@ -1431,6 +1431,8 @@ var Jt = class {
 	chooseRecipient: ["Choose a destination", "请选择接收目标"],
 	notifyStyle: ["Reminder style", "提醒方式"],
 	notifyAlarm: ["Alarm-style sound (Android)", "闹钟式响铃（安卓）"],
+	notifySpeech: ["Alarm speech (Android)", "闹钟语音播报（安卓）"],
+	notifySpeechHelp: ["Reads the reminder using Android alarm audio and the current alarm volume. Requires a working text-to-speech engine. Ordinary notification sound settings and volume stay unchanged.", "通过安卓闹钟音频流朗读提醒，使用当前闹钟音量。手机需有可用的语音引擎；普通通知的声音设置和音量保持不变。"],
 	notifyStandard: ["Standard notification", "普通通知"],
 	notifyAlarmHelp: ["Uses Android alarm volume. Enable HA notifications and the alarm_stream channel on your phone; allow Do Not Disturb bypass if needed. This does not create a Clock alarm or promise continuous ringing.", "使用安卓闹钟音量。请在手机开启 HA 通知及 alarm_stream 通道，需要时允许绕过勿扰。此方式不创建系统时钟闹钟，也不保证持续循环响铃。"],
 	notifyReliability: ["HA and the printer must stay connected. Completions while HA is stopped or the printer is disconnected are not replayed. Phone delivery depends on the app permissions and connection.", "HA 与打印机需保持连接。HA 停机或打印机断连期间完成的任务不会补发。手机是否响铃还取决于 App 权限与连接。"],
@@ -1636,8 +1638,17 @@ function ln(e, t, n) {
 function un(e, t) {
 	let n = e.target;
 	if (n.kind === "entity" ? !/^notify\.[a-z0-9_]+$/.test(n.id) : n.kind !== "service" || !/^notify\.mobile_app_[a-z0-9_]+$/.test(n.id)) throw Error("Select a specific notification entity or mobile-app destination.");
-	if (e.style === "android_alarm" && n.kind !== "service") throw Error("Android alarm alerts require a specific mobile_app service; notify.send_message does not accept channel data.");
-	let r = {
+	if (e.style !== "standard" && n.kind !== "service") throw Error("Android alarm alerts require a specific mobile_app service; notify.send_message does not accept channel data.");
+	let r = e.style === "android_tts" ? {
+		title: t.title,
+		message: "TTS",
+		data: {
+			ttl: 0,
+			priority: "high",
+			media_stream: "alarm_stream",
+			tts_text: t.message
+		}
+	} : {
 		...t,
 		...e.style === "android_alarm" ? { data: {
 			ttl: 0,
@@ -1703,21 +1714,21 @@ function mn(e, t) {
 	} : {
 		kind: "service",
 		id: String(r?.action)
-	}, o = r && $(r.data) ? r.data.title : void 0, s = r && $(r.data) && r.data.data !== void 0 ? "android_alarm" : "standard", c = o === "3D 打印已完成" ? "zh" : o === "3D print completed" ? "en" : void 0;
-	if (typeof t.initial_state != "boolean" || !c || typeof t.alias != "string") throw Error("The managed notification automation was customized or has an unsupported version. Duplicate it before editing.");
-	let l = {
+	}, o = r && $(r.data) ? r.data.title : void 0, s = r && $(r.data) ? r.data : void 0, c = s?.message === "TTS" && $(s.data) && s.data.media_stream === "alarm_stream" ? "android_tts" : s?.data === void 0 ? "standard" : "android_alarm", l = o === "3D 打印已完成" ? "zh" : o === "3D print completed" ? "en" : void 0;
+	if (typeof t.initial_state != "boolean" || !l || typeof t.alias != "string") throw Error("The managed notification automation was customized or has an unsupported version. Duplicate it before editing.");
+	let u = {
 		enabled: t.initial_state,
 		target: a,
-		language: c,
-		style: s
+		language: l,
+		style: c
 	};
 	if (!pn(t, {
-		...fn(e, l),
+		...fn(e, u),
 		alias: t.alias
 	})) throw Error("The managed notification automation was customized or its sensor IDs changed. Review it in HA before saving.");
 	return {
 		config: t,
-		settings: l
+		settings: u
 	};
 }
 function hn(e, t) {
@@ -1976,7 +1987,7 @@ var gn = class {
           <div class="fields">
             <label>${this.t("notifyStyle")}<select aria-label=${this.t("notifyStyle")} data-value=${this._style} ?disabled=${t || this._saved === void 0} @change=${(e) => {
 			this._style = e.target.value, this._recipient = "", this._dirty = !0, this._test = void 0;
-		}}><option value="android_alarm">${this.t("notifyAlarm")}</option><option value="standard">${this.t("notifyStandard")}</option></select></label>
+		}}><option value="android_alarm">${this.t("notifyAlarm")}</option><option value="android_tts">${this.t("notifySpeech")}</option><option value="standard">${this.t("notifyStandard")}</option></select></label>
             <label>${this.t("notifyRecipient")}<select aria-label=${this.t("notifyRecipient")} data-value=${this._recipient} ?disabled=${t || this._saved === void 0} @change=${(e) => {
 			this._recipient = e.target.value, this._dirty = !0, this._test = void 0;
 		}}>
@@ -1984,12 +1995,13 @@ var gn = class {
               ${this.targets.map((e) => M`<option value=${cn(e)} title=${e.id} ?disabled=${!e.available}>${e.label} · ${this.t(e.kind === "service" ? "notifyMobileApp" : "notifyEntity")}${e.available ? "" : ` · ${this.t("unavailable")}`}</option>`)}
             </select></label>
           </div>
-          ${!this.targets.length && this._saved !== void 0 ? M`<p>${this.t(this._style === "android_alarm" ? "notifyNoAlarmTarget" : "notifyNoTargets")}</p>` : P}
+          ${!this.targets.length && this._saved !== void 0 ? M`<p>${this.t(this._style === "standard" ? "notifyNoTargets" : "notifyNoAlarmTarget")}</p>` : P}
           <div class="footer"><button class="primary" ?disabled=${t || this._saved === void 0 || !this._recipient || this._enabled && !n?.available} @click=${() => void this.save()}>${this._saving ? this.t("saving") : this.t("saveNotification")}</button><button class="test-notification" ?disabled=${t || !n?.available} @click=${() => void this.testNotification()}>${this.t(this._test?.phase === "sending" ? "notifyTestSending" : "notifyTest")}</button><span role="status" class="status ${i === "notifyActive" ? "active" : ""}">${this._dirty ? this.t("notifyUnsaved") : this.t(i)}</span></div>
           <p class="helper">${this.t("notifyTestHelp")}</p>
           ${this._test ? M`<p class="helper ${this._test.phase === "error" ? "error" : ""}" role=${this._test.phase === "error" ? "alert" : "status"}>${this._test.recipient} · ${this._test.phase === "error" ? `${this.t("notifyTestError")}: ${this._test.error}` : this.t(this._test.phase === "sending" ? "notifyTestSending" : "notifyTestSubmitted")}</p>` : P}
           ${this._runtimeError ? M`<div class="error" role="alert">${this.t("notifyRuntimeError")}: ${this._runtimeError}</div>` : P}
           ${this._style === "android_alarm" ? M`<p class="helper">${this.t("notifyAlarmHelp")}</p>` : P}
+          ${this._style === "android_tts" ? M`<p class="helper">${this.t("notifySpeechHelp")}</p>` : P}
           <p class="helper">${this.t("notifyReliability")}</p>
           ${r ? M`<button class="automation" @click=${() => this.dispatchEvent(new CustomEvent("hass-more-info", {
 			detail: { entityId: r.entity_id },

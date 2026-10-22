@@ -115,6 +115,8 @@ const messages = {
   chooseRecipient: ['Choose a destination', '请选择接收目标'],
   notifyStyle: ['Reminder style', '提醒方式'],
   notifyAlarm: ['Alarm-style sound (Android)', '闹钟式响铃（安卓）'],
+  notifySpeech: ['Alarm speech (Android)', '闹钟语音播报（安卓）'],
+  notifySpeechHelp: ['Reads the reminder using Android alarm audio and the current alarm volume. Requires a working text-to-speech engine. Ordinary notification sound settings and volume stay unchanged.', '通过安卓闹钟音频流朗读提醒，使用当前闹钟音量。手机需有可用的语音引擎；普通通知的声音设置和音量保持不变。'],
   notifyStandard: ['Standard notification', '普通通知'],
   notifyAlarmHelp: ['Uses Android alarm volume. Enable HA notifications and the alarm_stream channel on your phone; allow Do Not Disturb bypass if needed. This does not create a Clock alarm or promise continuous ringing.', '使用安卓闹钟音量。请在手机开启 HA 通知及 alarm_stream 通道，需要时允许绕过勿扰。此方式不创建系统时钟闹钟，也不保证持续循环响铃。'],
   notifyReliability: ['HA and the printer must stay connected. Completions while HA is stopped or the printer is disconnected are not replayed. Phone delivery depends on the app permissions and connection.', 'HA 与打印机需保持连接。HA 停机或打印机断连期间完成的任务不会补发。手机是否响铃还取决于 App 权限与连接。'],

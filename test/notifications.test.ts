@@ -81,6 +81,18 @@ describe('completion notification model', () => {
     const [automatic] = buildNotificationAutomation(printer, alarm).actions as { data: { data: unknown } }[];
     expect(action.data.data).toEqual(automatic.data.data);
   });
+
+  it('uses an explicit alarm-speech stream without notification sounds or forced volume changes', () => {
+    const settings: NotificationSettings = { ...alarm, style: 'android_tts' };
+    const action = buildTestNotification(printer, settings);
+    expect(action.data).toEqual({ title: '打印提醒测试', message: 'TTS', data: {
+      ttl: 0, priority: 'high', media_stream: 'alarm_stream', tts_text: expect.stringContaining('测试提醒'),
+    } });
+    const config = buildNotificationAutomation(printer, settings);
+    expect(parseNotificationAutomation(printer, config).settings).toEqual(settings);
+    expect(JSON.stringify(config.actions)).not.toContain('alarm_stream_max');
+    expect(() => buildTestNotification(printer, { ...standard, style: 'android_tts' })).toThrow('specific mobile_app');
+  });
 });
 
 describe('HA notification configuration API', () => {

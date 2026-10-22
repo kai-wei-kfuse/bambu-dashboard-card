@@ -57,6 +57,23 @@ function select(element: CompletionNotifications, label: string, value: string) 
 const alarm: NotificationSettings = { enabled: true, target: { kind: 'service', id: 'notify.mobile_app_test_phone' }, language: 'en', style: 'android_alarm' };
 
 describe('per-printer completion settings', () => {
+  it('tests an explicitly chosen speech style without replacing the saved alarm configuration', async () => {
+    const api = backend(alarm);
+    const element = await api.mount();
+    const before = structuredClone(api.configs.get(automationId(api.printers[0].id)));
+    select(element, 'Reminder style', 'android_tts');
+    await element.updateComplete;
+    select(element, 'Receiving phone / destination', 'service:notify.mobile_app_test_phone');
+    await element.updateComplete;
+    element.shadowRoot!.querySelector<HTMLButtonElement>('.test-notification')!.click();
+    await vi.waitFor(() => expect(element.shadowRoot!.textContent).toContain('HA accepted the test request'));
+    expect(api.hass.callService).toHaveBeenCalledWith('notify', 'mobile_app_test_phone', expect.objectContaining({
+      message: 'TTS', data: { ttl: 0, priority: 'high', media_stream: 'alarm_stream', tts_text: expect.any(String) },
+    }));
+    expect(api.configs.get(automationId(api.printers[0].id))).toEqual(before);
+    expect(element.shadowRoot!.textContent).toContain('Unsaved changes');
+  });
+
   it('tests an unsaved phone choice with the automatic reminder disabled and preserves stored settings', async () => {
     const api = backend();
     const element = await api.mount();
