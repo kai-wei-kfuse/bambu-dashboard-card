@@ -41,6 +41,7 @@ function earlier(element: Element, label: string): void { element.querySelector<
 
 function gestureGeometry(element: Element) {
   const masonry = element.querySelector<HTMLElement>('bambu-detail-masonry')!;
+  masonry.style.cssText = 'column-gap:14px;row-gap:14px';
   vi.spyOn(masonry, 'getBoundingClientRect').mockReturnValue(new DOMRect(0, 0, 660, 700));
   for (const item of element.querySelectorAll<HTMLElement>('[data-layout-id]')) {
     const card = item.querySelector<HTMLElement>('.layout-card')!;

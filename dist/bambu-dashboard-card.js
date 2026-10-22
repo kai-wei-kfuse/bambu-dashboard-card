@@ -2162,7 +2162,7 @@ var On = class {
 			let t = e.target.closest("[data-layout-handle]"), n = t?.closest("[data-layout-id]");
 			if (!t || !n || n.parentElement !== this.host) return;
 			e.preventDefault(), this.cancel(), this.stopAnimations(), t.focus();
-			let r = n.querySelector(":scope > .layout-card"), i = r.getBoundingClientRect(), a = new AbortController();
+			let r = n.querySelector(":scope > .layout-card"), i = r.getBoundingClientRect(), a = getComputedStyle(this.host), o = (e) => e === "normal" ? 0 : Number.parseFloat(e), s = new AbortController();
 			this.drag = {
 				pointerId: e.pointerId,
 				source: n,
@@ -2172,12 +2172,16 @@ var On = class {
 				minHeight: n.style.minHeight,
 				x: e.clientX,
 				y: e.clientY,
-				abort: a,
-				scroll: this.scrollContainer()
+				abort: s,
+				scroll: this.scrollContainer(),
+				margin: {
+					x: o(a.columnGap) / 2,
+					y: o(a.rowGap) / 2
+				}
 			}, this.callbacks.start(), n.style.minHeight = `${i.height}px`, n.setAttribute("data-layout-dragging", ""), r.style.width = `${i.width}px`, r.style.left = `${i.left}px`, r.style.top = `${i.top}px`, r.setAttribute("popover", "manual"), r.showPopover(), window.addEventListener("pointermove", this.pointerMove, {
-				signal: a.signal,
+				signal: s.signal,
 				passive: !1
-			}), window.addEventListener("pointerup", this.finish, { signal: a.signal }), window.addEventListener("pointercancel", this.abortPointer, { signal: a.signal }), window.addEventListener("blur", this.cancelBound, { signal: a.signal }), window.addEventListener("resize", this.cancelBound, { signal: a.signal }), window.addEventListener("keydown", this.keyDown, { signal: a.signal });
+			}), window.addEventListener("pointerup", this.finish, { signal: s.signal }), window.addEventListener("pointercancel", this.abortPointer, { signal: s.signal }), window.addEventListener("blur", this.cancelBound, { signal: s.signal }), window.addEventListener("resize", this.cancelBound, { signal: s.signal }), window.addEventListener("keydown", this.keyDown, { signal: s.signal });
 		}, this.pointerMove = (e) => {
 			this.drag && e.pointerId === this.drag.pointerId && (e.preventDefault(), this.drag.x = e.clientX, this.drag.y = e.clientY, this.updateTarget(), this.scrollFrame === void 0 && this.drag && (this.scrollFrame = requestAnimationFrame(this.scrollStep)));
 		}, this.finish = (e) => {
@@ -2212,8 +2216,37 @@ var On = class {
 			return [t, t.getBoundingClientRect()];
 		}));
 	}
-	contains(e, t) {
-		return t.x >= e.left && t.x <= e.right && t.y >= e.top && t.y <= e.bottom;
+	contains(e, t, n = {
+		x: 0,
+		y: 0
+	}) {
+		return t.x >= e.left - n.x && t.x <= e.right + n.x && t.y >= e.top - n.y && t.y <= e.bottom + n.y;
+	}
+	side(e, t, n, r) {
+		let i = (t.x - e.left) / e.width + (t.y - e.top) / e.height - 1, a = n.margin.x / e.width + n.margin.y / e.height;
+		return r === void 0 ? i > 0 : r ? i >= -a : i > a;
+	}
+	target(e) {
+		let t = e.intent;
+		if (t) {
+			let n = {
+				x: e.x + e.scroll.scrollLeft - t.scrollLeft,
+				y: e.y + e.scroll.scrollTop - t.scrollTop
+			};
+			if (this.contains(t.rect, n, e.margin)) return t.after = this.side(t.rect, n, e, t.after), t;
+			e.intent = void 0;
+		}
+		if (this.contains(e.source.getBoundingClientRect(), e)) return;
+		let n = this.items().find((t) => t !== e.source && this.contains(t.getBoundingClientRect(), e));
+		if (!n) return;
+		let r = n.getBoundingClientRect();
+		return e.intent = {
+			target: n,
+			rect: r,
+			after: this.side(r, e, e),
+			scrollLeft: e.scroll.scrollLeft,
+			scrollTop: e.scroll.scrollTop
+		}, e.intent;
 	}
 	updateTarget() {
 		let e = this.drag;
@@ -2222,23 +2255,19 @@ var On = class {
 			this.cancel();
 			return;
 		}
-		if (e.card.style.left = `${e.x - e.offsetX}px`, e.card.style.top = `${e.y - e.offsetY}px`, !this.contains(this.host.getBoundingClientRect(), e) || this.contains(e.source.getBoundingClientRect(), e)) return;
-		let t, n = !1, r = Infinity;
-		for (let i of this.items()) {
-			if (i === e.source) continue;
-			let a = i.getBoundingClientRect(), o = Math.max(a.left - e.x, 0, e.x - a.right), s = Math.max(a.top - e.y, 0, e.y - a.bottom), c = o * o + s * s;
-			if (c >= r) continue;
-			r = c, t = i;
-			let l = (e.x - a.left) / a.width - .5, u = (e.y - a.top) / a.height - .5;
-			n = Math.abs(l) > Math.abs(u) ? l > 0 : u > 0;
-		}
-		if (!t || e.lastMove?.target === t.dataset.layoutId && e.lastMove?.after === n) return;
-		let i = this.positions(), a = {
+		if (e.card.style.left = `${e.x - e.offsetX}px`, e.card.style.top = `${e.y - e.offsetY}px`, !this.contains(this.host.getBoundingClientRect(), e)) return;
+		let t = this.target(e);
+		if (!t) return;
+		let { target: n, after: r } = t;
+		if (e.lastMove?.target === n.dataset.layoutId && e.lastMove?.after === r) return;
+		let i = this.items().sort((e, t) => Number(e.style.order) - Number(t.style.order)).map((e) => e.dataset.layoutId), a = {
 			source: e.source.dataset.layoutId,
-			target: t.dataset.layoutId,
-			after: n
+			target: n.dataset.layoutId,
+			after: r
 		};
-		e.lastMove = a, this.callbacks.move(a), this.animateFrom(i);
+		if (Dn(i, i, a).every((e, t) => e === i[t])) return;
+		let o = this.positions();
+		e.lastMove = a, this.callbacks.move(a), this.animateFrom(o);
 	}
 	settle(e) {
 		let t = this.drag;

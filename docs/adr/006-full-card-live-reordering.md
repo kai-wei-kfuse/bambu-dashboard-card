@@ -17,3 +17,9 @@ The user requests that the complete information card follow the pointer and that
 ## Validation
 
 Verify live draft movement before pointerup, unchanged DOM/media identity, full measured card dimensions and grab offset, cancellation and stale-context rollback, and exact cleanup. Real HA smoke tests must cover full-card dragging, layout persistence, no overlaps after drop, and narrow-screen reordering. Keep real installation screenshots local.
+
+## Edge-stability correction (Stage 2 v1.12)
+
+Reclassifying the nearest live rectangle after every reflow creates a feedback loop: for example, moving a short first card above a lower feeder moves the tall job card under an unchanged pointer, which then reverses the move. Empty gaps must retain the current order. Once a card is entered, anchor its hover rectangle before reflow until the pointer leaves that region or deliberately crosses to its opposite insertion side. Adjust that rectangle for actual scrolling. Half the computed row/column gap supplies the spatial hysteresis margin, allowing fine edge/center jitter to retain intent without a timing debounce. This margin is tied to the existing CSS spacing and changes with it. Use the shared domain order calculation to suppress no-op moves before scheduling animations.
+
+Regression coverage must include unequal-height four-column packing, stationary and one-pixel jitter after reflow, intentional reversal, real scroll offsets and no-op animation suppression. This corrects the collision implementation without changing persistence or the live-preview contract.

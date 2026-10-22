@@ -1,3 +1,4 @@
+import { moveLayoutCard } from '../domain/layout';
 import type { LayoutMove } from '../domain/layout';
 
 interface ReorderCallbacks {
@@ -16,6 +17,8 @@ interface DragSession {
   x: number;
   y: number;
   lastMove?: LayoutMove;
+  intent?: { target: HTMLElement; rect: DOMRect; after: boolean; scrollLeft: number; scrollTop: number };
+  margin: { x: number; y: number };
   abort: AbortController;
   scroll: HTMLElement;
 }
@@ -62,10 +65,13 @@ export class CardReorder {
     handle.focus();
     const card = source.querySelector<HTMLElement>(':scope > .layout-card')!;
     const rect = card.getBoundingClientRect();
+    const style = getComputedStyle(this.host);
+    const gap = (value: string) => value === 'normal' ? 0 : Number.parseFloat(value);
     const abort = new AbortController();
     this.drag = {
       pointerId: event.pointerId, source, card, offsetX: event.clientX - rect.left, offsetY: event.clientY - rect.top,
       minHeight: source.style.minHeight, x: event.clientX, y: event.clientY, abort, scroll: this.scrollContainer(),
+      margin: { x: gap(style.columnGap) / 2, y: gap(style.rowGap) / 2 },
     };
     this.callbacks.start();
     source.style.minHeight = `${rect.height}px`;
@@ -93,8 +99,37 @@ export class CardReorder {
     if (this.scrollFrame === undefined && this.drag) this.scrollFrame = requestAnimationFrame(this.scrollStep);
   };
 
-  private contains(rect: DOMRect, drag: DragSession): boolean {
-    return drag.x >= rect.left && drag.x <= rect.right && drag.y >= rect.top && drag.y <= rect.bottom;
+  private contains(rect: DOMRect, point: { x: number; y: number }, margin = { x: 0, y: 0 }): boolean {
+    return point.x >= rect.left - margin.x && point.x <= rect.right + margin.x && point.y >= rect.top - margin.y && point.y <= rect.bottom + margin.y;
+  }
+
+  private side(rect: DOMRect, point: { x: number; y: number }, drag: DragSession, previous?: boolean): boolean {
+    const score = (point.x - rect.left) / rect.width + (point.y - rect.top) / rect.height - 1;
+    // Half of the real grid gap separates activation/reversal boundaries, so tiny jitter cannot flip sides.
+    const band = drag.margin.x / rect.width + drag.margin.y / rect.height;
+    if (previous === undefined) return score > 0;
+    return previous ? score >= -band : score > band;
+  }
+
+  private target(drag: DragSession): { target: HTMLElement; after: boolean } | undefined {
+    const intent = drag.intent;
+    if (intent) {
+      // Anchor hover geometry before reflow. Only pointer travel or actual scrolling may change intent.
+      const point = { x: drag.x + drag.scroll.scrollLeft - intent.scrollLeft, y: drag.y + drag.scroll.scrollTop - intent.scrollTop };
+      if (this.contains(intent.rect, point, drag.margin)) {
+        intent.after = this.side(intent.rect, point, drag, intent.after);
+        return intent;
+      }
+      drag.intent = undefined;
+    }
+    if (this.contains(drag.source.getBoundingClientRect(), drag)) return;
+    // Empty gaps/outer edges preserve the current order instead of choosing a distant nearest card.
+    const target = this.items().find((item) => item !== drag.source && this.contains(item.getBoundingClientRect(), drag));
+    if (!target) return;
+    const rect = target.getBoundingClientRect();
+    const after = this.side(rect, drag, drag);
+    drag.intent = { target, rect, after, scrollLeft: drag.scroll.scrollLeft, scrollTop: drag.scroll.scrollTop };
+    return drag.intent;
   }
 
   private updateTarget(): void {
@@ -103,27 +138,15 @@ export class CardReorder {
     if (!drag.source.isConnected) { this.cancel(); return; }
     drag.card.style.left = `${drag.x - drag.offsetX}px`;
     drag.card.style.top = `${drag.y - drag.offsetY}px`;
-    if (!this.contains(this.host.getBoundingClientRect(), drag) || this.contains(drag.source.getBoundingClientRect(), drag)) return;
-    let target: HTMLElement | undefined;
-    let after = false;
-    let distance = Infinity;
-    for (const candidate of this.items()) {
-      if (candidate === drag.source) continue;
-      // Only inner cards animate; these grid boxes always describe the actual destination layout.
-      const rect = candidate.getBoundingClientRect();
-      const dx = Math.max(rect.left - drag.x, 0, drag.x - rect.right);
-      const dy = Math.max(rect.top - drag.y, 0, drag.y - rect.bottom);
-      const next = dx * dx + dy * dy;
-      if (next >= distance) continue;
-      distance = next;
-      target = candidate;
-      const horizontal = (drag.x - rect.left) / rect.width - .5;
-      const vertical = (drag.y - rect.top) / rect.height - .5;
-      after = Math.abs(horizontal) > Math.abs(vertical) ? horizontal > 0 : vertical > 0;
-    }
-    if (!target || (drag.lastMove?.target === target.dataset.layoutId && drag.lastMove?.after === after)) return;
-    const before = this.positions();
+    if (!this.contains(this.host.getBoundingClientRect(), drag)) return;
+    const proposal = this.target(drag);
+    if (!proposal) return;
+    const { target, after } = proposal;
+    if (drag.lastMove?.target === target.dataset.layoutId && drag.lastMove?.after === after) return;
+    const order = this.items().sort((a, b) => Number(a.style.order) - Number(b.style.order)).map((item) => item.dataset.layoutId!);
     const move = { source: drag.source.dataset.layoutId!, target: target.dataset.layoutId!, after };
+    if (moveLayoutCard(order, order, move).every((id, index) => id === order[index])) return;
+    const before = this.positions();
     drag.lastMove = move;
     this.callbacks.move(move);
     this.animateFrom(before);

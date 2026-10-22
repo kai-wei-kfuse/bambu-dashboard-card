@@ -1,8 +1,8 @@
 # Stage 2 — completion notifications and release validation
 
-Version: 1.11
+Version: 1.12
 
-## Current Plan (v1.11)
+## Current Plan (v1.12)
 
 The prior Stage 2 release-validation-only scope in development order v1.0 is superseded by the user-requested notification scope in [change proposal 002](../initial-changes/002-completion-notifications.md) and [ADR 002](../adr/002-native-completion-notifications.md). Existing release checks remain required.
 
@@ -19,6 +19,7 @@ The prior Stage 2 release-validation-only scope in development order v1.0 is sup
 - [x] Refine card surfaces using the supplied soft-gradient/translucent reference while retaining Bambu green and dense masonry; group overview filament colors by their actual AMS model or external-spool source. Verify actual HA labels, desktop masonry and narrow layouts.
 - [x] Add draggable detail card order with edit/save/cancel/reset, per-user/per-printer HA persistence and touch/keyboard alternatives. See [ADR 005](../adr/005-draggable-detail-layout.md). All 94 tests, typing/build, real HA mouse drag/save/reload and narrow-screen keyboard sorting pass; measured row spans survive reordering.
 - [x] Replace the name ghost with the original full card and live masonry reordering during drag, with gesture cancellation restoring the pre-drag draft. See [ADR 006](../adr/006-full-card-live-reordering.md), superseding ADR 005's gesture presentation/timing (v1.11). All 101 tests, types/build and real HA full-card/live-reflow/save/reload/narrow checks pass.
+- [x] Stabilize drag targets at card/grid edges (v1.12): gaps retain the current position, hover intent survives masonry reflow, and a spatial hysteresis band derived from the existing grid gap rejects fine jitter. Skip no-op moves/animations; retain deliberate reversal and scrolling. This is an implementation correction within ADR 006. All 105 tests, typing/build and real HA gap/edge/reversal checks pass.
 - [ ] Verify phone delivery during a real print with the user's chosen destination.
 - [ ] Validate physical print/light/speed controls with an operator.
 - [ ] Check broader model compatibility, accessibility and clean HACS installation.
@@ -40,3 +41,4 @@ The prior Stage 2 release-validation-only scope in development order v1.0 is sup
 | 1.9 | 2026-10-23 | Apply soft-gradient/translucent surfaces, larger radii and diffuse shadows; label actual AMS/external-spool color groups. All 79 tests, types/build and real HA overview/detail/narrow checks pass. Presentation only. |
 | 1.10 | 2026-10-23 | Add user-controlled detail card order and HA-backed layout preferences per ADR 005. Retain responsive masonry and preserve card state and measured row spans through property-scoped CSS ordering. All 94 tests, types/build and real HA drag/persistence/narrow checks pass. |
 | 1.11 | 2026-10-23 | Implement full-card dragging and immediate surrounding-card reflow. ADR 006 supersedes the label-only ghost and drop-only preview while retaining stored layouts. All 101 tests, types/build and real HA live-drag/persistence/narrow checks pass. |
+| 1.12 | 2026-10-23 | Correct geometric feedback in ADR 006's drag hit testing: reflow must not retarget a stationary pointer. Add gap-derived hysteresis, gap retention and no-op suppression without a timing debounce or persistence change. All 105 tests, typing/build and real HA edge checks pass. |
