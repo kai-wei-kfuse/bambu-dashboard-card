@@ -16,6 +16,7 @@ describe('complete dashboard', () => {
     await card.updateComplete;
     expect(card.shadowRoot!.querySelector('.detail-grid')).not.toBeNull();
     expect(card.shadowRoot!.textContent).toContain('Modular desk organizer');
+    expect(card.shadowRoot!.querySelector('.job-summary')!.textContent).toContain('1 h 15 min');
     expect(card.shadowRoot!.querySelector<HTMLSelectElement>('.field select')!.value).toBe('standard');
     const parameters = [...card.shadowRoot!.querySelectorAll<HTMLButtonElement>('.tabs button')].find((button) => button.textContent!.includes('All parameters'))!;
     parameters.click();

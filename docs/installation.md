@@ -45,6 +45,7 @@ No printer credentials, HA tokens, PVE access, or Samba service are required in 
 
 1. Connect your phone using the Home Assistant Companion App and allow its notifications.
 2. Open a printer's detail view as an HA administrator, then find **Print completion reminders**.
+   In the compact detail workspace, expand **Settings & test** to reveal the form. Its saved status and recipient remain visible while collapsed; errors expand it automatically.
 3. Select **Alarm-style sound (Android)**, **Alarm speech (Android)** or **Standard notification**, and explicitly choose a destination.
 4. Enable the reminder and choose **Save reminder**. Wait for **Saved and enabled in HA**. Each printer has its own settings.
 

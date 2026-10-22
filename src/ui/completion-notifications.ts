@@ -15,6 +15,7 @@ interface TestResult { phase: 'sending' | 'submitted' | 'error'; recipient: stri
 export class CompletionNotifications extends LitElement {
   static properties = {
     hass: { attribute: false }, printer: { attribute: false }, registry: { attribute: false }, language: { attribute: false },
+    compact: { type: Boolean, reflect: true },
     _saved: { state: true }, _services: { state: true }, _enabled: { state: true }, _recipient: { state: true },
     _style: { state: true }, _loading: { state: true }, _saving: { state: true }, _error: { state: true },
     _runtimeConfig: { state: true }, _runtimeError: { state: true }, _dirty: { state: true },
@@ -28,7 +29,7 @@ export class CompletionNotifications extends LitElement {
     h2 { font-size: 13px; font-weight: 650; margin: 0; }
     .body { padding: 18px 20px; }
     p { margin: 0 0 14px; color: var(--bd-muted); font-size: 12px; line-height: 1.6; }
-    .fields { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+    .fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(170px, 100%), 1fr)); gap: 12px; margin: 12px 0; }
     label { display: flex; flex-direction: column; gap: 7px; font-size: 11px; color: var(--bd-muted); min-width: 0; }
     .check { flex-direction: row; align-items: center; color: var(--bd-text); font-size: 13px; }
     input { accent-color: var(--bd-accent); width: 17px; height: 17px; }
@@ -43,6 +44,12 @@ export class CompletionNotifications extends LitElement {
     .error { color: var(--bd-danger); overflow-wrap: anywhere; margin-bottom: 14px; font-size: 12px; }
     .helper { font-size: 11px; margin: 12px 0 0; }
     .automation { color: var(--bd-accent); border: 0; background: none; padding: 0; margin-top: 12px; }
+    .compact-summary { display: grid; gap: 5px; margin-bottom: 12px; font-size: 12px; overflow-wrap: anywhere; }
+    .compact-summary small { color: var(--bd-muted); }
+    summary { color: var(--bd-accent); cursor: pointer; font-size: 12px; }
+    details[open] > summary { margin-bottom: 14px; }
+    :host([compact]) header { padding: 12px 14px; }
+    :host([compact]) .body { padding: 14px; }
     @media (max-width:700px) { .fields { grid-template-columns: 1fr; } }
   `;
 
@@ -50,6 +57,7 @@ export class CompletionNotifications extends LitElement {
   printer?: Printer;
   registry?: RegistrySnapshot;
   language: Language = 'en';
+  compact = false;
   private _saved?: SavedNotification | null;
   private _services: ServiceCatalog = {};
   private _enabled = false;
@@ -233,7 +241,9 @@ export class CompletionNotifications extends LitElement {
     const status = this.runtimeStatus();
     return html`<section aria-label=${this.t('completionNotifications')}>
       <header><h2>${this.t('completionNotifications')}</h2><button ?disabled=${busy || !admin} @click=${() => void (this.unsubscribe ? this.load() : this.initialize(this.generation))}>${this.t('refresh')}</button></header>
-      <div class="body"><p>${this.t('notifyHelp')}</p>
+      <div class="body">
+        ${this.compact ? html`<div class="compact-summary"><span class="status ${status === 'notifyActive' ? 'active' : ''}" role="status">${this.t(admin ? status : 'notifyAdmin')}</span>${this._saved ? html`<small>${this.targets.find((candidate) => destinationKey(candidate) === destinationKey(this._saved!.settings.target))?.label || this._saved.settings.target.id}</small>` : nothing}</div>` : nothing}
+        <details ?open=${!this.compact || Boolean(this._error || this._runtimeError)}><summary ?hidden=${!this.compact}>${this.t('notifySettings')}</summary><p>${this.t('notifyHelp')}</p>
         ${!admin ? html`<p role="status">${this.t('notifyAdmin')}</p>` : html`
           ${this._error ? html`<div class="error" role="alert">${this.t('notifyError')}: ${this._error}</div>` : nothing}
           ${this._loading ? html`<p role="status">${this.t('loading')}</p>` : nothing}
@@ -255,6 +265,7 @@ export class CompletionNotifications extends LitElement {
           <p class="helper">${this.t('notifyReliability')}</p>
           ${runtime ? html`<button class="automation" @click=${() => this.dispatchEvent(new CustomEvent('hass-more-info', { detail: { entityId: runtime.entity_id }, bubbles: true, composed: true }))}>${this.t('notifyViewAutomation')} · ${runtime.state}</button>` : nothing}
         `}
+        </details>
       </div></section>`;
   }
 }

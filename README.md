@@ -12,7 +12,7 @@ The deliverable includes both the custom frontend component and a complete dashb
 
 ## Implemented initial version
 
-- Multi-printer overview and detailed control workspace.
+- Multi-printer overview and a responsive masonry detail workspace with independent camera, job, control, parameter and filament cards.
 - Complete entity and attribute explorer.
 - Camera, light, speed, pause, resume, stop, and sliced-project printing.
 - AMS and external-spool visualization based on registered devices.

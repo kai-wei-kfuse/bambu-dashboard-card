@@ -49,3 +49,16 @@ Each printer tile now shows its camera on the left and its authenticated project
 Existing 49 tests, TypeScript checks and the production build pass. Real HA desktop checks confirmed both cameras and both project previews load with the expected left/right geometry, and the detail thumbnail measures 96 × 96 pixels. A narrow browser check confirmed side-by-side tile media and a 96px detail thumbnail without main-content horizontal overflow. No physical printer or notification command was sent for this layout change. Real screenshots remain local.
 
 The user subsequently requested 256 × 256 detail previews, superseding the 96px detail size. The detail header now wraps its title when needed and scales the square only below 256px of available width. The production build passes; real HA measures 256 × 256 on desktop and an equal-width/height square without main-content overflow in a narrow viewport. This CSS-only revision is covered by build and browser layout verification rather than new unit tests.
+
+## Dense detail masonry — 2026-10-22
+
+The paired camera/control row is superseded by independent content-sized cards for the camera, current job, controls, live metrics, each AMS/spool unit and completion reminders. A small observed Grid layout packs cards without reparenting them. The camera no longer stretches to the height of the controls. Its last frame ratio reserves space while offscreen media is unloaded, avoiding scroll jumps.
+
+The current-job card retains its 256px square preview. Fractional-hour estimates display as hours/minutes in its summary; raw entity values remain available in the parameter view. The reminder card shows status/recipient by default, with the existing settings/test form behind an expandable disclosure. Configuration or runtime errors reveal it automatically.
+
+- All 54 tests pass, including five new cases for masonry lifecycle, compact settings/errors and offscreen camera space. TypeScript checks and production build pass.
+- Real HA desktop verification found all six cards on the active printer, a 256 × 256 preview, a camera panel matching its frame/header height, and no overlapping cards after media loaded.
+- Switching to the AMS printer displayed seven cards and all five AMS/external slots.
+- Expanding reminder settings triggered reflow without overlaps or backend changes.
+- A two-column layout at 1280 CSS pixels and a single-column layout at 312 CSS pixels had no overlapping cards. The narrow layout had no main-content horizontal overflow and retained the camera's height after scrolling away.
+- No printer control or notification action was sent during layout verification. Screenshots remain local.

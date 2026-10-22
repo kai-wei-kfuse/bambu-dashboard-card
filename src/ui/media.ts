@@ -19,7 +19,12 @@ export class BambuCamera extends LitElement {
     super.connectedCallback();
     this.observer = new IntersectionObserver(([entry]) => {
       this._visible = entry.isIntersecting;
-      if (!entry.isIntersecting) this.card = undefined;
+      if (!entry.isIntersecting) {
+        // Preserve natural media space while unloading offscreen cameras, including after a resize.
+        const { width, height } = entry.boundingClientRect;
+        if (this.card && width > 0 && height > 0) this.style.aspectRatio = `${width} / ${height}`;
+        this.card = undefined;
+      }
     });
     this.observer.observe(this);
   }
@@ -36,6 +41,7 @@ export class BambuCamera extends LitElement {
     if (changes.has('entity')) {
       this.card = undefined;
       this._error = '';
+      this.style.aspectRatio = '';
     }
     if (!this._visible) return;
     if (this.card) this.card.hass = this.hass;

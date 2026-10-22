@@ -57,6 +57,30 @@ function select(element: CompletionNotifications, label: string, value: string) 
 const alarm: NotificationSettings = { enabled: true, target: { kind: 'service', id: 'notify.mobile_app_test_phone' }, language: 'en', style: 'android_alarm' };
 
 describe('per-printer completion settings', () => {
+  it('shows a compact saved summary while keeping settings available without backend mutations', async () => {
+    const api = backend(alarm);
+    const element = await api.mount();
+    element.compact = true;
+    await element.updateComplete;
+    expect(element.shadowRoot!.querySelector('details')!.open).toBe(false);
+    expect(element.shadowRoot!.querySelector('.compact-summary')!.textContent).toContain('test phone');
+    element.shadowRoot!.querySelector('summary')!.click();
+    expect(element.shadowRoot!.querySelector('details')!.open).toBe(true);
+    expect(element.shadowRoot!.querySelector<HTMLInputElement>('input')!.checked).toBe(true);
+    expect(api.hass.callService).not.toHaveBeenCalled();
+    expect(vi.mocked(api.hass.fetchWithAuth).mock.calls.every(([, options]) => !options?.method)).toBe(true);
+  });
+
+  it('automatically reveals configuration errors in compact mode', async () => {
+    const api = backend();
+    api.hass.fetchWithAuth = vi.fn().mockResolvedValue(Response.json({ message: 'Forbidden' }, { status: 403 }));
+    const element = new CompletionNotifications();
+    Object.assign(element, { compact: true, hass: api.hass, registry: api.registry, printer: api.printers[0] });
+    document.body.append(element);
+    await vi.waitFor(() => expect(element.shadowRoot!.querySelector('[role="alert"]')?.textContent).toContain('HTTP 403'));
+    expect(element.shadowRoot!.querySelector('details')!.open).toBe(true);
+  });
+
   it('tests an explicitly chosen speech style without replacing the saved alarm configuration', async () => {
     const api = backend(alarm);
     const element = await api.mount();

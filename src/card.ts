@@ -16,6 +16,7 @@ import { syncSelectValues } from './ui/select-values';
 import styles from './ui/styles.css?inline';
 import './ui/media';
 import './ui/completion-notifications';
+import './ui/masonry';
 import './editor';
 
 type Tab = 'overview' | 'ams' | 'files' | 'parameters';
@@ -147,6 +148,16 @@ export class BambuDashboardCard extends LitElement {
     return `${entity.state.state}${unit ? ` ${String(unit)}` : ''}`;
   }
   private sensor(printer: Printer, key: string): string { return this.value(findEntity(printer.entities, key)); }
+  private remaining(printer: Printer): string {
+    const entity = findEntity(printer.entities, 'remaining_time');
+    const hours = numeric(entity);
+    if (hours === null || hours < 0 || entity?.state?.attributes.unit_of_measurement !== 'h') return this.value(entity);
+    // ha-bambulab reports minute estimates as fractional hours; round away floating-point noise.
+    const minutes = Math.round(hours * 60);
+    const wholeHours = Math.floor(minutes / 60);
+    const rest = minutes % 60;
+    return [wholeHours ? `${wholeHours} ${this.t('hourUnit')}` : '', rest || !wholeHours ? `${rest} ${this.t('minuteUnit')}` : ''].filter(Boolean).join(' ');
+  }
   private status(printer: Printer): string {
     const known: Record<string, Message> = { idle: 'idle', running: 'running', pause: 'pause', prepare: 'prepare', finish: 'finish', failed: 'failed', offline: 'offline', unavailable: 'unavailable', unknown: 'unknown' };
     return known[printer.status] ? this.t(known[printer.status]) : printer.status;
@@ -298,10 +309,14 @@ export class BambuDashboardCard extends LitElement {
   }
 
   private renderDetail(printer: Printer) {
-    return html`<div class="detail-grid"><section class="panel"><div class="panel-head"><h2>${icon('camera')} ${this.t('camera')}</h2><span class="description">${printer.camera && (Number(printer.camera.state?.attributes.supported_features) & 2) ? this.t('live') : this.t('snapshot')}</span></div><div class="camera-large">${printer.camera ? html`<bambu-dashboard-camera .hass=${this._hass} .entity=${printer.camera.entry.entity_id}></bambu-dashboard-camera>` : html`${printerIllustration()}<span class="preview-caption">${this.t('unsupported')}</span>`}</div></section>
-      <section class="panel"><div class="panel-head"><h2>${this.t('controls')}</h2>${this.statusBadge(printer)}</div><div class="panel-body"><div class="job-top">${printer.cover && scalar(printer.cover) ? html`<div class="job-cover"><bambu-dashboard-file-image .hass=${this._hass} .entity=${printer.cover.entry.entity_id} .version=${scalar(printer.cover) || ''}></bambu-dashboard-file-image></div>` : nothing}<div><div class="eyebrow">${this.t('task')}</div><div class="job-name">${scalar(findEntity(printer.entities, 'subtask_name')) || this.t('noTask')}</div></div></div>${this.progress(printer)}<div class="job-summary"><div><span>${this.t('remaining')}</span><b>${this.sensor(printer, 'remaining_time')}</b></div><div><span>${this.t('layers')}</span><b>${this.sensor(printer, 'current_layer')} / ${this.sensor(printer, 'total_layers')}</b></div></div>${this.renderControls(printer)}</div></section></div>
-      <bambu-completion-notifications .hass=${this._hass} .printer=${printer} .registry=${this._catalogState.snapshot} .language=${this.language}></bambu-completion-notifications>
-      <div class="metric-grid">${[['nozzle', 'nozzle_temp', 'target_nozzle_temp'], ['bed', 'bed_temp', 'target_bed_temp'], ['fan', 'cooling_fan_speed', ''], ['weight', 'print_weight', ''], ['length', 'print_length', '']].map(([label, key, target]) => html`<div class="panel metric"><div class="metric-top">${icon(label === 'nozzle' || label === 'bed' ? 'heat' : 'tune')}${this.t(label as Message)}</div><strong>${this.sensor(printer, key)}</strong>${target ? html`<small>→ ${this.sensor(printer, target)}</small>` : nothing}</div>`)}</div>${this.renderAms(printer, false)}`;
+    return html`<bambu-detail-masonry class="detail-grid">
+      <section class="panel camera-panel"><div class="panel-head"><h2>${icon('camera')} ${this.t('camera')}</h2><span class="description">${printer.camera && (Number(printer.camera.state?.attributes.supported_features) & 2) ? this.t('live') : this.t('snapshot')}</span></div><div class="camera-large">${printer.camera ? html`<bambu-dashboard-camera .hass=${this._hass} .entity=${printer.camera.entry.entity_id}></bambu-dashboard-camera>` : html`${printerIllustration()}<span class="preview-caption">${this.t('unsupported')}</span>`}</div></section>
+      <section class="panel current-job"><div class="panel-head"><h2>${icon('folder')} ${this.t('task')}</h2>${this.statusBadge(printer)}</div><div class="panel-body"><div class="job-top">${printer.cover && scalar(printer.cover) ? html`<div class="job-cover"><bambu-dashboard-file-image .hass=${this._hass} .entity=${printer.cover.entry.entity_id} .version=${scalar(printer.cover) || ''}></bambu-dashboard-file-image></div>` : nothing}<div class="job-name">${scalar(findEntity(printer.entities, 'subtask_name')) || this.t('noTask')}</div></div>${this.progress(printer)}<div class="job-summary"><div><span>${this.t('remaining')}</span><b>${this.remaining(printer)}</b></div><div><span>${this.t('layers')}</span><b>${this.sensor(printer, 'current_layer')} / ${this.sensor(printer, 'total_layers')}</b></div></div></div></section>
+      <section class="panel controls-panel"><div class="panel-head"><h2>${icon('tune')} ${this.t('controls')}</h2></div><div class="panel-body">${this.renderControls(printer)}</div></section>
+      <section class="panel live-metrics"><div class="panel-head"><h2>${icon('heat')} ${this.t('liveParameters')}</h2></div><div class="detail-metrics">${[['nozzle', 'nozzle_temp', 'target_nozzle_temp'], ['bed', 'bed_temp', 'target_bed_temp'], ['fan', 'cooling_fan_speed', ''], ['weight', 'print_weight', ''], ['length', 'print_length', '']].map(([label, key, target]) => html`<div class="metric"><div class="metric-top">${icon(label === 'nozzle' || label === 'bed' ? 'heat' : 'tune')}${this.t(label as Message)}</div><strong>${this.sensor(printer, key)}</strong>${target ? html`<small>→ ${this.sensor(printer, target)}</small>` : nothing}</div>`)}</div></section>
+      ${printer.ams.length ? printer.ams.map((unit) => this.renderAmsUnit(printer, unit, false)) : html`<section class="panel empty">${icon('spool')}<p>${this.t('noAms')}</p></section>`}
+      <bambu-completion-notifications .hass=${this._hass} .printer=${printer} .registry=${this._catalogState.snapshot} .language=${this.language} .compact=${true}></bambu-completion-notifications>
+    </bambu-detail-masonry>`;
   }
   private renderControls(printer: Printer) {
     const busy = this._pending.has(printer.id);
