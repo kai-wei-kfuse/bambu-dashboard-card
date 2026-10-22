@@ -41,3 +41,9 @@ Added **Test phone reminder** using the same destination/style payload builder a
 The initial test-button implementation passed 47 tests. A real HA button click submitted one Android alarm-stream notification, and the user confirmed receipt without sound. The channel still did not sound after phone settings were adjusted; its cause remains unverified. The user requires ordinary notification settings to remain silent.
 
 An explicit **Alarm speech (Android)** style now uses `message: TTS` and `media_stream: alarm_stream`, without changing phone volume or ordinary notification sounds. All 49 tests pass; type checks and production build pass. The user confirmed hearing the real speech test. The dashboard saved that style for the selected printer, confirmed the loaded automation was enabled, and reloaded the saved setting successfully. Completion-trigger verification during a real print remains separate. No printer control was sent.
+
+## Overview media layout — 2026-10-22
+
+Each printer tile now shows its camera on the left and its authenticated project thumbnail on the right. The detail-view thumbnail increased from 64 × 64 to 96 × 96 pixels. Project images retain their proportions and remain fully visible; a missing image has an explicit placeholder.
+
+Existing 49 tests, TypeScript checks and the production build pass. Real HA desktop checks confirmed both cameras and both project previews load with the expected left/right geometry, and the detail thumbnail measures 96 × 96 pixels. A narrow browser check confirmed side-by-side tile media and a 96px detail thumbnail without main-content horizontal overflow. No physical printer or notification command was sent for this layout change. Real screenshots remain local.

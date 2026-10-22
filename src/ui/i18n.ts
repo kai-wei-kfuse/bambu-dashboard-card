@@ -29,6 +29,8 @@ const messages = {
   notLoaded: ['Not loaded', '未载入'],
   task: ['Current project', '当前项目'],
   noTask: ['No active print', '暂无打印任务'],
+  projectPreview: ['Print preview', '打印件预览'],
+  noProjectPreview: ['No print preview available', '暂无打印件缩略图'],
   progress: ['Progress', '打印进度'],
   remaining: ['Remaining', '剩余时间'],
   layers: ['Layers', '层数'],

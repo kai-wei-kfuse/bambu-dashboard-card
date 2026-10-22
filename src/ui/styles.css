@@ -82,8 +82,12 @@ p { margin: 0; }
 .status.running, .status.finish { color: var(--bd-accent); background: var(--bd-accent-soft); border-color: transparent; }
 .status.pause, .status.prepare { color: #d8ac5b; }
 .status.failed { color: var(--bd-danger); }
-.preview { height: 208px; position: relative; display: grid; place-items: center; background: radial-gradient(ellipse at center, var(--bd-accent-soft), transparent 72%); margin: 8px 10px; border-radius: 10px; overflow: hidden; }
+.tile-media { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 10px; padding: 12px 12px 8px; }
+.preview { height: 208px; position: relative; display: grid; place-items: center; background: radial-gradient(ellipse at center, var(--bd-accent-soft), transparent 72%); border-radius: 10px; overflow: hidden; }
 .preview bambu-dashboard-camera { position: absolute; inset: 0; width: 100%; }
+.project-preview { height: 208px; min-width: 0; position: relative; display: grid; grid-template-rows: minmax(0, 1fr); place-items: center; border: 1px solid var(--bd-line); border-radius: 10px; background: var(--bd-bg); overflow: hidden; }
+.project-preview bambu-dashboard-file-image { padding: 8px 8px 32px; }
+.preview-empty { display: grid; justify-items: center; gap: 10px; padding: 12px 12px 32px; font-size: 11px; color: var(--bd-muted); text-align: center; }
 .printer-art { width: 90%; max-width: 320px; height: 100%; color: var(--bd-muted); }
 .preview-caption { position: absolute; left: 10px; bottom: 9px; padding: 3px 7px; font-size: 9px; background: var(--bd-panel); border: 1px solid var(--bd-line); border-radius: 4px; color: var(--bd-muted); }
 .tile-content { padding: 4px 20px 20px; }
@@ -112,7 +116,8 @@ p { margin: 0; }
 .metric small { font-size: 11px; color: var(--bd-muted); }
 .job-name { margin: 8px 0 18px; font-weight: 650; font-size: 19px; line-height: 1.4; overflow-wrap: anywhere; }
 .job-top { display: flex; gap: 14px; align-items: center; margin-bottom: 12px; }
-.job-cover { flex-shrink: 0; width: 64px; height: 64px; border: 1px solid var(--bd-line); border-radius: 10px; overflow: hidden; background: var(--bd-bg); }
+.job-cover { flex-shrink: 0; width: 96px; height: 96px; border: 1px solid var(--bd-line); border-radius: 12px; overflow: hidden; background: var(--bd-bg); }
+.job-top > div:last-child { min-width: 0; }
 .job-top .job-name { margin-bottom: 4px; }
 .job-summary { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 18px 0; }
 .job-summary span { display: block; font-size: 11px; color: var(--bd-muted); }
