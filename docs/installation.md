@@ -28,6 +28,14 @@ The main printer label uses ha-bambulab's **Printer name** sensor. Its HA device
 
 During printing/preparation, the overview and detail show **Estimated finish** below remaining time, calculated from the current clock plus the remaining duration. Dates/times use HA's configured timezone. A paused print needs resuming before a running estimate is shown. This is a changing estimate, not a completed-print timestamp.
 
+## Reorder detail cards
+
+Open a printer's overview and choose **Edit layout**. Drag a card by its added title bar and release at the highlighted before/after position. Mouse, pen and touch use the same pointer interaction; dragging near the viewport edge scrolls toward offscreen cards. The **Move earlier/later** arrow buttons also work by touch or keyboard. Card contents are inactive during editing to prevent accidental device commands.
+
+Choose **Save layout** to persist the order, or **Cancel** to discard the draft. **Restore default** previews the original order; save to keep that reset. The responsive masonry still determines the number of columns and fills available space. Positions represent card order rather than fixed coordinates, so the same order adapts to desktop and phone widths.
+
+Preferences use HA's native frontend user-data store, independently for each printer and authenticated HA user. The same account restores the order when it opens or refreshes the detail view on another client. This does not subscribe already-open tabs to live layout changes. Newly discovered cards append, and temporarily missing feeder cards retain their saved place when they return. Saving layouts does not require HA administrator privileges. Read/write failures appear in the layout toolbar; a failed save retains the draft.
+
 ## Manual installation / local development
 
 Build with `npm ci` and `npm run build`. Copy `dist/bambu-dashboard-card.js` into `<HA config>/www/bambu-dashboard/`, then register `/local/bambu-dashboard/bambu-dashboard-card.js` as a JavaScript module. A query parameter such as `?v=0.1.0` can identify a new build after deployment.

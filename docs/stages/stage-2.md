@@ -1,8 +1,8 @@
 # Stage 2 — completion notifications and release validation
 
-Version: 1.9
+Version: 1.10
 
-## Current Plan (v1.9)
+## Current Plan (v1.10)
 
 The prior Stage 2 release-validation-only scope in development order v1.0 is superseded by the user-requested notification scope in [change proposal 002](../initial-changes/002-completion-notifications.md) and [ADR 002](../adr/002-native-completion-notifications.md). Existing release checks remain required.
 
@@ -17,6 +17,7 @@ The prior Stage 2 release-validation-only scope in development order v1.0 is sup
 - [x] Add current-time-plus-remaining ETA, separate printer/HA display names and use the official-store green reference. See [ADR 004](../adr/004-printer-identity-and-completion-estimate.md). Verify actual HA labels, `#00AE42`, timezone display and narrow-screen layout.
 - [x] Show the reported speed percentage on every overview tile from the speed-profile sensor's `modifier` attribute, without guessing from speed mode names. Verify live HA readings and narrow-screen layout.
 - [x] Refine card surfaces using the supplied soft-gradient/translucent reference while retaining Bambu green and dense masonry; group overview filament colors by their actual AMS model or external-spool source. Verify actual HA labels, desktop masonry and narrow layouts.
+- [x] Add draggable detail card order with edit/save/cancel/reset, per-user/per-printer HA persistence and touch/keyboard alternatives. See [ADR 005](../adr/005-draggable-detail-layout.md). All 94 tests, typing/build, real HA mouse drag/save/reload and narrow-screen keyboard sorting pass; measured row spans survive reordering.
 - [ ] Verify phone delivery during a real print with the user's chosen destination.
 - [ ] Validate physical print/light/speed controls with an operator.
 - [ ] Check broader model compatibility, accessibility and clean HACS installation.
@@ -36,3 +37,4 @@ The prior Stage 2 release-validation-only scope in development order v1.0 is sup
 | 1.7 | 2026-10-22 | Implement the requested printer/HA-name hierarchy, current-time completion estimate and `#00AE42` green per ADR 004. All 76 tests, typing, build and real HA desktop/narrow checks pass. |
 | 1.8 | 2026-10-22 | Implement overview speed percentage from the installed integration's modifier. All 78 tests, typing/build and real HA desktop/narrow checks pass; no control or backend changes. |
 | 1.9 | 2026-10-23 | Apply soft-gradient/translucent surfaces, larger radii and diffuse shadows; label actual AMS/external-spool color groups. All 79 tests, types/build and real HA overview/detail/narrow checks pass. Presentation only. |
+| 1.10 | 2026-10-23 | Add user-controlled detail card order and HA-backed layout preferences per ADR 005. Retain responsive masonry and preserve card state and measured row spans through property-scoped CSS ordering. All 94 tests, types/build and real HA drag/persistence/narrow checks pass. |
