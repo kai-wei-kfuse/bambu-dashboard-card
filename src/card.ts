@@ -7,6 +7,7 @@ import type { CardConfig, HomeAssistant, Unsubscribe } from './ha/types';
 import { BambuClient } from './ha/client';
 import { canStart, discoverPrinters, domainOf, entityName, filamentColor, filamentRemaining, findEntity, isAvailable, numeric, parameterAttributes, scalar } from './domain/printers';
 import type { AmsUnit, EntityBinding, Printer } from './domain/printers';
+import { estimateCompletion, remainingDuration } from './domain/timing';
 import { inspectProject, projectCompatibility, validatePrintOptions } from './domain/projects';
 import type { CachedProject, PrintOptions, ProjectMetadata } from './domain/projects';
 import { text } from './ui/i18n';
@@ -20,6 +21,8 @@ import './ui/masonry';
 import './editor';
 
 type Tab = 'overview' | 'ams' | 'files' | 'parameters';
+// Completion estimates display minute precision, including when no HA state update arrives.
+const CLOCK_UPDATE_MS = 60_000;
 interface PendingCommand { name: string; phase: 'request' | 'submitted'; confirmed?: (printer: Printer) => boolean }
 interface StartDialog {
   kind: 'start'; printerId: string; file?: CachedProject; metadata?: ProjectMetadata;
@@ -33,6 +36,7 @@ export class BambuDashboardCard extends LitElement {
     _tab: { state: true }, _search: { state: true }, _error: { state: true }, _notice: { state: true },
     _files: { state: true }, _filesError: { state: true }, _filesLoading: { state: true },
     _dialog: { state: true }, _pending: { state: true }, _transfer: { state: true },
+    _now: { state: true },
   };
   static styles = unsafeCSS(styles);
   private _hass?: HomeAssistant;
@@ -53,10 +57,13 @@ export class BambuDashboardCard extends LitElement {
   private connection?: object;
   private dialogGeneration = 0;
   private downloadUrl?: string;
+  private _now = Date.now();
+  private clock?: ReturnType<typeof setInterval>;
 
   set hass(value: HomeAssistant) {
     const previous = this._hass;
     this._hass = value;
+    this._now = Date.now();
     if (this.isConnected) this.attachCatalog();
     this.requestUpdate('hass', previous);
   }
@@ -77,6 +84,8 @@ export class BambuDashboardCard extends LitElement {
   connectedCallback(): void {
     super.connectedCallback();
     this.attachCatalog();
+    this._now = Date.now();
+    this.clock = setInterval(() => { this._now = Date.now(); }, CLOCK_UPDATE_MS);
   }
 
   disconnectedCallback(): void {
@@ -84,6 +93,8 @@ export class BambuDashboardCard extends LitElement {
     this.unsubscribe?.();
     this.unsubscribe = undefined;
     this.connection = undefined;
+    clearInterval(this.clock);
+    this.clock = undefined;
     if (this.downloadUrl) URL.revokeObjectURL(this.downloadUrl);
   }
 
@@ -150,13 +161,20 @@ export class BambuDashboardCard extends LitElement {
   private sensor(printer: Printer, key: string): string { return this.value(findEntity(printer.entities, key)); }
   private remaining(printer: Printer): string {
     const entity = findEntity(printer.entities, 'remaining_time');
-    const hours = numeric(entity);
-    if (hours === null || hours < 0 || entity?.state?.attributes.unit_of_measurement !== 'h') return this.value(entity);
+    const duration = remainingDuration(printer);
+    if (duration === null) return this.value(entity);
     // ha-bambulab reports minute estimates as fractional hours; round away floating-point noise.
-    const minutes = Math.round(hours * 60);
+    const minutes = Math.round(duration / 60_000);
     const wholeHours = Math.floor(minutes / 60);
     const rest = minutes % 60;
     return [wholeHours ? `${wholeHours} ${this.t('hourUnit')}` : '', rest || !wholeHours ? `${rest} ${this.t('minuteUnit')}` : ''].filter(Boolean).join(' ');
+  }
+  private completionEstimate(printer: Printer) {
+    const timestamp = estimateCompletion(printer, this._now);
+    const formatted = timestamp === null ? null : new Intl.DateTimeFormat(this.language, {
+      month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false, timeZone: this._hass?.config?.time_zone,
+    }).format(timestamp);
+    return html`<div class="completion-estimate"><span>${this.t('estimatedFinish')}</span>${timestamp === null ? html`<small>${printer.status === 'pause' ? this.t('estimatePaused') : '—'}</small>` : html`<time datetime=${new Date(timestamp).toISOString()}>${formatted}</time>`}</div>`;
   }
   private status(printer: Printer): string {
     const known: Record<string, Message> = { idle: 'idle', running: 'running', pause: 'pause', prepare: 'prepare', finish: 'finish', failed: 'failed', offline: 'offline', unavailable: 'unavailable', unknown: 'unknown' };
@@ -273,7 +291,7 @@ export class BambuDashboardCard extends LitElement {
       <div class="top-actions"><span class="connection"><span class="dot ${this._catalogState.error ? 'failed' : 'ready'}"></span>ha-bambulab</span><button class="icon-button" aria-label=${this.t('refresh')} @click=${() => this._hass && void catalogFor(this._hass).refresh()}>${icon('refresh')}</button></div></header>
       <div class="workspace">${this.renderSidebar(printers)}<main class="main">
         <div class="mobile-picker"><select aria-label=${this.t('printers')} data-value=${this._selected || ''} @change=${(event: Event) => this.selectPrinter((event.target as HTMLSelectElement).value || null)}><option value="">${this.t('allPrinters')}</option>${printers.map((printer) => html`<option value=${printer.id}>${printer.name}</option>`)}</select></div>
-        <div class="page-heading"><div><div class="eyebrow">${active ? active.model : 'YOUR PRINT FARM'}</div><h1>${active?.name || this.t('workspace')}</h1><p class="description">${active ? `${this.status(active)} · ${this.value(active.stage)}` : this.t('subtitle')}</p></div>
+        <div class="page-heading"><div><div class="eyebrow">${active ? active.model : 'YOUR PRINT FARM'}</div><h1>${active?.name || this.t('workspace')}</h1>${active ? html`<p class="description ha-name">${this.t('haName')}: ${active.haName}</p>` : nothing}<p class="description">${active ? `${this.status(active)} · ${this.value(active.stage)}` : this.t('subtitle')}</p></div>
         <div class="stats"><span class="stat"><b>${printers.length}</b>${this.t('printers')}</span><span class="stat"><b>${printers.filter((printer) => printer.status === 'running').length}</b>${this.t('printing')}</span></div></div>
         ${this.renderBanners()}
         ${this._catalogState.error ? html`<div class="banner error">${icon('alert')}<div>${this.t('registryError')}: ${this._catalogState.error.message}</div></div>` : nothing}
@@ -284,7 +302,7 @@ export class BambuDashboardCard extends LitElement {
 
   private renderSidebar(printers: Printer[]) {
     return html`<aside class="sidebar"><div class="sidebar-label">WORKSPACE</div><button class=${!this._selected ? 'selected' : ''} @click=${() => this.selectPrinter(null)}>${icon('grid')}${this.t('allPrinters')}</button><div class="sidebar-rule"></div><div class="sidebar-label">${this.t('printers')}</div>
-      ${repeat(printers, (printer) => printer.id, (printer) => html`<button class="printer-link ${this._selected === printer.id ? 'selected' : ''}" @click=${() => this.selectPrinter(printer.id)}>${icon('printer')}<span class="name">${printer.name}<small class="model">${printer.model}</small></span><span class="dot ${printer.status}"></span></button>`)}
+      ${repeat(printers, (printer) => printer.id, (printer) => html`<button class="printer-link ${this._selected === printer.id ? 'selected' : ''}" title=${`${printer.name} · ${printer.haName}`} @click=${() => this.selectPrinter(printer.id)}>${icon('printer')}<span class="name">${printer.name}<small class="model">${printer.haName === printer.name ? printer.model : printer.haName}</small></span><span class="dot ${printer.status}"></span></button>`)}
       <div class="sidebar-foot">Bambu Dashboard Card<br>v0.1 · Community project</div></aside>`;
   }
   private renderBanners() {
@@ -301,17 +319,17 @@ export class BambuDashboardCard extends LitElement {
   }
   private renderTile(printer: Printer) {
     const task = scalar(findEntity(printer.entities, 'subtask_name'));
-    return html`<article class="panel printer-card"><button class="card-heading" @click=${() => this.selectPrinter(printer.id)}><span class="machine-badge">${icon('printer')}</span><span class="heading-copy"><b>${printer.name}</b><small>${printer.model}</small></span>${this.statusBadge(printer)}</button>
+    return html`<article class="panel printer-card"><button class="card-heading" @click=${() => this.selectPrinter(printer.id)}><span class="machine-badge">${icon('printer')}</span><span class="heading-copy"><b>${printer.name}</b><small>${printer.haName === printer.name ? printer.model : `${printer.model} · ${printer.haName}`}</small></span>${this.statusBadge(printer)}</button>
       <div class="tile-media"><div class="preview" aria-label=${this.t('camera')}>${printerIllustration()}${printer.camera && isAvailable(printer.camera) ? html`<bambu-dashboard-camera .hass=${this._hass} .entity=${printer.camera.entry.entity_id}></bambu-dashboard-camera>` : nothing}<span class="preview-caption">${printer.camera ? this.t('camera') : this.t('unsupported')}</span></div>
       <div class="project-preview" aria-label=${this.t('projectPreview')}>${printer.cover && scalar(printer.cover) ? html`<bambu-dashboard-file-image .hass=${this._hass} .entity=${printer.cover.entry.entity_id} .version=${scalar(printer.cover) || ''}></bambu-dashboard-file-image>` : html`<div class="preview-empty">${icon('folder')}<span>${this.t('noProjectPreview')}</span></div>`}<span class="preview-caption">${this.t('projectPreview')}</span></div></div>
-      <div class="tile-content"><div class="task-line">${icon('folder')}<span>${task || this.t('noTask')}</span></div>${this.progress(printer)}<div class="tile-metrics"><div><span>${this.t('remaining')}</span><strong>${this.sensor(printer, 'remaining_time')}</strong></div><div><span>${this.t('nozzle')}</span><strong>${this.sensor(printer, 'nozzle_temp')}</strong></div><div><span>${this.t('bed')}</span><strong>${this.sensor(printer, 'bed_temp')}</strong></div></div>
+      <div class="tile-content"><div class="task-line">${icon('folder')}<span>${task || this.t('noTask')}</span></div>${this.progress(printer)}<div class="tile-metrics"><div><span>${this.t('remaining')}</span><strong>${this.remaining(printer)}</strong>${this.completionEstimate(printer)}</div><div><span>${this.t('nozzle')}</span><strong>${this.sensor(printer, 'nozzle_temp')}</strong></div><div><span>${this.t('bed')}</span><strong>${this.sensor(printer, 'bed_temp')}</strong></div></div>
       <div class="tile-footer"><div class="filament-dots">${printer.ams.flatMap((unit) => unit.slots).map(({ entity }) => html`<span title=${entityName(entity)} class="filament-dot ${entity.state?.attributes.active ? 'active' : ''}" style=${`--filament:${filamentColor(entity.state?.attributes.color) || 'transparent'}`}></span>`)}</div><button class="button small" @click=${() => this.selectPrinter(printer.id)}>${this.t('details')}${icon('arrow')}</button></div></div></article>`;
   }
 
   private renderDetail(printer: Printer) {
     return html`<bambu-detail-masonry class="detail-grid">
       <section class="panel camera-panel"><div class="panel-head"><h2>${icon('camera')} ${this.t('camera')}</h2><span class="description">${printer.camera && (Number(printer.camera.state?.attributes.supported_features) & 2) ? this.t('live') : this.t('snapshot')}</span></div><div class="camera-large">${printer.camera ? html`<bambu-dashboard-camera .hass=${this._hass} .entity=${printer.camera.entry.entity_id}></bambu-dashboard-camera>` : html`${printerIllustration()}<span class="preview-caption">${this.t('unsupported')}</span>`}</div></section>
-      <section class="panel current-job"><div class="panel-head"><h2>${icon('folder')} ${this.t('task')}</h2>${this.statusBadge(printer)}</div><div class="panel-body"><div class="job-top">${printer.cover && scalar(printer.cover) ? html`<div class="job-cover"><bambu-dashboard-file-image .hass=${this._hass} .entity=${printer.cover.entry.entity_id} .version=${scalar(printer.cover) || ''}></bambu-dashboard-file-image></div>` : nothing}<div class="job-name">${scalar(findEntity(printer.entities, 'subtask_name')) || this.t('noTask')}</div></div>${this.progress(printer)}<div class="job-summary"><div><span>${this.t('remaining')}</span><b>${this.remaining(printer)}</b></div><div><span>${this.t('layers')}</span><b>${this.sensor(printer, 'current_layer')} / ${this.sensor(printer, 'total_layers')}</b></div></div></div></section>
+      <section class="panel current-job"><div class="panel-head"><h2>${icon('folder')} ${this.t('task')}</h2>${this.statusBadge(printer)}</div><div class="panel-body"><div class="job-top">${printer.cover && scalar(printer.cover) ? html`<div class="job-cover"><bambu-dashboard-file-image .hass=${this._hass} .entity=${printer.cover.entry.entity_id} .version=${scalar(printer.cover) || ''}></bambu-dashboard-file-image></div>` : nothing}<div class="job-name">${scalar(findEntity(printer.entities, 'subtask_name')) || this.t('noTask')}</div></div>${this.progress(printer)}<div class="job-summary"><div><span>${this.t('remaining')}</span><b>${this.remaining(printer)}</b>${this.completionEstimate(printer)}</div><div><span>${this.t('layers')}</span><b>${this.sensor(printer, 'current_layer')} / ${this.sensor(printer, 'total_layers')}</b></div></div></div></section>
       <section class="panel controls-panel"><div class="panel-head"><h2>${icon('tune')} ${this.t('controls')}</h2></div><div class="panel-body">${this.renderControls(printer)}</div></section>
       <section class="panel live-metrics"><div class="panel-head"><h2>${icon('heat')} ${this.t('liveParameters')}</h2></div><div class="detail-metrics">${[['nozzle', 'nozzle_temp', 'target_nozzle_temp'], ['bed', 'bed_temp', 'target_bed_temp'], ['fan', 'cooling_fan_speed', ''], ['weight', 'print_weight', ''], ['length', 'print_length', '']].map(([label, key, target]) => html`<div class="metric"><div class="metric-top">${icon(label === 'nozzle' || label === 'bed' ? 'heat' : 'tune')}${this.t(label as Message)}</div><strong>${this.sensor(printer, key)}</strong>${target ? html`<small>→ ${this.sensor(printer, target)}</small>` : nothing}</div>`)}</div></section>
       ${printer.ams.length ? printer.ams.map((unit) => this.renderAmsUnit(printer, unit, false)) : html`<section class="panel empty">${icon('spool')}<p>${this.t('noAms')}</p></section>`}
@@ -359,7 +377,7 @@ export class BambuDashboardCard extends LitElement {
   private renderParameters() {
     const query = this._search.toLocaleLowerCase();
     const rows = this.currentPrinters.flatMap((printer) => printer.allEntities.map((entity) => ({ printer, entity })))
-      .filter(({ printer, entity }) => `${printer.name} ${entityName(entity)} ${entity.entry.entity_id} ${entity.state?.state || ''}`.toLocaleLowerCase().includes(query));
+      .filter(({ printer, entity }) => `${printer.name} ${printer.haName} ${entityName(entity)} ${entity.entry.entity_id} ${entity.state?.state || ''}`.toLocaleLowerCase().includes(query));
     return html`<div class="section-heading"><div><h2>${this.t('parameters')}</h2><p class="description">${rows.length} entities · ha-bambulab</p></div></div><label class="search-box">${icon('search')}<input aria-label=${this.t('search')} placeholder=${this.t('search')} .value=${this._search} @input=${(event: Event) => { this._search = (event.target as HTMLInputElement).value; }}/></label>
       ${rows.length ? html`<section class="panel" style="overflow-x:auto"><table class="parameter-table"><thead><tr><th>${this.t('entity')}</th><th>${this.t('value')}</th><th>${this.t('details')}</th></tr></thead><tbody>${repeat(rows, ({ entity }) => entity.entry.entity_id, ({ printer, entity }) => html`<tr><td><div class="entity-name">${entityName(entity)}</div><div class="entity-id">${printer.name} · ${domainOf(entity.entry.entity_id)}</div></td><td><span class="entity-value">${this.value(entity)}</span></td><td><details><summary>${this.t('attributes')}</summary><div class="entity-id">${entity.entry.entity_id}</div><dl class="attribute-grid"><dt>${this.t('updated')}</dt><dd>${this.date(entity.state?.last_updated)}</dd>${Object.entries(parameterAttributes(entity)).map(([key, value]) => html`<dt>${key}</dt><dd>${typeof value === 'object' ? JSON.stringify(value, null, 2) : String(value)}</dd>`)}</dl><button class="button small" @click=${() => this.dispatchEvent(new CustomEvent('hass-more-info', { detail: { entityId: entity.entry.entity_id }, bubbles: true, composed: true }))}>${this.t('details')}</button></details></td></tr>`)}</tbody></table></section>` : this.renderEmpty('search', this.t('noParameters'))}`;
   }
@@ -390,4 +408,4 @@ export class BambuDashboardCard extends LitElement {
 customElements.define('bambu-dashboard-card', BambuDashboardCard);
 window.customCards = window.customCards || [];
 window.customCards.push({ type: 'bambu-dashboard-card', name: 'Bambu Dashboard', preview: true, description: 'Complete multi-printer workspace for ha-bambulab.' });
-console.info('%c BAMBU DASHBOARD %c 0.1.0 ', 'background:#28bb8b;color:#08291f;font-weight:bold;padding:4px', 'background:#15201b;color:#cfe9de;padding:4px');
+console.info('%c BAMBU DASHBOARD %c 0.1.0 ', 'background:#00ae42;color:#08291f;font-weight:bold;padding:4px', 'background:#15201b;color:#cfe9de;padding:4px');

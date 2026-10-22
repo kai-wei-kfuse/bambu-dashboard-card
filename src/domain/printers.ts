@@ -15,6 +15,7 @@ export interface AmsUnit {
 export interface Printer {
   id: string;
   name: string;
+  haName: string;
   model: string;
   serial?: string;
   device: DeviceEntry;
@@ -123,10 +124,12 @@ export function discoverPrinters(snapshot: RegistrySnapshot, hass: HomeAssistant
         });
       const rawStatus = scalar(findEntity(entities, 'print_status'));
       const status = rawStatus?.toLowerCase() || findEntity(entities, 'print_status')?.state?.state || 'unknown';
+      const haName = device.name_by_user || device.name || device.model || 'Bambu Lab';
       return {
         id: device.id,
         device,
-        name: device.name_by_user || device.name || device.model || 'Bambu Lab',
+        name: scalar(findEntity(entities, 'printer_name'))?.trim() || haName,
+        haName,
         model: device.model || 'Unknown',
         serial: device.identifiers?.find(([platform]) => platform === 'bambu_lab')?.[1] || device.serial_number || undefined,
         entities,

@@ -22,7 +22,7 @@ const files = [
   { ...project, filename: 'Modular desk organizer.3mf', size: bytes.length, size_human: `${(bytes.length / 1024).toFixed(1)} KB`, thumbnail_path: 'SYNTHETIC_ONE/prints/cache/preview.svg', printer_name: 'Workshop A1' },
   { ...project, filename: 'Cable guide set.3mf', path: 'SYNTHETIC_TWO/prints/cache/cable-guide.3mf', size: bytes.length, size_human: `${(bytes.length / 1024).toFixed(1)} KB`, printer_serial: 'SYNTHETIC_TWO', printer_device_id: 'printer-two', printer_name: 'Studio A1', thumbnail_path: 'SYNTHETIC_TWO/prints/cache/preview.svg' },
 ];
-const thumbnail = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="m20 35 30-17 30 17v34L50 86 20 69z" fill="#28bb8b22" stroke="#28bb8b" stroke-width="3"/><path d="m20 35 30 17 30-17M50 52v34" fill="none" stroke="#28bb8b" stroke-width="3"/></svg>';
+const thumbnail = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="m20 35 30-17 30 17v34L50 86 20 69z" fill="#00ae4222" stroke="#00ae42" stroke-width="3"/><path d="m20 35 30 17 30-17M50 52v34" fill="none" stroke="#00ae42" stroke-width="3"/></svg>';
 const readOnly = () => { throw new Error('This preview is read-only. Install the card in Home Assistant to control a real printer.'); };
 
 const hass: HomeAssistant = fixtureHass({

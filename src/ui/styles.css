@@ -1,7 +1,7 @@
 :host {
   display: block;
   color: var(--primary-text-color, #e8eeec);
-  --bd-accent: #28bb8b;
+  --bd-accent: #00ae42;
   --bd-accent-soft: color-mix(in srgb, var(--bd-accent) 12%, transparent);
   --bd-bg: var(--primary-background-color, #101716);
   --bd-panel: var(--card-background-color, #19211f);
@@ -48,12 +48,13 @@ a { color: var(--bd-accent); }
 .sidebar-foot { margin: 28px 12px 0; font-size: 11px; color: var(--bd-muted); }
 .main { min-width: 0; padding: 29px 30px 35px; }
 .page-heading { display: flex; justify-content: space-between; align-items: flex-start; gap: 18px; margin-bottom: 24px; }
-h1 { font-size: 28px; letter-spacing: -1.1px; line-height: 1.2; margin: 7px 0 8px; font-weight: 720; }
+h1 { font-size: 28px; letter-spacing: -1.1px; line-height: 1.2; margin: 7px 0 8px; font-weight: 720; overflow-wrap: anywhere; }
 h2 { font-size: 16px; letter-spacing: -.3px; margin: 0; }
 h3 { font-size: 13px; margin: 0; }
 p { margin: 0; }
 .muted { color: var(--bd-muted); }
 .description { color: var(--bd-muted); font-size: 12px; }
+.ha-name { margin-bottom: 5px; overflow-wrap: anywhere; }
 .stats { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
 .stat { border: 1px solid var(--bd-line); padding: 7px 12px; border-radius: 9px; background: var(--bd-panel); font-size: 11px; color: var(--bd-muted); white-space: nowrap; }
 .stat b { color: var(--bd-text); font-size: 15px; margin-right: 4px; }
@@ -139,6 +140,9 @@ p { margin: 0; }
 .job-summary { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 18px 0; }
 .job-summary span { display: block; font-size: 11px; color: var(--bd-muted); }
 .job-summary b { font-size: 15px; display: block; margin-top: 4px; }
+.completion-estimate { display: grid; gap: 4px; margin-top: 10px; }
+.completion-estimate time { font-size: 12px; font-weight: 600; }
+.completion-estimate small { color: var(--bd-muted); font-size: 11px; }
 .control-row { display: flex; gap: 8px; margin: 12px 0; }
 .control-row .button { flex: 1; }
 .control-divider { height: 1px; background: var(--bd-line); margin: 19px 0; }

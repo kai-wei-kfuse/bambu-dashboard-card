@@ -24,6 +24,10 @@ Create a new blank dashboard in Home Assistant, open its raw configuration edito
 
 Automatic discovery includes all registered Bambu printers. The visual editor can select a subset, change the title/language, and reorder selected devices. Adding a printer through ha-bambulab updates the directory without editing entity IDs.
 
+The main printer label uses ha-bambulab's **Printer name** sensor. Its HA device name appears as secondary identity; if that sensor is absent, disabled or unavailable, the HA name remains the main label. Parameter search accepts both names. The dashboard does not rename HA devices or alter command targets.
+
+During printing/preparation, the overview and detail show **Estimated finish** below remaining time, calculated from the current clock plus the remaining duration. Dates/times use HA's configured timezone. A paused print needs resuming before a running estimate is shown. This is a changing estimate, not a completed-print timestamp.
+
 ## Manual installation / local development
 
 Build with `npm ci` and `npm run build`. Copy `dist/bambu-dashboard-card.js` into `<HA config>/www/bambu-dashboard/`, then register `/local/bambu-dashboard/bambu-dashboard-card.js` as a JavaScript module. A query parameter such as `?v=0.1.0` can identify a new build after deployment.

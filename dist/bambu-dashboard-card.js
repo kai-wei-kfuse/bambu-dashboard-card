@@ -759,11 +759,12 @@ function et(e, t, n) {
 				slots: i,
 				external: n
 			};
-		}), o = V(z(n, "print_status"))?.toLowerCase() || z(n, "print_status")?.state?.state || "unknown";
+		}), o = V(z(n, "print_status"))?.toLowerCase() || z(n, "print_status")?.state?.state || "unknown", s = t.name_by_user || t.name || t.model || "Bambu Lab";
 		return {
 			id: t.id,
 			device: t,
-			name: t.name_by_user || t.name || t.model || "Bambu Lab",
+			name: V(z(n, "printer_name"))?.trim() || s,
+			haName: s,
 			model: t.model || "Unknown",
 			serial: t.identifiers?.find(([e]) => e === "bambu_lab")?.[1] || t.serial_number || void 0,
 			entities: n,
@@ -1317,6 +1318,25 @@ var Yt = class {
 		});
 	}
 }, Xt = {
+	h: 36e5,
+	min: 6e4,
+	s: 1e3
+};
+function Zt(e) {
+	let t = z(e.entities, "remaining_time"), n = Xe(t), r = t?.state?.attributes.unit_of_measurement;
+	if (n === null || n < 0 || typeof r != "string" || !Object.hasOwn(Xt, r)) return null;
+	let i = n * Xt[r];
+	return Number.isFinite(i) ? i : null;
+}
+function Qt(e, t) {
+	if (!["running", "prepare"].includes(e.status)) return null;
+	let n = Zt(e);
+	if (n === null) return null;
+	let r = t + n;
+	return Number.isNaN(new Date(r).getTime()) ? null : r;
+}
+// src/ui/i18n.ts
+var $t = {
 	workspace: ["Your print workspace", "打印工作台"],
 	subtitle: ["Every printer. Every detail. One workspace.", "每台打印机，每个细节，一个工作台。"],
 	allPrinters: ["All printers", "全部打印机"],
@@ -1350,6 +1370,9 @@ var Yt = class {
 	noProjectPreview: ["No print preview available", "暂无打印件缩略图"],
 	progress: ["Progress", "打印进度"],
 	remaining: ["Remaining", "剩余时间"],
+	estimatedFinish: ["Estimated finish", "预估完成时间"],
+	estimatePaused: ["Recalculate after resuming", "恢复打印后重新估算"],
+	haName: ["HA name", "HA 名称"],
 	hourUnit: ["h", "小时"],
 	minuteUnit: ["min", "分钟"],
 	layers: ["Layers", "层数"],
@@ -1465,11 +1488,11 @@ var Yt = class {
 	notifyTestSubmitted: ["HA accepted the test request. Check whether your phone received it and sounded.", "HA 已接受测试请求，请确认手机是否收到并响铃。"],
 	notifyTestError: ["Test reminder failed", "测试提醒发送失败"]
 };
-function Zt(e, t) {
-	return Xt[t][+(e === "zh")];
+function en(e, t) {
+	return $t[t][+(e === "zh")];
 }
 // src/ui/icons.ts
-var Qt = {
+var tn = {
 	printer: "M5 20V4h14v16M3 20h18M7 7h10M12 7v5m-2 0h4m-6 5h8M6 4V2h12v2",
 	grid: "M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z",
 	arrow: "m9 5 7 7-7 7",
@@ -1492,9 +1515,9 @@ var Qt = {
 	search: "M10 3a7 7 0 1 0 0 14 7 7 0 0 0 0-14m5 12 6 6"
 };
 function Z(e) {
-	return he`<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d=${Qt[e] || Qt.printer}></path></svg>`;
+	return he`<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d=${tn[e] || tn.printer}></path></svg>`;
 }
-function $t() {
+function nn() {
 	return he`<svg viewBox="0 0 320 220" class="printer-art" fill="none" aria-hidden="true">
     <ellipse cx="160" cy="193" rx="105" ry="13" fill="currentColor" opacity=".04"/>
     <path d="M88 180V43h144v137M99 180V54h122v126" stroke="currentColor" stroke-width="5" opacity=".7"/>
@@ -1508,14 +1531,14 @@ function $t() {
   </svg>`;
 }
 // src/ui/select-values.ts
-function en(e) {
+function rn(e) {
 	for (let t of e.querySelectorAll("select[data-value]")) {
 		let e = t.dataset.value;
 		t.value !== e && (t.value = e);
 	}
 }
 // src/ui/styles.css?inline
-var tn = ":host{color:var(--primary-text-color,#e8eeec);--bd-accent:#28bb8b;--bd-accent-soft:color-mix(in srgb, var(--bd-accent) 12%, transparent);--bd-bg:var(--primary-background-color,#101716);--bd-panel:var(--card-background-color,#19211f);--bd-raised:var(--secondary-background-color,#202a27);--bd-text:var(--primary-text-color,#e8eeec);--bd-muted:var(--secondary-text-color,#93a49d);--bd-line:color-mix(in srgb, var(--bd-text) 10%, transparent);--bd-danger:var(--error-color,#db6e67);font-family:var(--paper-font-body1_-_font-family,Inter, ui-sans-serif, system-ui, sans-serif);font-size:14px;line-height:1.5;display:block}*{box-sizing:border-box}button,input,select{font:inherit}button{color:inherit;cursor:pointer}button:disabled{opacity:.42;cursor:not-allowed}button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--bd-accent);outline-offset:3px}button,input,select{-webkit-tap-highlight-color:transparent}a{color:var(--bd-accent)}.shell{background:var(--bd-bg);border:1px solid var(--bd-line);border-radius:20px;min-height:460px;overflow:hidden}.topbar{background:var(--bd-panel);border-bottom:1px solid var(--bd-line);justify-content:space-between;align-items:center;gap:20px;min-height:72px;padding:17px 28px;display:flex}.brand{align-items:center;gap:12px;display:flex}.brand-mark{background:var(--bd-accent);color:#08291f;border-radius:11px;place-items:center;width:37px;height:37px;display:grid}.brand-title{letter-spacing:-.4px;font-size:16px;font-weight:750}.brand-subtitle,.eyebrow{color:var(--bd-muted);letter-spacing:1.6px;text-transform:uppercase;font-size:10px;font-weight:650}.top-actions{align-items:center;gap:12px;display:flex}.connection{color:var(--bd-muted);align-items:center;gap:7px;font-size:11px;display:flex}.dot{background:var(--bd-muted);border-radius:50%;flex-shrink:0;width:7px;height:7px}.dot.running,.dot.ready,.dot.finish{background:var(--bd-accent)}.dot.pause,.dot.prepare{background:#d8ac5b}.dot.failed{background:var(--bd-danger)}.workspace{grid-template-columns:216px minmax(0,1fr);display:grid}.sidebar{border-right:1px solid var(--bd-line);background:color-mix(in srgb, var(--bd-panel) 55%, var(--bd-bg));padding:25px 13px}.sidebar-label{color:var(--bd-muted);letter-spacing:1.6px;text-transform:uppercase;margin:5px 12px 12px;font-size:10px;font-weight:700}.sidebar button{text-align:left;background:0 0;border:0;border-radius:10px;align-items:center;gap:10px;width:100%;padding:11px 12px;display:flex}.sidebar button:hover{background:var(--bd-line)}.sidebar button.selected{background:var(--bd-accent-soft);color:var(--bd-accent)}.sidebar .icon{flex-shrink:0;width:18px;height:18px}.sidebar .printer-link{margin-top:5px}.sidebar .printer-link .dot{margin-left:auto}.sidebar .name{text-overflow:ellipsis;white-space:nowrap;overflow:hidden}.sidebar .model{color:var(--bd-muted);font-size:11px;display:block}.sidebar-rule{background:var(--bd-line);height:1px;margin:20px 10px}.sidebar-foot{color:var(--bd-muted);margin:28px 12px 0;font-size:11px}.main{min-width:0;padding:29px 30px 35px}.page-heading{justify-content:space-between;align-items:flex-start;gap:18px;margin-bottom:24px;display:flex}h1{letter-spacing:-1.1px;margin:7px 0 8px;font-size:28px;font-weight:720;line-height:1.2}h2{letter-spacing:-.3px;margin:0;font-size:16px}h3{margin:0;font-size:13px}p{margin:0}.muted{color:var(--bd-muted)}.description{color:var(--bd-muted);font-size:12px}.stats{flex-wrap:wrap;gap:8px;margin-top:4px;display:flex}.stat{border:1px solid var(--bd-line);background:var(--bd-panel);color:var(--bd-muted);white-space:nowrap;border-radius:9px;padding:7px 12px;font-size:11px}.stat b{color:var(--bd-text);margin-right:4px;font-size:15px}.tabs{border-bottom:1px solid var(--bd-line);gap:5px;margin-bottom:22px;padding-bottom:12px;display:flex;overflow-x:auto}.tabs button{color:var(--bd-muted);white-space:nowrap;background:0 0;border:0;border-radius:8px;align-items:center;gap:7px;padding:9px 12px;font-size:12px;display:flex}.tabs button.active{background:var(--bd-accent-soft);color:var(--bd-accent)}.icon{vertical-align:middle;flex-shrink:0;width:19px;height:19px;display:inline-block}.icon-button{border:1px solid var(--bd-line);background:0 0;border-radius:9px;place-items:center;width:33px;height:33px;display:inline-grid}.icon-button:hover{background:var(--bd-line)}.button{border:1px solid var(--bd-line);background:var(--bd-raised);border-radius:9px;justify-content:center;align-items:center;gap:8px;padding:10px 14px;font-size:12px;font-weight:600;display:inline-flex}.button.primary{background:var(--bd-accent);border-color:var(--bd-accent);color:#092e22}.button.danger{color:var(--bd-danger);background:color-mix(in srgb, var(--bd-danger) 8%, transparent);border-color:color-mix(in srgb, var(--bd-danger) 28%, transparent)}.button.small{padding:7px 10px;font-size:11px}.panel{background:var(--bd-panel);border:1px solid var(--bd-line);border-radius:14px;overflow:hidden}.panel-head{border-bottom:1px solid var(--bd-line);justify-content:space-between;align-items:center;gap:12px;padding:17px 20px;display:flex}.panel-body{padding:20px}.printer-grid{grid-template-columns:repeat(auto-fit,minmax(min(310px,100%),1fr));gap:18px;display:grid}.printer-card{transition:border-color .15s}.printer-card:hover{border-color:color-mix(in srgb, var(--bd-accent) 50%, var(--bd-line))}.printer-card .card-heading{text-align:left;background:0 0;border:0;align-items:center;gap:10px;width:100%;padding:18px 20px 0;display:flex}.machine-badge{border:1px solid var(--bd-line);width:34px;height:34px;color:var(--bd-muted);border-radius:9px;place-items:center;display:grid}.card-heading .heading-copy{flex:1;min-width:0}.card-heading .heading-copy b{text-overflow:ellipsis;white-space:nowrap;font-size:14px;display:block;overflow:hidden}.card-heading small{color:var(--bd-muted);font-size:10px}.status{border:1px solid var(--bd-line);white-space:nowrap;border-radius:6px;align-items:center;gap:6px;padding:4px 8px;font-size:10px;display:inline-flex}.status.running,.status.finish{color:var(--bd-accent);background:var(--bd-accent-soft);border-color:#0000}.status.pause,.status.prepare{color:#d8ac5b}.status.failed{color:var(--bd-danger)}.tile-media{grid-template-columns:minmax(0,3fr) minmax(0,2fr);gap:10px;padding:12px 12px 8px;display:grid}.preview{background:radial-gradient(ellipse at center, var(--bd-accent-soft), transparent 72%);border-radius:10px;place-items:center;height:208px;display:grid;position:relative;overflow:hidden}.preview bambu-dashboard-camera{width:100%;position:absolute;inset:0}.project-preview{border:1px solid var(--bd-line);background:var(--bd-bg);border-radius:10px;grid-template-rows:minmax(0,1fr);place-items:center;min-width:0;height:208px;display:grid;position:relative;overflow:hidden}.project-preview bambu-dashboard-file-image{padding:8px 8px 32px}.preview-empty{color:var(--bd-muted);text-align:center;justify-items:center;gap:10px;padding:12px 12px 32px;font-size:11px;display:grid}.printer-art{width:90%;max-width:320px;height:100%;color:var(--bd-muted)}.preview-caption{background:var(--bd-panel);border:1px solid var(--bd-line);color:var(--bd-muted);border-radius:4px;padding:3px 7px;font-size:9px;position:absolute;bottom:9px;left:10px}.tile-content{padding:4px 20px 20px}.task-line{align-items:center;gap:9px;margin-bottom:15px;display:flex}.task-line .icon{color:var(--bd-muted);width:15px;height:15px}.task-line span{text-overflow:ellipsis;white-space:nowrap;font-size:12px;overflow:hidden}.progress-label{color:var(--bd-muted);justify-content:space-between;align-items:center;gap:12px;margin:8px 0;font-size:11px;display:flex}.progress-label strong{color:var(--bd-accent);font-size:13px}.progress-track{background:var(--bd-line);border-radius:4px;height:5px;overflow:hidden}.progress-fill{height:100%;width:var(--progress,0%);background:var(--bd-accent);border-radius:inherit;transition:width .3s}.tile-metrics{grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0 14px;display:grid}.tile-metrics span{color:var(--bd-muted);font-size:10px;display:block}.tile-metrics strong{margin-top:3px;font-size:13px;font-weight:600;display:block}.tile-footer{border-top:1px solid var(--bd-line);justify-content:space-between;align-items:center;gap:10px;padding-top:12px;display:flex}.filament-dots{align-items:center;gap:5px;display:flex}.filament-dot{border:2px solid var(--bd-line);background:var(--filament,transparent);border-radius:50%;width:14px;height:14px}.filament-dot.active{outline:1px solid var(--bd-accent);outline-offset:2px}.detail-grid{grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr));grid-auto-rows:1px;grid-auto-flow:dense;align-items:start;gap:14px;display:grid}.detail-grid>*{align-self:start;min-width:0;margin:0}.detail-grid .panel-head{padding:12px 14px}.detail-grid .panel-head h2{align-items:center;gap:7px;font-size:13px;display:flex}.detail-grid .panel-body{padding:14px}.camera-large{background:radial-gradient(ellipse at center, var(--bd-accent-soft), transparent);position:relative}.camera-large bambu-dashboard-camera{width:100%;height:auto;min-height:120px}.camera-large>.printer-art{max-width:320px;height:200px;margin:auto;display:block}.detail-metrics{grid-template-columns:repeat(2,minmax(0,1fr));padding:6px;display:grid}.detail-metrics .metric{padding:12px 10px}.detail-metrics .metric strong{font-size:20px}.detail-grid .control-divider{margin:12px 0}.detail-grid .control-row{margin:8px 0}.detail-grid .field{margin:10px 0}.detail-grid .ams-grid{grid-template-columns:repeat(auto-fit,minmax(min(130px,100%),1fr));gap:8px;padding:12px}.detail-grid .spool{padding:12px 10px}.detail-grid .spool-visual{width:52px;height:52px;margin:10px auto}.detail-grid .spool-visual:after{inset:12px}.detail-grid .ams-extra{padding:0 12px 12px}.detail-grid>.ams-section{margin:0}.metric{padding:16px 18px}.metric .metric-top{color:var(--bd-muted);align-items:center;gap:7px;font-size:11px;display:flex}.metric strong{letter-spacing:-.6px;margin-top:7px;font-size:22px;font-weight:650;display:block}.metric small{color:var(--bd-muted);font-size:11px}.job-name{overflow-wrap:anywhere;margin:8px 0 18px;font-size:19px;font-weight:650;line-height:1.4}.job-top{justify-items:center;gap:12px;margin:0 0 14px;display:grid}.job-cover{aspect-ratio:1;border:1px solid var(--bd-line);background:var(--bd-bg);border-radius:12px;flex-shrink:0;width:256px;max-width:100%;overflow:hidden}.current-job .job-name{width:100%;margin:0;font-size:17px}.current-job .job-summary{margin:12px 0 0}.current-job .job-summary b{overflow-wrap:anywhere}.job-summary{grid-template-columns:1fr 1fr;gap:14px;margin:18px 0;display:grid}.job-summary span{color:var(--bd-muted);font-size:11px;display:block}.job-summary b{margin-top:4px;font-size:15px;display:block}.control-row{gap:8px;margin:12px 0;display:flex}.control-row .button{flex:1}.control-divider{background:var(--bd-line);height:1px;margin:19px 0}.field{flex-direction:column;gap:7px;margin:12px 0;font-size:12px;display:flex}.field label,.field>span{color:var(--bd-muted);font-size:11px}input,select{border:1px solid var(--bd-line);background:var(--bd-bg);width:100%;min-width:0;color:var(--bd-text);border-radius:8px;padding:10px 12px}input[type=checkbox]{width:16px;height:16px;accent-color:var(--bd-accent)}.check{align-items:flex-start;gap:9px;margin:12px 0;font-size:12px;display:flex}.check input{flex-shrink:0;margin-top:2px}.light-control{justify-content:space-between;align-items:center;gap:12px;font-size:12px;display:flex}.light-control .button.on{color:var(--bd-accent);border-color:var(--bd-accent)}.helper{color:var(--bd-muted);margin-top:8px;font-size:11px;line-height:1.6}.ams-section{margin-top:18px}.ams-grid{grid-template-columns:repeat(auto-fit,minmax(min(150px,100%),1fr));gap:12px;padding:20px;display:grid}.spool{border:1px solid var(--bd-line);background:var(--bd-bg);border-radius:11px;min-width:0;padding:16px 13px 13px;position:relative}.spool.active{border-color:color-mix(in srgb, var(--bd-accent) 65%, transparent);background:var(--bd-accent-soft)}.spool-index{color:var(--bd-muted);font-size:10px}.spool-visual{background:repeating-radial-gradient(circle at center, transparent 0 3px, #0002 4px 5px),var(--filament,var(--bd-raised));border:5px solid color-mix(in srgb, var(--filament,var(--bd-muted)) 65%, var(--bd-line));border-radius:50%;width:64px;height:64px;margin:15px auto;position:relative;box-shadow:inset 0 0 0 1px #fff3}.spool-visual:after{content:\"\";background:var(--bd-bg);border:2px solid var(--bd-line);border-radius:50%;position:absolute;inset:18px}.spool h3{white-space:nowrap;text-overflow:ellipsis;overflow:hidden}.spool .material{color:var(--bd-muted);margin-top:4px;font-size:10px}.spool .remain{color:var(--bd-muted);margin-top:11px;font-size:11px}.spool .active-label{color:var(--bd-accent);font-size:9px;position:absolute;top:12px;right:9px}.ams-extra{color:var(--bd-muted);flex-wrap:wrap;gap:15px;padding:0 20px 17px;font-size:11px;display:flex}.file-list{margin-top:18px}.file-row{grid-template-columns:64px minmax(0,1fr) auto;align-items:center;gap:17px;padding:18px 20px;display:grid}.file-row+.file-row{border-top:1px solid var(--bd-line)}.file-preview{border:1px solid var(--bd-line);background:var(--bd-bg);width:64px;height:64px;color:var(--bd-muted);border-radius:10px;place-items:center;display:grid;overflow:hidden}.file-title{overflow-wrap:anywhere;font-size:13px;font-weight:600}.file-meta{color:var(--bd-muted);flex-wrap:wrap;gap:12px;margin-top:5px;font-size:10px;display:flex}.file-actions{gap:8px;display:flex}.section-heading{justify-content:space-between;align-items:flex-start;gap:20px;display:flex}.section-heading .description{max-width:700px;margin-top:6px}.search-box{border:1px solid var(--bd-line);background:var(--bd-panel);color:var(--bd-muted);border-radius:9px;align-items:center;gap:10px;margin:18px 0 13px;padding-left:12px;display:flex}.search-box input{background:0 0;border:0}.parameter-table{border-collapse:collapse;width:100%;font-size:12px}.parameter-table th{text-align:left;color:var(--bd-muted);border-bottom:1px solid var(--bd-line);padding:13px 18px;font-size:10px;font-weight:500}.parameter-table td{vertical-align:top;border-bottom:1px solid var(--bd-line);padding:12px 18px}.parameter-table tr:last-child td{border-bottom:0}.entity-name{font-size:12px;font-weight:550}.entity-id{color:var(--bd-muted);overflow-wrap:anywhere;margin-top:4px;font-size:9px}.entity-value{word-break:break-word;font-weight:650}.parameter-table summary{cursor:pointer;color:var(--bd-muted);font-size:10px}.attribute-grid{grid-template-columns:minmax(80px,auto) minmax(0,1fr);gap:7px 12px;padding:12px 0 0;font-size:10px;display:grid}.attribute-grid dt{color:var(--bd-muted);overflow-wrap:anywhere}.attribute-grid dd{word-break:break-word;white-space:pre-wrap;margin:0}.banner{border:1px solid var(--bd-line);background:var(--bd-panel);border-radius:10px;align-items:flex-start;gap:10px;margin-bottom:18px;padding:13px 15px;font-size:12px;display:flex}.banner.error{border-color:color-mix(in srgb,var(--bd-danger) 35%,transparent);color:var(--bd-danger)}.banner.notice{border-color:color-mix(in srgb,var(--bd-accent) 35%,transparent)}.banner .copy{overflow-wrap:anywhere;flex:1}.empty{text-align:center;color:var(--bd-muted);padding:48px 25px}.empty .icon{opacity:.7;width:30px;height:30px;margin-bottom:12px}.empty p{margin-bottom:15px;font-size:12px}.overlay{z-index:7;-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px);background:#0008;place-items:center;padding:20px;display:grid;position:fixed;inset:0}.dialog{background:var(--bd-panel);border:1px solid var(--bd-line);border-radius:17px;width:min(620px,100%);max-height:90vh;overflow-y:auto;box-shadow:0 20px 90px #0005}.dialog .dialog-body{padding:22px}.dialog-target{background:var(--bd-accent-soft);border:1px solid color-mix(in srgb,var(--bd-accent) 25%,transparent);border-radius:10px;justify-content:space-between;gap:16px;margin-bottom:17px;padding:13px 15px;display:flex}.dialog-target span{color:var(--bd-muted);font-size:10px}.dialog-target b{margin-top:3px;font-size:13px;display:block}.dialog-footer{border-top:1px solid var(--bd-line);justify-content:flex-end;gap:10px;padding:16px 22px;display:flex}.two-fields{grid-template-columns:1fr 1fr;gap:15px;display:grid}.progress-caption{color:var(--bd-accent);margin-top:12px;font-size:11px}.mobile-picker{display:none}@media (max-width:1100px){.workspace{grid-template-columns:180px minmax(0,1fr)}.main{padding:24px 20px}.stats{display:none}}@media (max-width:700px){.shell{border-radius:12px}.topbar{padding:14px 17px}.brand-subtitle{font-size:8px}.connection{display:none}.workspace{display:block}.sidebar{display:none}.main{padding:20px 15px}h1{font-size:24px}.page-heading{margin-bottom:16px}.mobile-picker{margin-bottom:15px;display:block}.tabs button{padding:8px;font-size:11px}.tabs .icon{width:15px;height:15px}.file-row{grid-template-columns:48px minmax(0,1fr);gap:12px;padding:15px}.file-preview{width:48px;height:48px}.file-actions{grid-column:2}.parameter-table th,.parameter-table td{padding:11px 10px}.overlay{padding:10px}.two-fields{grid-template-columns:1fr;gap:0}}@media (prefers-reduced-motion:reduce){*{transition:none!important}}@media (max-width:700px){.tabs .icon{display:none}.tabs{gap:2px}}", nn = class extends I {
+var an = ":host{color:var(--primary-text-color,#e8eeec);--bd-accent:#00ae42;--bd-accent-soft:color-mix(in srgb, var(--bd-accent) 12%, transparent);--bd-bg:var(--primary-background-color,#101716);--bd-panel:var(--card-background-color,#19211f);--bd-raised:var(--secondary-background-color,#202a27);--bd-text:var(--primary-text-color,#e8eeec);--bd-muted:var(--secondary-text-color,#93a49d);--bd-line:color-mix(in srgb, var(--bd-text) 10%, transparent);--bd-danger:var(--error-color,#db6e67);font-family:var(--paper-font-body1_-_font-family,Inter, ui-sans-serif, system-ui, sans-serif);font-size:14px;line-height:1.5;display:block}*{box-sizing:border-box}button,input,select{font:inherit}button{color:inherit;cursor:pointer}button:disabled{opacity:.42;cursor:not-allowed}button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--bd-accent);outline-offset:3px}button,input,select{-webkit-tap-highlight-color:transparent}a{color:var(--bd-accent)}.shell{background:var(--bd-bg);border:1px solid var(--bd-line);border-radius:20px;min-height:460px;overflow:hidden}.topbar{background:var(--bd-panel);border-bottom:1px solid var(--bd-line);justify-content:space-between;align-items:center;gap:20px;min-height:72px;padding:17px 28px;display:flex}.brand{align-items:center;gap:12px;display:flex}.brand-mark{background:var(--bd-accent);color:#08291f;border-radius:11px;place-items:center;width:37px;height:37px;display:grid}.brand-title{letter-spacing:-.4px;font-size:16px;font-weight:750}.brand-subtitle,.eyebrow{color:var(--bd-muted);letter-spacing:1.6px;text-transform:uppercase;font-size:10px;font-weight:650}.top-actions{align-items:center;gap:12px;display:flex}.connection{color:var(--bd-muted);align-items:center;gap:7px;font-size:11px;display:flex}.dot{background:var(--bd-muted);border-radius:50%;flex-shrink:0;width:7px;height:7px}.dot.running,.dot.ready,.dot.finish{background:var(--bd-accent)}.dot.pause,.dot.prepare{background:#d8ac5b}.dot.failed{background:var(--bd-danger)}.workspace{grid-template-columns:216px minmax(0,1fr);display:grid}.sidebar{border-right:1px solid var(--bd-line);background:color-mix(in srgb, var(--bd-panel) 55%, var(--bd-bg));padding:25px 13px}.sidebar-label{color:var(--bd-muted);letter-spacing:1.6px;text-transform:uppercase;margin:5px 12px 12px;font-size:10px;font-weight:700}.sidebar button{text-align:left;background:0 0;border:0;border-radius:10px;align-items:center;gap:10px;width:100%;padding:11px 12px;display:flex}.sidebar button:hover{background:var(--bd-line)}.sidebar button.selected{background:var(--bd-accent-soft);color:var(--bd-accent)}.sidebar .icon{flex-shrink:0;width:18px;height:18px}.sidebar .printer-link{margin-top:5px}.sidebar .printer-link .dot{margin-left:auto}.sidebar .name{text-overflow:ellipsis;white-space:nowrap;overflow:hidden}.sidebar .model{color:var(--bd-muted);font-size:11px;display:block}.sidebar-rule{background:var(--bd-line);height:1px;margin:20px 10px}.sidebar-foot{color:var(--bd-muted);margin:28px 12px 0;font-size:11px}.main{min-width:0;padding:29px 30px 35px}.page-heading{justify-content:space-between;align-items:flex-start;gap:18px;margin-bottom:24px;display:flex}h1{letter-spacing:-1.1px;overflow-wrap:anywhere;margin:7px 0 8px;font-size:28px;font-weight:720;line-height:1.2}h2{letter-spacing:-.3px;margin:0;font-size:16px}h3{margin:0;font-size:13px}p{margin:0}.muted{color:var(--bd-muted)}.description{color:var(--bd-muted);font-size:12px}.ha-name{overflow-wrap:anywhere;margin-bottom:5px}.stats{flex-wrap:wrap;gap:8px;margin-top:4px;display:flex}.stat{border:1px solid var(--bd-line);background:var(--bd-panel);color:var(--bd-muted);white-space:nowrap;border-radius:9px;padding:7px 12px;font-size:11px}.stat b{color:var(--bd-text);margin-right:4px;font-size:15px}.tabs{border-bottom:1px solid var(--bd-line);gap:5px;margin-bottom:22px;padding-bottom:12px;display:flex;overflow-x:auto}.tabs button{color:var(--bd-muted);white-space:nowrap;background:0 0;border:0;border-radius:8px;align-items:center;gap:7px;padding:9px 12px;font-size:12px;display:flex}.tabs button.active{background:var(--bd-accent-soft);color:var(--bd-accent)}.icon{vertical-align:middle;flex-shrink:0;width:19px;height:19px;display:inline-block}.icon-button{border:1px solid var(--bd-line);background:0 0;border-radius:9px;place-items:center;width:33px;height:33px;display:inline-grid}.icon-button:hover{background:var(--bd-line)}.button{border:1px solid var(--bd-line);background:var(--bd-raised);border-radius:9px;justify-content:center;align-items:center;gap:8px;padding:10px 14px;font-size:12px;font-weight:600;display:inline-flex}.button.primary{background:var(--bd-accent);border-color:var(--bd-accent);color:#092e22}.button.danger{color:var(--bd-danger);background:color-mix(in srgb, var(--bd-danger) 8%, transparent);border-color:color-mix(in srgb, var(--bd-danger) 28%, transparent)}.button.small{padding:7px 10px;font-size:11px}.panel{background:var(--bd-panel);border:1px solid var(--bd-line);border-radius:14px;overflow:hidden}.panel-head{border-bottom:1px solid var(--bd-line);justify-content:space-between;align-items:center;gap:12px;padding:17px 20px;display:flex}.panel-body{padding:20px}.printer-grid{grid-template-columns:repeat(auto-fit,minmax(min(310px,100%),1fr));gap:18px;display:grid}.printer-card{transition:border-color .15s}.printer-card:hover{border-color:color-mix(in srgb, var(--bd-accent) 50%, var(--bd-line))}.printer-card .card-heading{text-align:left;background:0 0;border:0;align-items:center;gap:10px;width:100%;padding:18px 20px 0;display:flex}.machine-badge{border:1px solid var(--bd-line);width:34px;height:34px;color:var(--bd-muted);border-radius:9px;place-items:center;display:grid}.card-heading .heading-copy{flex:1;min-width:0}.card-heading .heading-copy b{text-overflow:ellipsis;white-space:nowrap;font-size:14px;display:block;overflow:hidden}.card-heading small{color:var(--bd-muted);font-size:10px}.status{border:1px solid var(--bd-line);white-space:nowrap;border-radius:6px;align-items:center;gap:6px;padding:4px 8px;font-size:10px;display:inline-flex}.status.running,.status.finish{color:var(--bd-accent);background:var(--bd-accent-soft);border-color:#0000}.status.pause,.status.prepare{color:#d8ac5b}.status.failed{color:var(--bd-danger)}.tile-media{grid-template-columns:minmax(0,3fr) minmax(0,2fr);gap:10px;padding:12px 12px 8px;display:grid}.preview{background:radial-gradient(ellipse at center, var(--bd-accent-soft), transparent 72%);border-radius:10px;place-items:center;height:208px;display:grid;position:relative;overflow:hidden}.preview bambu-dashboard-camera{width:100%;position:absolute;inset:0}.project-preview{border:1px solid var(--bd-line);background:var(--bd-bg);border-radius:10px;grid-template-rows:minmax(0,1fr);place-items:center;min-width:0;height:208px;display:grid;position:relative;overflow:hidden}.project-preview bambu-dashboard-file-image{padding:8px 8px 32px}.preview-empty{color:var(--bd-muted);text-align:center;justify-items:center;gap:10px;padding:12px 12px 32px;font-size:11px;display:grid}.printer-art{width:90%;max-width:320px;height:100%;color:var(--bd-muted)}.preview-caption{background:var(--bd-panel);border:1px solid var(--bd-line);color:var(--bd-muted);border-radius:4px;padding:3px 7px;font-size:9px;position:absolute;bottom:9px;left:10px}.tile-content{padding:4px 20px 20px}.task-line{align-items:center;gap:9px;margin-bottom:15px;display:flex}.task-line .icon{color:var(--bd-muted);width:15px;height:15px}.task-line span{text-overflow:ellipsis;white-space:nowrap;font-size:12px;overflow:hidden}.progress-label{color:var(--bd-muted);justify-content:space-between;align-items:center;gap:12px;margin:8px 0;font-size:11px;display:flex}.progress-label strong{color:var(--bd-accent);font-size:13px}.progress-track{background:var(--bd-line);border-radius:4px;height:5px;overflow:hidden}.progress-fill{height:100%;width:var(--progress,0%);background:var(--bd-accent);border-radius:inherit;transition:width .3s}.tile-metrics{grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0 14px;display:grid}.tile-metrics span{color:var(--bd-muted);font-size:10px;display:block}.tile-metrics strong{margin-top:3px;font-size:13px;font-weight:600;display:block}.tile-footer{border-top:1px solid var(--bd-line);justify-content:space-between;align-items:center;gap:10px;padding-top:12px;display:flex}.filament-dots{align-items:center;gap:5px;display:flex}.filament-dot{border:2px solid var(--bd-line);background:var(--filament,transparent);border-radius:50%;width:14px;height:14px}.filament-dot.active{outline:1px solid var(--bd-accent);outline-offset:2px}.detail-grid{grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr));grid-auto-rows:1px;grid-auto-flow:dense;align-items:start;gap:14px;display:grid}.detail-grid>*{align-self:start;min-width:0;margin:0}.detail-grid .panel-head{padding:12px 14px}.detail-grid .panel-head h2{align-items:center;gap:7px;font-size:13px;display:flex}.detail-grid .panel-body{padding:14px}.camera-large{background:radial-gradient(ellipse at center, var(--bd-accent-soft), transparent);position:relative}.camera-large bambu-dashboard-camera{width:100%;height:auto;min-height:120px}.camera-large>.printer-art{max-width:320px;height:200px;margin:auto;display:block}.detail-metrics{grid-template-columns:repeat(2,minmax(0,1fr));padding:6px;display:grid}.detail-metrics .metric{padding:12px 10px}.detail-metrics .metric strong{font-size:20px}.detail-grid .control-divider{margin:12px 0}.detail-grid .control-row{margin:8px 0}.detail-grid .field{margin:10px 0}.detail-grid .ams-grid{grid-template-columns:repeat(auto-fit,minmax(min(130px,100%),1fr));gap:8px;padding:12px}.detail-grid .spool{padding:12px 10px}.detail-grid .spool-visual{width:52px;height:52px;margin:10px auto}.detail-grid .spool-visual:after{inset:12px}.detail-grid .ams-extra{padding:0 12px 12px}.detail-grid>.ams-section{margin:0}.metric{padding:16px 18px}.metric .metric-top{color:var(--bd-muted);align-items:center;gap:7px;font-size:11px;display:flex}.metric strong{letter-spacing:-.6px;margin-top:7px;font-size:22px;font-weight:650;display:block}.metric small{color:var(--bd-muted);font-size:11px}.job-name{overflow-wrap:anywhere;margin:8px 0 18px;font-size:19px;font-weight:650;line-height:1.4}.job-top{justify-items:center;gap:12px;margin:0 0 14px;display:grid}.job-cover{aspect-ratio:1;border:1px solid var(--bd-line);background:var(--bd-bg);border-radius:12px;flex-shrink:0;width:256px;max-width:100%;overflow:hidden}.current-job .job-name{width:100%;margin:0;font-size:17px}.current-job .job-summary{margin:12px 0 0}.current-job .job-summary b{overflow-wrap:anywhere}.job-summary{grid-template-columns:1fr 1fr;gap:14px;margin:18px 0;display:grid}.job-summary span{color:var(--bd-muted);font-size:11px;display:block}.job-summary b{margin-top:4px;font-size:15px;display:block}.completion-estimate{gap:4px;margin-top:10px;display:grid}.completion-estimate time{font-size:12px;font-weight:600}.completion-estimate small{color:var(--bd-muted);font-size:11px}.control-row{gap:8px;margin:12px 0;display:flex}.control-row .button{flex:1}.control-divider{background:var(--bd-line);height:1px;margin:19px 0}.field{flex-direction:column;gap:7px;margin:12px 0;font-size:12px;display:flex}.field label,.field>span{color:var(--bd-muted);font-size:11px}input,select{border:1px solid var(--bd-line);background:var(--bd-bg);width:100%;min-width:0;color:var(--bd-text);border-radius:8px;padding:10px 12px}input[type=checkbox]{width:16px;height:16px;accent-color:var(--bd-accent)}.check{align-items:flex-start;gap:9px;margin:12px 0;font-size:12px;display:flex}.check input{flex-shrink:0;margin-top:2px}.light-control{justify-content:space-between;align-items:center;gap:12px;font-size:12px;display:flex}.light-control .button.on{color:var(--bd-accent);border-color:var(--bd-accent)}.helper{color:var(--bd-muted);margin-top:8px;font-size:11px;line-height:1.6}.ams-section{margin-top:18px}.ams-grid{grid-template-columns:repeat(auto-fit,minmax(min(150px,100%),1fr));gap:12px;padding:20px;display:grid}.spool{border:1px solid var(--bd-line);background:var(--bd-bg);border-radius:11px;min-width:0;padding:16px 13px 13px;position:relative}.spool.active{border-color:color-mix(in srgb, var(--bd-accent) 65%, transparent);background:var(--bd-accent-soft)}.spool-index{color:var(--bd-muted);font-size:10px}.spool-visual{background:repeating-radial-gradient(circle at center, transparent 0 3px, #0002 4px 5px),var(--filament,var(--bd-raised));border:5px solid color-mix(in srgb, var(--filament,var(--bd-muted)) 65%, var(--bd-line));border-radius:50%;width:64px;height:64px;margin:15px auto;position:relative;box-shadow:inset 0 0 0 1px #fff3}.spool-visual:after{content:\"\";background:var(--bd-bg);border:2px solid var(--bd-line);border-radius:50%;position:absolute;inset:18px}.spool h3{white-space:nowrap;text-overflow:ellipsis;overflow:hidden}.spool .material{color:var(--bd-muted);margin-top:4px;font-size:10px}.spool .remain{color:var(--bd-muted);margin-top:11px;font-size:11px}.spool .active-label{color:var(--bd-accent);font-size:9px;position:absolute;top:12px;right:9px}.ams-extra{color:var(--bd-muted);flex-wrap:wrap;gap:15px;padding:0 20px 17px;font-size:11px;display:flex}.file-list{margin-top:18px}.file-row{grid-template-columns:64px minmax(0,1fr) auto;align-items:center;gap:17px;padding:18px 20px;display:grid}.file-row+.file-row{border-top:1px solid var(--bd-line)}.file-preview{border:1px solid var(--bd-line);background:var(--bd-bg);width:64px;height:64px;color:var(--bd-muted);border-radius:10px;place-items:center;display:grid;overflow:hidden}.file-title{overflow-wrap:anywhere;font-size:13px;font-weight:600}.file-meta{color:var(--bd-muted);flex-wrap:wrap;gap:12px;margin-top:5px;font-size:10px;display:flex}.file-actions{gap:8px;display:flex}.section-heading{justify-content:space-between;align-items:flex-start;gap:20px;display:flex}.section-heading .description{max-width:700px;margin-top:6px}.search-box{border:1px solid var(--bd-line);background:var(--bd-panel);color:var(--bd-muted);border-radius:9px;align-items:center;gap:10px;margin:18px 0 13px;padding-left:12px;display:flex}.search-box input{background:0 0;border:0}.parameter-table{border-collapse:collapse;width:100%;font-size:12px}.parameter-table th{text-align:left;color:var(--bd-muted);border-bottom:1px solid var(--bd-line);padding:13px 18px;font-size:10px;font-weight:500}.parameter-table td{vertical-align:top;border-bottom:1px solid var(--bd-line);padding:12px 18px}.parameter-table tr:last-child td{border-bottom:0}.entity-name{font-size:12px;font-weight:550}.entity-id{color:var(--bd-muted);overflow-wrap:anywhere;margin-top:4px;font-size:9px}.entity-value{word-break:break-word;font-weight:650}.parameter-table summary{cursor:pointer;color:var(--bd-muted);font-size:10px}.attribute-grid{grid-template-columns:minmax(80px,auto) minmax(0,1fr);gap:7px 12px;padding:12px 0 0;font-size:10px;display:grid}.attribute-grid dt{color:var(--bd-muted);overflow-wrap:anywhere}.attribute-grid dd{word-break:break-word;white-space:pre-wrap;margin:0}.banner{border:1px solid var(--bd-line);background:var(--bd-panel);border-radius:10px;align-items:flex-start;gap:10px;margin-bottom:18px;padding:13px 15px;font-size:12px;display:flex}.banner.error{border-color:color-mix(in srgb,var(--bd-danger) 35%,transparent);color:var(--bd-danger)}.banner.notice{border-color:color-mix(in srgb,var(--bd-accent) 35%,transparent)}.banner .copy{overflow-wrap:anywhere;flex:1}.empty{text-align:center;color:var(--bd-muted);padding:48px 25px}.empty .icon{opacity:.7;width:30px;height:30px;margin-bottom:12px}.empty p{margin-bottom:15px;font-size:12px}.overlay{z-index:7;-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px);background:#0008;place-items:center;padding:20px;display:grid;position:fixed;inset:0}.dialog{background:var(--bd-panel);border:1px solid var(--bd-line);border-radius:17px;width:min(620px,100%);max-height:90vh;overflow-y:auto;box-shadow:0 20px 90px #0005}.dialog .dialog-body{padding:22px}.dialog-target{background:var(--bd-accent-soft);border:1px solid color-mix(in srgb,var(--bd-accent) 25%,transparent);border-radius:10px;justify-content:space-between;gap:16px;margin-bottom:17px;padding:13px 15px;display:flex}.dialog-target span{color:var(--bd-muted);font-size:10px}.dialog-target b{margin-top:3px;font-size:13px;display:block}.dialog-footer{border-top:1px solid var(--bd-line);justify-content:flex-end;gap:10px;padding:16px 22px;display:flex}.two-fields{grid-template-columns:1fr 1fr;gap:15px;display:grid}.progress-caption{color:var(--bd-accent);margin-top:12px;font-size:11px}.mobile-picker{display:none}@media (max-width:1100px){.workspace{grid-template-columns:180px minmax(0,1fr)}.main{padding:24px 20px}.stats{display:none}}@media (max-width:700px){.shell{border-radius:12px}.topbar{padding:14px 17px}.brand-subtitle{font-size:8px}.connection{display:none}.workspace{display:block}.sidebar{display:none}.main{padding:20px 15px}h1{font-size:24px}.page-heading{margin-bottom:16px}.mobile-picker{margin-bottom:15px;display:block}.tabs button{padding:8px;font-size:11px}.tabs .icon{width:15px;height:15px}.file-row{grid-template-columns:48px minmax(0,1fr);gap:12px;padding:15px}.file-preview{width:48px;height:48px}.file-actions{grid-column:2}.parameter-table th,.parameter-table td{padding:11px 10px}.overlay{padding:10px}.two-fields{grid-template-columns:1fr;gap:0}}@media (prefers-reduced-motion:reduce){*{transition:none!important}}@media (max-width:700px){.tabs .icon{display:none}.tabs{gap:2px}}", on = class extends I {
 	constructor(...e) {
 		super(...e), this.entity = "", this._error = "", this._visible = !1, this.generation = 0;
 	}
@@ -1565,7 +1588,7 @@ var tn = ":host{color:var(--primary-text-color,#e8eeec);--bd-accent:#28bb8b;--bd
 	render() {
 		return this._error ? j`<div class="message error">${this._error}</div>` : this._visible ? this.card || j`<div class="message">Camera · …</div>` : N;
 	}
-}, rn = class extends I {
+}, sn = class extends I {
 	constructor(...e) {
 		super(...e), this.path = "", this.entity = "", this.version = "", this._url = "", this._error = "";
 	}
@@ -1609,24 +1632,24 @@ var tn = ":host{color:var(--primary-text-color,#e8eeec);--bd-accent:#28bb8b;--bd
 		return this._url ? j`<img src=${this._url} alt="Project preview"/>` : this._error ? j`<span class="error">${this._error}</span>` : N;
 	}
 };
-customElements.define("bambu-dashboard-camera", nn), customElements.define("bambu-dashboard-file-image", rn);
+customElements.define("bambu-dashboard-camera", on), customElements.define("bambu-dashboard-file-image", sn);
 // src/domain/notifications.ts
-var an = "Managed by Bambu Dashboard Card: completion-notification/v1/";
-function on(e) {
+var cn = "Managed by Bambu Dashboard Card: completion-notification/v1/";
+function ln(e) {
 	if (!/^[a-zA-Z0-9_-]+$/.test(e)) throw Error("Invalid registered device identifier.");
 	return e;
 }
-function sn(e) {
+function un(e) {
 	if (!/^sensor\.[a-z0-9_]+$/.test(e)) throw Error("Invalid registered sensor entity ID.");
 	return e;
 }
-function cn(e) {
-	return `bambu_dashboard_finish_${on(e)}`;
+function dn(e) {
+	return `bambu_dashboard_finish_${ln(e)}`;
 }
 function Q(e) {
 	return `${e.kind}:${e.id}`;
 }
-function ln(e, t, n) {
+function fn(e, t, n) {
 	let r = e.entities.filter((e) => e.entity_id.startsWith("notify.") && !e.disabled_by).map((r) => {
 		let i = t[r.entity_id], a = e.devices.find((e) => e.id === r.device_id);
 		return {
@@ -1644,7 +1667,7 @@ function ln(e, t, n) {
 	});
 	return r.sort((e, t) => e.label.localeCompare(t.label) || e.id.localeCompare(t.id));
 }
-function un(e, t) {
+function pn(e, t) {
 	let n = e.target;
 	if (n.kind === "entity" ? !/^notify\.[a-z0-9_]+$/.test(n.id) : n.kind !== "service" || !/^notify\.mobile_app_[a-z0-9_]+$/.test(n.id)) throw Error("Select a specific notification entity or mobile-app destination.");
 	if (e.style !== "standard" && n.kind !== "service") throw Error("Android alarm alerts require a specific mobile_app service; notify.send_message does not accept channel data.");
@@ -1674,29 +1697,29 @@ function un(e, t) {
 		data: r
 	};
 }
-function dn(e, t) {
-	return un(t, {
+function mn(e, t) {
+	return pn(t, {
 		title: t.language === "zh" ? "打印提醒测试" : "Print reminder test",
 		message: t.language === "zh" ? `${e.name}：这是一条测试提醒，请确认手机是否响铃。` : `Test reminder for ${e.name}. Please check whether your phone sounds.`
 	});
 }
-function fn(e, t) {
+function hn(e, t) {
 	let n = z(e.entities, "print_status");
 	if (!n || n.entry.device_id !== e.id) throw Error("The printer has no registered print-status sensor.");
-	let r = on(e.id), i = z(e.entities, "subtask_name");
+	let r = ln(e.id), i = z(e.entities, "subtask_name");
 	if (i && i.entry.device_id !== e.id) throw Error("The project sensor does not belong to this printer.");
-	let a = `{{ device_attr('${r}', 'name_by_user') or device_attr('${r}', 'name') or 'Bambu Lab' }}`, o = i ? `{{ states('${sn(i.entry.entity_id)}') }}` : "", s = un(t, {
+	let a = `{{ device_attr('${r}', 'name_by_user') or device_attr('${r}', 'name') or 'Bambu Lab' }}`, o = i ? `{{ states('${un(i.entry.entity_id)}') }}` : "", s = pn(t, {
 		title: t.language === "zh" ? "3D 打印已完成" : "3D print completed",
 		message: t.language === "zh" ? `${a} 已完成打印。${o}` : `${a} finished printing. ${o}`
 	});
 	return {
-		id: cn(r),
+		id: dn(r),
 		alias: `Bambu Dashboard · Print complete · ${e.name}`,
-		description: `${an}${r}`,
+		description: `${cn}${r}`,
 		initial_state: t.enabled,
 		triggers: [{
 			trigger: "state",
-			entity_id: sn(n.entry.entity_id),
+			entity_id: un(n.entry.entity_id),
 			from: ["running", "pause"],
 			to: "finish"
 		}],
@@ -1708,15 +1731,15 @@ function fn(e, t) {
 function $(e) {
 	return typeof e == "object" && !!e && !Array.isArray(e);
 }
-function pn(e, t) {
+function gn(e, t) {
 	if (e === t) return !0;
-	if (Array.isArray(e) && Array.isArray(t)) return e.length === t.length && e.every((e, n) => pn(e, t[n]));
+	if (Array.isArray(e) && Array.isArray(t)) return e.length === t.length && e.every((e, n) => gn(e, t[n]));
 	if (!$(e) || !$(t)) return !1;
 	let n = Object.keys(e);
-	return n.length === Object.keys(t).length && n.every((n) => Object.hasOwn(t, n) && pn(e[n], t[n]));
+	return n.length === Object.keys(t).length && n.every((n) => Object.hasOwn(t, n) && gn(e[n], t[n]));
 }
-function mn(e, t) {
-	if (!$(t) || t.id !== cn(e.id) || t.description !== `${an}${e.id}`) throw Error("This automation ID is owned by another configuration. It will not be overwritten.");
+function _n(e, t) {
+	if (!$(t) || t.id !== dn(e.id) || t.description !== `${cn}${e.id}`) throw Error("This automation ID is owned by another configuration. It will not be overwritten.");
 	let n = t.actions, r = Array.isArray(n) && n.length === 1 && $(n[0]) ? n[0] : void 0, i = r && $(r.target) ? r.target.entity_id : void 0, a = r?.action === "notify.send_message" && typeof i == "string" ? {
 		kind: "entity",
 		id: i
@@ -1731,8 +1754,8 @@ function mn(e, t) {
 		language: l,
 		style: c
 	};
-	if (!pn(t, {
-		...fn(e, u),
+	if (!gn(t, {
+		...hn(e, u),
 		alias: t.alias
 	})) throw Error("The managed notification automation was customized or its sensor IDs changed. Review it in HA before saving.");
 	return {
@@ -1740,12 +1763,12 @@ function mn(e, t) {
 		settings: u
 	};
 }
-function hn(e, t) {
-	let n = cn(t);
+function vn(e, t) {
+	let n = dn(t);
 	return Object.values(e).find((e) => e.entity_id.startsWith("automation.") && e.attributes.id === n);
 }
 // src/ha/notifications.ts
-var gn = class {
+var yn = class {
 	constructor(e) {
 		this.hass = e;
 	}
@@ -1756,15 +1779,15 @@ var gn = class {
 	}
 	async load(e) {
 		let t = await this.request(e.id, "GET");
-		return t === null ? null : mn(e, t);
+		return t === null ? null : _n(e, t);
 	}
 	async save(e, t, n) {
 		let r = await this.load(e);
-		if (!pn(r?.config ?? null, n)) throw Error("Notification settings changed in HA. Refresh before saving again.");
-		let i = fn(e, t), a = await this.request(e.id, "POST", i);
+		if (!gn(r?.config ?? null, n)) throw Error("Notification settings changed in HA. Refresh before saving again.");
+		let i = hn(e, t), a = await this.request(e.id, "POST", i);
 		if (!$(a) || a.result !== "ok") throw Error("HA did not confirm saving the notification automation.");
-		let o = hn(this.hass.states, e.id);
-		return pn(r?.config, i) && o && o.state !== (t.enabled ? "on" : "off") && await this.hass.callService("automation", t.enabled ? "turn_on" : "turn_off", { entity_id: o.entity_id }), {
+		let o = vn(this.hass.states, e.id);
+		return gn(r?.config, i) && o && o.state !== (t.enabled ? "on" : "off") && await this.hass.callService("automation", t.enabled ? "turn_on" : "turn_off", { entity_id: o.entity_id }), {
 			config: i,
 			settings: t
 		};
@@ -1778,14 +1801,14 @@ var gn = class {
 		return t.config;
 	}
 	async test(e, t) {
-		let n = dn(e, t);
+		let n = mn(e, t);
 		await this.hass.callService("notify", n.action.slice(7), {
 			...n.data,
 			...n.target ? { entity_id: n.target.entity_id } : {}
 		});
 	}
 	async request(e, t, n) {
-		let r = await this.hass.fetchWithAuth(`/api/config/automation/config/${encodeURIComponent(cn(e))}`, t === "GET" ? void 0 : {
+		let r = await this.hass.fetchWithAuth(`/api/config/automation/config/${encodeURIComponent(dn(e))}`, t === "GET" ? void 0 : {
 			method: t,
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify(n)
@@ -1802,7 +1825,7 @@ var gn = class {
 		}
 		return i;
 	}
-}, _n = class extends I {
+}, bn = class extends I {
 	constructor(...e) {
 		super(...e), this.language = "en", this.compact = !1, this._services = {}, this._enabled = !1, this._recipient = "", this._style = "android_alarm", this._loading = !1, this._saving = !1, this._error = "", this._runtimeError = "", this._dirty = !1, this.generation = 0, this.runtimeSequence = 0;
 	}
@@ -1880,16 +1903,16 @@ var gn = class {
 			};
 			let e = ++this.generation;
 			this._saved = void 0, this._saving = !1, this._enabled = !1, this._recipient = "", this._style = "android_alarm", this._dirty = !1, this._test = void 0, this._runtimeConfig = void 0, this._runtimeError = "", this.runtimeId = void 0, n?.is_admin !== !1 && this.initialize(e);
-		} else e.has("hass") && this._saved && hn(this.hass.states, this.printer.id)?.entity_id !== this.runtimeId && this.verifyRuntime(this.generation);
+		} else e.has("hass") && this._saved && vn(this.hass.states, this.printer.id)?.entity_id !== this.runtimeId && this.verifyRuntime(this.generation);
 	}
 	updated() {
-		en(this.renderRoot);
+		rn(this.renderRoot);
 	}
 	t(e) {
-		return Zt(this.language, e);
+		return en(this.language, e);
 	}
 	get targets() {
-		return this.hass && this.registry ? ln(this.registry, this.hass.states, this._services).filter((e) => this._style === "standard" || e.kind === "service") : [];
+		return this.hass && this.registry ? fn(this.registry, this.hass.states, this._services).filter((e) => this._style === "standard" || e.kind === "service") : [];
 	}
 	async initialize(e) {
 		this._loading = !0, this._error = "", this._test = void 0;
@@ -1913,7 +1936,7 @@ var gn = class {
 		let t = this.hass, n = this.printer;
 		this._loading = !0, this._error = "", this._test = void 0;
 		try {
-			let r = new gn(t), [i, a] = await Promise.all([r.load(n), r.services()]);
+			let r = new yn(t), [i, a] = await Promise.all([r.load(n), r.services()]);
 			if (e !== this.generation) return;
 			this._saved = i, this._services = a, this._enabled = i?.settings.enabled ?? !1, this._recipient = i ? Q(i.settings.target) : "", this._style = i?.settings.style ?? "android_alarm", this._dirty = !1, await this.verifyRuntime(e);
 		} catch (t) {
@@ -1924,9 +1947,9 @@ var gn = class {
 	}
 	async verifyRuntime(e) {
 		if (e !== this.generation) return;
-		let t = ++this.runtimeSequence, n = this.hass && this.printer ? hn(this.hass.states, this.printer.id) : void 0;
+		let t = ++this.runtimeSequence, n = this.hass && this.printer ? vn(this.hass.states, this.printer.id) : void 0;
 		if (this.runtimeId = n?.entity_id, this._runtimeConfig = void 0, this._runtimeError = "", n && this._saved) try {
-			let r = await new gn(this.hass).loadedConfig(n.entity_id);
+			let r = await new yn(this.hass).loadedConfig(n.entity_id);
 			e === this.generation && t === this.runtimeSequence && (this._runtimeConfig = r);
 		} catch (n) {
 			e === this.generation && t === this.runtimeSequence && (this._runtimeError = R(n).message);
@@ -1947,7 +1970,7 @@ var gn = class {
 				} : this._saved.settings.target,
 				language: this.language,
 				style: this._style
-			}, a = await new gn(n).save(t, i, this._saved?.config ?? null);
+			}, a = await new yn(n).save(t, i, this._saved?.config ?? null);
 			if (e !== this.generation) return;
 			this._saved = a, this._dirty = !1, this._runtimeConfig = void 0, await this.verifyRuntime(e);
 		} catch (t) {
@@ -1965,7 +1988,7 @@ var gn = class {
 		};
 		try {
 			if (!r?.available) throw Error(this.t("notifyTargetUnavailable"));
-			await new gn(n).test(t, {
+			await new yn(n).test(t, {
 				target: {
 					kind: r.kind,
 					id: r.id
@@ -1987,13 +2010,13 @@ var gn = class {
 	runtimeStatus() {
 		if (this._saved === void 0) return "notifyNotLoaded";
 		if (this._saved === null) return "notifyNotConfigured";
-		if (!pn(this._runtimeConfig, this._saved.config)) return "notifyPending";
-		let e = hn(this.hass.states, this.printer.id);
+		if (!gn(this._runtimeConfig, this._saved.config)) return "notifyPending";
+		let e = vn(this.hass.states, this.printer.id);
 		return !e || !["on", "off"].includes(e.state) ? "notifyRuntimeUnavailable" : e.state === "on" === this._saved.settings.enabled ? this._saved.settings.enabled ? "notifyActive" : "notifyInactive" : "notifyStateMismatch";
 	}
 	render() {
 		if (!this.hass || !this.printer || !this.registry) return N;
-		let e = this.hass.user?.is_admin !== !1, t = this._loading || this._saving || this._test?.phase === "sending", n = this.targets.find((e) => Q(e) === this._recipient), r = hn(this.hass.states, this.printer.id), i = this.runtimeStatus();
+		let e = this.hass.user?.is_admin !== !1, t = this._loading || this._saving || this._test?.phase === "sending", n = this.targets.find((e) => Q(e) === this._recipient), r = vn(this.hass.states, this.printer.id), i = this.runtimeStatus();
 		return j`<section aria-label=${this.t("completionNotifications")}>
       <header><h2>${this.t("completionNotifications")}</h2><button ?disabled=${t || !e} @click=${() => void (this.unsubscribe ? this.load() : this.initialize(this.generation))}>${this.t("refresh")}</button></header>
       <div class="body">
@@ -2034,9 +2057,9 @@ var gn = class {
       </div></section>`;
 	}
 };
-customElements.define("bambu-completion-notifications", _n);
+customElements.define("bambu-completion-notifications", bn);
 // src/ui/masonry.ts
-var vn = class extends HTMLElement {
+var xn = class extends HTMLElement {
 	constructor(...e) {
 		super(...e), this.items = /* @__PURE__ */ new Set();
 	}
@@ -2063,9 +2086,9 @@ var vn = class extends HTMLElement {
 		}));
 	}
 };
-customElements.define("bambu-detail-masonry", vn);
+customElements.define("bambu-detail-masonry", xn);
 // src/editor.ts
-var yn = class extends I {
+var Sn = class extends I {
 	constructor(...e) {
 		super(...e), this._config = {
 			type: "custom:bambu-dashboard-card",
@@ -2091,7 +2114,7 @@ var yn = class extends I {
 		this._config = { ...e };
 	}
 	updated(e) {
-		en(this.renderRoot), e.has("hass") && this.hass && this.connection !== this.hass.connection && (this.unsubscribe?.(), this.connection = this.hass.connection, this.unsubscribe = qe(this.hass).subscribe((e) => {
+		rn(this.renderRoot), e.has("hass") && this.hass && this.connection !== this.hass.connection && (this.unsubscribe?.(), this.connection = this.hass.connection, this.unsubscribe = qe(this.hass).subscribe((e) => {
 			this._catalog = e;
 		}));
 	}
@@ -2113,7 +2136,7 @@ var yn = class extends I {
 		r < 0 || i < 0 || i >= n.length || ([n[r], n[i]] = [n[i], n[r]], this.change({ devices: n }));
 	}
 	render() {
-		let e = this.hass?.language.startsWith("zh") ? "zh" : "en", t = (t) => Zt(e, t), n = this._config.devices || [], r = this._catalog.snapshot && this.hass ? et(this._catalog.snapshot, this.hass, {
+		let e = this.hass?.language.startsWith("zh") ? "zh" : "en", t = (t) => en(e, t), n = this._config.devices || [], r = this._catalog.snapshot && this.hass ? et(this._catalog.snapshot, this.hass, {
 			...this._config,
 			discovery: "auto"
 		}) : [];
@@ -2127,14 +2150,14 @@ var yn = class extends I {
       ${this._catalog.error ? j`<p class="error">${this._catalog.error.message}</p>` : N}`;
 	}
 };
-customElements.define("bambu-dashboard-card-editor", yn);
+customElements.define("bambu-dashboard-card-editor", Sn);
 // src/card.ts
-var bn = class extends I {
+var Cn = 6e4, wn = class extends I {
 	constructor(...e) {
 		super(...e), this._config = {
 			type: "custom:bambu-dashboard-card",
 			discovery: "auto"
-		}, this._catalogState = { loading: !0 }, this._selected = null, this._tab = "overview", this._search = "", this._error = "", this._notice = "", this._filesError = "", this._filesLoading = !1, this._pending = /* @__PURE__ */ new Map(), this._transfer = "", this.dialogGeneration = 0;
+		}, this._catalogState = { loading: !0 }, this._selected = null, this._tab = "overview", this._search = "", this._error = "", this._notice = "", this._filesError = "", this._filesLoading = !1, this._pending = /* @__PURE__ */ new Map(), this._transfer = "", this.dialogGeneration = 0, this._now = Date.now();
 	}
 	static {
 		this.properties = {
@@ -2150,15 +2173,16 @@ var bn = class extends I {
 			_filesLoading: { state: !0 },
 			_dialog: { state: !0 },
 			_pending: { state: !0 },
-			_transfer: { state: !0 }
+			_transfer: { state: !0 },
+			_now: { state: !0 }
 		};
 	}
 	static {
-		this.styles = a(tn);
+		this.styles = a(an);
 	}
 	set hass(e) {
 		let t = this._hass;
-		this._hass = e, this.isConnected && this.attachCatalog(), this.requestUpdate("hass", t);
+		this._hass = e, this._now = Date.now(), this.isConnected && this.attachCatalog(), this.requestUpdate("hass", t);
 	}
 	get hass() {
 		return this._hass;
@@ -2186,10 +2210,12 @@ var bn = class extends I {
 		};
 	}
 	connectedCallback() {
-		super.connectedCallback(), this.attachCatalog();
+		super.connectedCallback(), this.attachCatalog(), this._now = Date.now(), this.clock = setInterval(() => {
+			this._now = Date.now();
+		}, Cn);
 	}
 	disconnectedCallback() {
-		super.disconnectedCallback(), this.unsubscribe?.(), this.unsubscribe = void 0, this.connection = void 0, this.downloadUrl && URL.revokeObjectURL(this.downloadUrl);
+		super.disconnectedCallback(), this.unsubscribe?.(), this.unsubscribe = void 0, this.connection = void 0, clearInterval(this.clock), this.clock = void 0, this.downloadUrl && URL.revokeObjectURL(this.downloadUrl);
 	}
 	attachCatalog() {
 		this._hass && this.connection !== this._hass.connection && (this.unsubscribe?.(), this.connection = this._hass.connection, this.unsubscribe = qe(this._hass).subscribe((e) => {
@@ -2200,7 +2226,7 @@ var bn = class extends I {
 		return this._config.language && this._config.language !== "auto" ? this._config.language : this._hass?.language.startsWith("zh") ? "zh" : "en";
 	}
 	t(e) {
-		return Zt(this.language, e);
+		return en(this.language, e);
 	}
 	get printers() {
 		return this._catalogState.snapshot && this._hass ? et(this._catalogState.snapshot, this._hass, this._config) : [];
@@ -2233,7 +2259,7 @@ var bn = class extends I {
 		}
 	}
 	updated() {
-		en(this.renderRoot);
+		rn(this.renderRoot);
 	}
 	value(e) {
 		if (!e) return this.t("unsupported");
@@ -2248,10 +2274,21 @@ var bn = class extends I {
 		return this.value(z(e.entities, t));
 	}
 	remaining(e) {
-		let t = z(e.entities, "remaining_time"), n = Xe(t);
-		if (n === null || n < 0 || t?.state?.attributes.unit_of_measurement !== "h") return this.value(t);
-		let r = Math.round(n * 60), i = Math.floor(r / 60), a = r % 60;
+		let t = z(e.entities, "remaining_time"), n = Zt(e);
+		if (n === null) return this.value(t);
+		let r = Math.round(n / 6e4), i = Math.floor(r / 60), a = r % 60;
 		return [i ? `${i} ${this.t("hourUnit")}` : "", a || !i ? `${a} ${this.t("minuteUnit")}` : ""].filter(Boolean).join(" ");
+	}
+	completionEstimate(e) {
+		let t = Qt(e, this._now), n = t === null ? null : new Intl.DateTimeFormat(this.language, {
+			month: "2-digit",
+			day: "2-digit",
+			hour: "2-digit",
+			minute: "2-digit",
+			hour12: !1,
+			timeZone: this._hass?.config?.time_zone
+		}).format(t);
+		return j`<div class="completion-estimate"><span>${this.t("estimatedFinish")}</span>${t === null ? j`<small>${e.status === "pause" ? this.t("estimatePaused") : "—"}</small>` : j`<time datetime=${new Date(t).toISOString()}>${n}</time>`}</div>`;
 	}
 	status(e) {
 		let t = {
@@ -2413,7 +2450,7 @@ var bn = class extends I {
       <div class="top-actions"><span class="connection"><span class="dot ${this._catalogState.error ? "failed" : "ready"}"></span>ha-bambulab</span><button class="icon-button" aria-label=${this.t("refresh")} @click=${() => this._hass && void qe(this._hass).refresh()}>${Z("refresh")}</button></div></header>
       <div class="workspace">${this.renderSidebar(e)}<main class="main">
         <div class="mobile-picker"><select aria-label=${this.t("printers")} data-value=${this._selected || ""} @change=${(e) => this.selectPrinter(e.target.value || null)}><option value="">${this.t("allPrinters")}</option>${e.map((e) => j`<option value=${e.id}>${e.name}</option>`)}</select></div>
-        <div class="page-heading"><div><div class="eyebrow">${t ? t.model : "YOUR PRINT FARM"}</div><h1>${t?.name || this.t("workspace")}</h1><p class="description">${t ? `${this.status(t)} · ${this.value(t.stage)}` : this.t("subtitle")}</p></div>
+        <div class="page-heading"><div><div class="eyebrow">${t ? t.model : "YOUR PRINT FARM"}</div><h1>${t?.name || this.t("workspace")}</h1>${t ? j`<p class="description ha-name">${this.t("haName")}: ${t.haName}</p>` : N}<p class="description">${t ? `${this.status(t)} · ${this.value(t.stage)}` : this.t("subtitle")}</p></div>
         <div class="stats"><span class="stat"><b>${e.length}</b>${this.t("printers")}</span><span class="stat"><b>${e.filter((e) => e.status === "running").length}</b>${this.t("printing")}</span></div></div>
         ${this.renderBanners()}
         ${this._catalogState.error ? j`<div class="banner error">${Z("alert")}<div>${this.t("registryError")}: ${this._catalogState.error.message}</div></div>` : N}
@@ -2433,7 +2470,7 @@ var bn = class extends I {
 	}
 	renderSidebar(e) {
 		return j`<aside class="sidebar"><div class="sidebar-label">WORKSPACE</div><button class=${this._selected ? "" : "selected"} @click=${() => this.selectPrinter(null)}>${Z("grid")}${this.t("allPrinters")}</button><div class="sidebar-rule"></div><div class="sidebar-label">${this.t("printers")}</div>
-      ${We(e, (e) => e.id, (e) => j`<button class="printer-link ${this._selected === e.id ? "selected" : ""}" @click=${() => this.selectPrinter(e.id)}>${Z("printer")}<span class="name">${e.name}<small class="model">${e.model}</small></span><span class="dot ${e.status}"></span></button>`)}
+      ${We(e, (e) => e.id, (e) => j`<button class="printer-link ${this._selected === e.id ? "selected" : ""}" title=${`${e.name} · ${e.haName}`} @click=${() => this.selectPrinter(e.id)}>${Z("printer")}<span class="name">${e.name}<small class="model">${e.haName === e.name ? e.model : e.haName}</small></span><span class="dot ${e.status}"></span></button>`)}
       <div class="sidebar-foot">Bambu Dashboard Card<br>v0.1 · Community project</div></aside>`;
 	}
 	renderBanners() {
@@ -2453,16 +2490,16 @@ var bn = class extends I {
 	}
 	renderTile(e) {
 		let t = V(z(e.entities, "subtask_name"));
-		return j`<article class="panel printer-card"><button class="card-heading" @click=${() => this.selectPrinter(e.id)}><span class="machine-badge">${Z("printer")}</span><span class="heading-copy"><b>${e.name}</b><small>${e.model}</small></span>${this.statusBadge(e)}</button>
-      <div class="tile-media"><div class="preview" aria-label=${this.t("camera")}>${$t()}${e.camera && B(e.camera) ? j`<bambu-dashboard-camera .hass=${this._hass} .entity=${e.camera.entry.entity_id}></bambu-dashboard-camera>` : N}<span class="preview-caption">${e.camera ? this.t("camera") : this.t("unsupported")}</span></div>
+		return j`<article class="panel printer-card"><button class="card-heading" @click=${() => this.selectPrinter(e.id)}><span class="machine-badge">${Z("printer")}</span><span class="heading-copy"><b>${e.name}</b><small>${e.haName === e.name ? e.model : `${e.model} · ${e.haName}`}</small></span>${this.statusBadge(e)}</button>
+      <div class="tile-media"><div class="preview" aria-label=${this.t("camera")}>${nn()}${e.camera && B(e.camera) ? j`<bambu-dashboard-camera .hass=${this._hass} .entity=${e.camera.entry.entity_id}></bambu-dashboard-camera>` : N}<span class="preview-caption">${e.camera ? this.t("camera") : this.t("unsupported")}</span></div>
       <div class="project-preview" aria-label=${this.t("projectPreview")}>${e.cover && V(e.cover) ? j`<bambu-dashboard-file-image .hass=${this._hass} .entity=${e.cover.entry.entity_id} .version=${V(e.cover) || ""}></bambu-dashboard-file-image>` : j`<div class="preview-empty">${Z("folder")}<span>${this.t("noProjectPreview")}</span></div>`}<span class="preview-caption">${this.t("projectPreview")}</span></div></div>
-      <div class="tile-content"><div class="task-line">${Z("folder")}<span>${t || this.t("noTask")}</span></div>${this.progress(e)}<div class="tile-metrics"><div><span>${this.t("remaining")}</span><strong>${this.sensor(e, "remaining_time")}</strong></div><div><span>${this.t("nozzle")}</span><strong>${this.sensor(e, "nozzle_temp")}</strong></div><div><span>${this.t("bed")}</span><strong>${this.sensor(e, "bed_temp")}</strong></div></div>
+      <div class="tile-content"><div class="task-line">${Z("folder")}<span>${t || this.t("noTask")}</span></div>${this.progress(e)}<div class="tile-metrics"><div><span>${this.t("remaining")}</span><strong>${this.remaining(e)}</strong>${this.completionEstimate(e)}</div><div><span>${this.t("nozzle")}</span><strong>${this.sensor(e, "nozzle_temp")}</strong></div><div><span>${this.t("bed")}</span><strong>${this.sensor(e, "bed_temp")}</strong></div></div>
       <div class="tile-footer"><div class="filament-dots">${e.ams.flatMap((e) => e.slots).map(({ entity: e }) => j`<span title=${Ze(e)} class="filament-dot ${e.state?.attributes.active ? "active" : ""}" style=${`--filament:${it(e.state?.attributes.color) || "transparent"}`}></span>`)}</div><button class="button small" @click=${() => this.selectPrinter(e.id)}>${this.t("details")}${Z("arrow")}</button></div></div></article>`;
 	}
 	renderDetail(e) {
 		return j`<bambu-detail-masonry class="detail-grid">
-      <section class="panel camera-panel"><div class="panel-head"><h2>${Z("camera")} ${this.t("camera")}</h2><span class="description">${e.camera && Number(e.camera.state?.attributes.supported_features) & 2 ? this.t("live") : this.t("snapshot")}</span></div><div class="camera-large">${e.camera ? j`<bambu-dashboard-camera .hass=${this._hass} .entity=${e.camera.entry.entity_id}></bambu-dashboard-camera>` : j`${$t()}<span class="preview-caption">${this.t("unsupported")}</span>`}</div></section>
-      <section class="panel current-job"><div class="panel-head"><h2>${Z("folder")} ${this.t("task")}</h2>${this.statusBadge(e)}</div><div class="panel-body"><div class="job-top">${e.cover && V(e.cover) ? j`<div class="job-cover"><bambu-dashboard-file-image .hass=${this._hass} .entity=${e.cover.entry.entity_id} .version=${V(e.cover) || ""}></bambu-dashboard-file-image></div>` : N}<div class="job-name">${V(z(e.entities, "subtask_name")) || this.t("noTask")}</div></div>${this.progress(e)}<div class="job-summary"><div><span>${this.t("remaining")}</span><b>${this.remaining(e)}</b></div><div><span>${this.t("layers")}</span><b>${this.sensor(e, "current_layer")} / ${this.sensor(e, "total_layers")}</b></div></div></div></section>
+      <section class="panel camera-panel"><div class="panel-head"><h2>${Z("camera")} ${this.t("camera")}</h2><span class="description">${e.camera && Number(e.camera.state?.attributes.supported_features) & 2 ? this.t("live") : this.t("snapshot")}</span></div><div class="camera-large">${e.camera ? j`<bambu-dashboard-camera .hass=${this._hass} .entity=${e.camera.entry.entity_id}></bambu-dashboard-camera>` : j`${nn()}<span class="preview-caption">${this.t("unsupported")}</span>`}</div></section>
+      <section class="panel current-job"><div class="panel-head"><h2>${Z("folder")} ${this.t("task")}</h2>${this.statusBadge(e)}</div><div class="panel-body"><div class="job-top">${e.cover && V(e.cover) ? j`<div class="job-cover"><bambu-dashboard-file-image .hass=${this._hass} .entity=${e.cover.entry.entity_id} .version=${V(e.cover) || ""}></bambu-dashboard-file-image></div>` : N}<div class="job-name">${V(z(e.entities, "subtask_name")) || this.t("noTask")}</div></div>${this.progress(e)}<div class="job-summary"><div><span>${this.t("remaining")}</span><b>${this.remaining(e)}</b>${this.completionEstimate(e)}</div><div><span>${this.t("layers")}</span><b>${this.sensor(e, "current_layer")} / ${this.sensor(e, "total_layers")}</b></div></div></div></section>
       <section class="panel controls-panel"><div class="panel-head"><h2>${Z("tune")} ${this.t("controls")}</h2></div><div class="panel-body">${this.renderControls(e)}</div></section>
       <section class="panel live-metrics"><div class="panel-head"><h2>${Z("heat")} ${this.t("liveParameters")}</h2></div><div class="detail-metrics">${[
 			[
@@ -2539,7 +2576,7 @@ var bn = class extends I {
 		let e = this._search.toLocaleLowerCase(), t = this.currentPrinters.flatMap((e) => e.allEntities.map((t) => ({
 			printer: e,
 			entity: t
-		}))).filter(({ printer: t, entity: n }) => `${t.name} ${Ze(n)} ${n.entry.entity_id} ${n.state?.state || ""}`.toLocaleLowerCase().includes(e));
+		}))).filter(({ printer: t, entity: n }) => `${t.name} ${t.haName} ${Ze(n)} ${n.entry.entity_id} ${n.state?.state || ""}`.toLocaleLowerCase().includes(e));
 		return j`<div class="section-heading"><div><h2>${this.t("parameters")}</h2><p class="description">${t.length} entities · ha-bambulab</p></div></div><label class="search-box">${Z("search")}<input aria-label=${this.t("search")} placeholder=${this.t("search")} .value=${this._search} @input=${(e) => {
 			this._search = e.target.value;
 		}}/></label>
@@ -2605,10 +2642,10 @@ var bn = class extends I {
       <div class="control-divider"></div><p class="helper">${this.t("startHelp")}</p>${this._transfer ? j`<p class="progress-caption">${this._transfer}</p>` : N}`;
 	}
 };
-customElements.define("bambu-dashboard-card", bn), window.customCards = window.customCards || [], window.customCards.push({
+customElements.define("bambu-dashboard-card", wn), window.customCards = window.customCards || [], window.customCards.push({
 	type: "bambu-dashboard-card",
 	name: "Bambu Dashboard",
 	preview: !0,
 	description: "Complete multi-printer workspace for ha-bambulab."
-}), console.info("%c BAMBU DASHBOARD %c 0.1.0 ", "background:#28bb8b;color:#08291f;font-weight:bold;padding:4px", "background:#15201b;color:#cfe9de;padding:4px");
-export { bn as BambuDashboardCard };
+}), console.info("%c BAMBU DASHBOARD %c 0.1.0 ", "background:#00ae42;color:#08291f;font-weight:bold;padding:4px", "background:#15201b;color:#cfe9de;padding:4px");
+export { wn as BambuDashboardCard };

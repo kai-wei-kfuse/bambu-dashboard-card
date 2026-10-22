@@ -62,3 +62,11 @@ The current-job card retains its 256px square preview. Fractional-hour estimates
 - Expanding reminder settings triggered reflow without overlaps or backend changes.
 - A two-column layout at 1280 CSS pixels and a single-column layout at 312 CSS pixels had no overlapping cards. The narrow layout had no main-content horizontal overflow and retained the camera's height after scrolling away.
 - No printer control or notification action was sent during layout verification. Screenshots remain local.
+
+## Printer identity, completion estimate and green — 2026-10-22
+
+Primary names now come from each device's registered `printer_name` sensor, while the original HA registry name is retained as secondary identity. Titles, sidebar, tiles and pickers share this model; device IDs remain command keys. Missing/unavailable printer-name sensors retain the HA display name, as documented in ADR 004.
+
+Both overview and detail show current time plus remaining duration under remaining time, using HA's timezone and including the date. A connected minute clock and incoming HA state refresh the calculation; it is removed when the card detaches. Paused/nonprinting/invalid values do not produce an active completion estimate. The accent is now `#00AE42`, directly verified in the official Bambu store's public page.
+
+All 76 tests pass, including 22 new identity, unit conversion, status, midnight/timezone and clock lifecycle cases. Type checks and production build pass. Real HA verification confirmed both printer-name sensors drive labels, the HA name appears below the large detail title, computed progress color is RGB(0, 174, 66), and ETA appears below remaining time in both views. The narrow layout retained both names and ETA without horizontal overflow. No registry rename, printer command or notification configuration change was made. Real screenshots remain local.
