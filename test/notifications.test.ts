@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { automationId, buildNotificationAutomation, destinationKey, discoverNotifyTargets, parseNotificationAutomation, sameConfig } from '../src/domain/notifications';
+import { automationId, buildNotificationAutomation, buildTestNotification, destinationKey, discoverNotifyTargets, parseNotificationAutomation, sameConfig } from '../src/domain/notifications';
 import type { NotificationSettings } from '../src/domain/notifications';
 import { discoverPrinters } from '../src/domain/printers';
 import { NotificationClient } from '../src/ha/notifications';
@@ -71,9 +71,43 @@ describe('completion notification model', () => {
     expect(sameConfig({ b: [1, 2], a: true }, { a: true, b: [1, 2] })).toBe(true);
     expect(sameConfig({ a: 1 }, { a: 1, b: undefined })).toBe(false);
   });
+
+  it('labels tests clearly with plain text and shares the exact alarm options with automatic reminders', () => {
+    const action = buildTestNotification(printer, alarm);
+    expect(action.data.title).toBe('打印提醒测试');
+    expect(action.data.message).toContain(printer.name);
+    expect(action.data.message).toContain('测试提醒');
+    expect(action.data.message).not.toContain('{{');
+    const [automatic] = buildNotificationAutomation(printer, alarm).actions as { data: { data: unknown } }[];
+    expect(action.data.data).toEqual(automatic.data.data);
+  });
 });
 
 describe('HA notification configuration API', () => {
+  it('sends one test directly to the explicit phone/entity without writing or enabling an automation', async () => {
+    const callService = vi.fn().mockResolvedValue(undefined);
+    const fetchWithAuth = vi.fn();
+    const client = new NotificationClient(fixtureHass({ callService, fetchWithAuth }));
+    await client.test(printer, alarm);
+    expect(callService).toHaveBeenNthCalledWith(1, 'notify', 'mobile_app_test_phone', {
+      title: '打印提醒测试', message: expect.stringContaining(printer.name), data: { ttl: 0, priority: 'high', channel: 'alarm_stream' },
+    });
+    await client.test(printer, standard);
+    expect(callService).toHaveBeenNthCalledWith(2, 'notify', 'send_message', {
+      entity_id: 'notify.test_phone', title: 'Print reminder test', message: expect.stringContaining(printer.name),
+    });
+    expect(callService).toHaveBeenCalledTimes(2);
+    expect(fetchWithAuth).not.toHaveBeenCalled();
+  });
+
+  it('exposes notification service failures and rejects invalid targets before sending', async () => {
+    const callService = vi.fn().mockRejectedValue(new Error('Phone push connection unavailable'));
+    const client = new NotificationClient(fixtureHass({ callService }));
+    await expect(client.test(printer, alarm)).rejects.toThrow('Phone push connection unavailable');
+    await expect(client.test(printer, { ...alarm, target: { kind: 'service', id: 'notify.notify' } })).rejects.toThrow('specific notification');
+    expect(callService).toHaveBeenCalledTimes(1);
+  });
+
   it('recognizes only the actual missing-config response and exposes authorization, endpoint and parse failures', async () => {
     const request = vi.fn().mockResolvedValueOnce(missing()).mockResolvedValueOnce(json({ message: 'Unauthorized' }, 401))
       .mockResolvedValueOnce(json({ message: 'Endpoint missing' }, 404)).mockResolvedValueOnce(new Response('<html>proxy error</html>', { status: 502 }));

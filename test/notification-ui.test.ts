@@ -57,6 +57,57 @@ function select(element: CompletionNotifications, label: string, value: string) 
 const alarm: NotificationSettings = { enabled: true, target: { kind: 'service', id: 'notify.mobile_app_test_phone' }, language: 'en', style: 'android_alarm' };
 
 describe('per-printer completion settings', () => {
+  it('tests an unsaved phone choice with the automatic reminder disabled and preserves stored settings', async () => {
+    const api = backend();
+    const element = await api.mount();
+    expect(element.shadowRoot!.querySelector<HTMLButtonElement>('.test-notification')!.disabled).toBe(true);
+    select(element, 'Receiving phone / destination', 'service:notify.mobile_app_test_phone');
+    await element.updateComplete;
+    element.shadowRoot!.querySelector<HTMLButtonElement>('.test-notification')!.click();
+    await vi.waitFor(() => expect(element.shadowRoot!.textContent).toContain('HA accepted the test request'));
+    expect(api.hass.callService).toHaveBeenCalledTimes(1);
+    expect(api.hass.callService).toHaveBeenCalledWith('notify', 'mobile_app_test_phone', expect.objectContaining({ data: { ttl: 0, priority: 'high', channel: 'alarm_stream' } }));
+    expect(element.shadowRoot!.querySelector<HTMLInputElement>('input')!.checked).toBe(false);
+    expect(api.configs.size).toBe(0);
+    expect(vi.mocked(api.hass.fetchWithAuth).mock.calls.every(([, options]) => !options?.method)).toBe(true);
+    expect(element.shadowRoot!.textContent).toContain('Unsaved changes');
+    select(element, 'Reminder style', 'standard');
+    await element.updateComplete;
+    expect(element.shadowRoot!.textContent).not.toContain('HA accepted the test request');
+  });
+
+  it('prevents duplicate in-flight tests and ignores the late result after switching printers', async () => {
+    const api = backend(alarm);
+    let finish!: () => void;
+    const delayed = new Promise<void>((resolve) => { finish = resolve; });
+    api.hass.callService = vi.fn().mockReturnValue(delayed);
+    const element = await api.mount();
+    const button = element.shadowRoot!.querySelector<HTMLButtonElement>('.test-notification')!;
+    button.click();
+    button.click();
+    expect(api.hass.callService).toHaveBeenCalledTimes(1);
+    await element.updateComplete;
+    expect(button.disabled).toBe(true);
+    element.printer = api.printers[1];
+    await vi.waitFor(() => expect(element.shadowRoot!.textContent).toContain('No reminder configured'));
+    finish();
+    await delayed;
+    await element.updateComplete;
+    expect(element.shadowRoot!.textContent).not.toContain('HA accepted the test request');
+    expect(element.shadowRoot!.querySelector<HTMLInputElement>('input')!.disabled).toBe(false);
+    expect(api.configs.size).toBe(1);
+  });
+
+  it('shows a failed test explicitly and lets the user retry without claiming delivery', async () => {
+    const api = backend(alarm);
+    api.hass.callService = vi.fn().mockRejectedValue(new Error('Phone disconnected'));
+    const element = await api.mount();
+    element.shadowRoot!.querySelector<HTMLButtonElement>('.test-notification')!.click();
+    await vi.waitFor(() => expect(element.shadowRoot!.querySelector('[role="alert"]')?.textContent).toContain('Phone disconnected'));
+    expect(element.shadowRoot!.textContent).not.toContain('HA accepted the test request');
+    expect(element.shadowRoot!.querySelector<HTMLButtonElement>('.test-notification')!.disabled).toBe(false);
+  });
+
   it('requires an explicit phone, persists an Android alarm automation and confirms runtime separately', async () => {
     const api = backend();
     const element = await api.mount();

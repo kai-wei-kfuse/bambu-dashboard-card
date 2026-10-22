@@ -1,4 +1,4 @@
-import { buildNotificationAutomation, isRecord, parseNotificationAutomation, sameConfig, automationId, runtimeAutomation } from '../domain/notifications';
+import { buildNotificationAutomation, buildTestNotification, isRecord, parseNotificationAutomation, sameConfig, automationId, runtimeAutomation } from '../domain/notifications';
 import type { AutomationConfig, NotificationSettings, SavedNotification, ServiceCatalog } from '../domain/notifications';
 import type { Printer } from '../domain/printers';
 import type { HomeAssistant } from './types';
@@ -37,6 +37,13 @@ export class NotificationClient {
     const result = await this.hass.callWS<unknown>({ type: 'automation/config', entity_id: entityId });
     if (!isRecord(result) || !isRecord(result.config)) throw new Error('HA returned an invalid loaded automation configuration.');
     return result.config;
+  }
+
+  async test(printer: Printer, settings: Omit<NotificationSettings, 'enabled'>): Promise<void> {
+    const action = buildTestNotification(printer, settings);
+    await this.hass.callService('notify', action.action.slice('notify.'.length), {
+      ...action.data, ...(action.target ? { entity_id: action.target.entity_id } : {}),
+    });
   }
 
   private async request(printerId: string, method: 'GET' | 'POST', config?: AutomationConfig): Promise<unknown> {

@@ -35,7 +35,7 @@ Run `npm run dev` for a labeled, read-only development preview with synthetic da
 
 See the [installation guide](docs/installation.md) and [complete dashboard configuration](dashboards/bambu-dashboard.yaml). The built JavaScript is committed so a HACS custom repository can install the default branch during development.
 
-Completion reminders are configured in a printer's detail view by an HA administrator. Select a phone, choose a reminder style, enable it and save. HA runs the reminder after the dashboard closes. Android alarm-style alerts use the phone's alarm audio stream; they do not create a Clock-app alarm or continuously repeat. See [phone setup and delivery limits](docs/installation.md#completion-reminders).
+Completion reminders are configured in a printer's detail view by an HA administrator. Select a phone, choose a reminder style, enable it and save. **Test phone reminder** immediately sends one message using the current choices, without saving or enabling the automation. HA runs the reminder after the dashboard closes. Android alarm-style alerts use the phone's alarm audio stream; they do not create a Clock-app alarm or continuously repeat. See [phone setup and delivery limits](docs/installation.md#completion-reminders).
 
 ## Scope and compatibility
 

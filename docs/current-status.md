@@ -33,3 +33,9 @@ Implemented in Stage 2: independent per-printer settings, explicit notification 
 - The dashboard saved a disabled Android alarm reminder through HA's configuration API, confirmed the matching loaded automation and `off` state, and restored the setting after a full page reload.
 - Another printer remained independently unconfigured.
 - No phone notification, test alarm or physical printer command was sent during this verification. Actual sound delivery and phone permissions remain to be validated by a real print test.
+
+### One-shot test button — 2026-10-22
+
+Added **Test phone reminder** using the same destination/style payload builder as automatic reminders. It supports unsaved settings and disabled automations, blocks duplicate requests while sending, preserves backend settings, reports service errors, and ignores late results after switching printers.
+
+All 47 tests pass, including six new test-button cases; type checks and production build pass. A real HA button click submitted one Android alarm-stream test to the selected phone and the UI showed HA accepted it. Actual sound requires user confirmation; completion-trigger validation during a real print remains separate. No printer control was sent.

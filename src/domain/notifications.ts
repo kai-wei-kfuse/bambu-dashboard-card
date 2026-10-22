@@ -10,6 +10,11 @@ export interface NotificationSettings { enabled: boolean; target: NotifyDestinat
 export type AutomationConfig = Record<string, unknown>;
 export interface SavedNotification { config: AutomationConfig; settings: NotificationSettings }
 export type ServiceCatalog = Record<string, Record<string, { name?: string }>>;
+export interface NotificationAction {
+  action: string;
+  target?: { entity_id: string };
+  data: { title: string; message: string; data?: { ttl: number; priority: string; channel: string } };
+}
 
 const OWNER = 'Managed by Bambu Dashboard Card: completion-notification/v1/';
 
@@ -46,31 +51,43 @@ export function discoverNotifyTargets(registry: RegistrySnapshot, states: Record
   return targets.sort((left, right) => left.label.localeCompare(right.label) || left.id.localeCompare(right.id));
 }
 
-export function buildNotificationAutomation(printer: Printer, settings: NotificationSettings): AutomationConfig {
-  const status = findEntity(printer.entities, 'print_status');
-  if (!status || status.entry.device_id !== printer.id) throw new Error('The printer has no registered print-status sensor.');
-  const id = identifier(printer.id);
+function notificationAction(settings: Pick<NotificationSettings, 'target' | 'style'>, content: { title: string; message: string }): NotificationAction {
   const target = settings.target;
   if (target.kind === 'entity' ? !/^notify\.[a-z0-9_]+$/.test(target.id) : target.kind !== 'service' || !/^notify\.mobile_app_[a-z0-9_]+$/.test(target.id)) {
     throw new Error('Select a specific notification entity or mobile-app destination.');
   }
   if (settings.style === 'android_alarm' && target.kind !== 'service') throw new Error('Android alarm alerts require a specific mobile_app service; notify.send_message does not accept channel data.');
+  // Companion's documented alarm payload uses immediate delivery; ttl=0 can drop an offline cloud push instead of sounding late.
+  const data = { ...content, ...(settings.style === 'android_alarm' ? { data: { ttl: 0, priority: 'high', channel: 'alarm_stream' } } : {}) };
+  return target.kind === 'entity' ? { action: 'notify.send_message', target: { entity_id: target.id }, data } : { action: target.id, data };
+}
+
+export function buildTestNotification(printer: Printer, settings: Omit<NotificationSettings, 'enabled'>): NotificationAction {
+  return notificationAction(settings, {
+    title: settings.language === 'zh' ? '打印提醒测试' : 'Print reminder test',
+    // Direct service calls do not render Jinja; test text must already be plain text.
+    message: settings.language === 'zh' ? `${printer.name}：这是一条测试提醒，请确认手机是否响铃。` : `Test reminder for ${printer.name}. Please check whether your phone sounds.`,
+  });
+}
+
+export function buildNotificationAutomation(printer: Printer, settings: NotificationSettings): AutomationConfig {
+  const status = findEntity(printer.entities, 'print_status');
+  if (!status || status.entry.device_id !== printer.id) throw new Error('The printer has no registered print-status sensor.');
+  const id = identifier(printer.id);
   const task = findEntity(printer.entities, 'subtask_name');
   if (task && task.entry.device_id !== printer.id) throw new Error('The project sensor does not belong to this printer.');
   const name = `{{ device_attr('${id}', 'name_by_user') or device_attr('${id}', 'name') or 'Bambu Lab' }}`;
   const project = task ? `{{ states('${sensorId(task.entry.entity_id)}') }}` : '';
-  // Companion's documented alarm payload uses immediate delivery; ttl=0 can drop an offline cloud push instead of sounding late.
-  const data = {
+  const action = notificationAction(settings, {
     title: settings.language === 'zh' ? '3D 打印已完成' : '3D print completed',
     message: settings.language === 'zh' ? `${name} 已完成打印。${project}` : `${name} finished printing. ${project}`,
-    ...(settings.style === 'android_alarm' ? { data: { ttl: 0, priority: 'high', channel: 'alarm_stream' } } : {}),
-  };
+  });
   return {
     id: automationId(id), alias: `Bambu Dashboard · Print complete · ${printer.name}`,
     description: `${OWNER}${id}`, initial_state: settings.enabled,
     triggers: [{ trigger: 'state', entity_id: sensorId(status.entry.entity_id), from: ['running', 'pause'], to: 'finish' }],
     conditions: [],
-    actions: [target.kind === 'entity' ? { action: 'notify.send_message', target: { entity_id: target.id }, data } : { action: target.id, data }],
+    actions: [action],
     mode: 'queued',
   };
 }

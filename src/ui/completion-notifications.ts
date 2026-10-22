@@ -10,12 +10,15 @@ import { text } from './i18n';
 import type { Language, Message } from './i18n';
 import { syncSelectValues } from './select-values';
 
+interface TestResult { phase: 'sending' | 'submitted' | 'error'; recipient: string; error?: string }
+
 export class CompletionNotifications extends LitElement {
   static properties = {
     hass: { attribute: false }, printer: { attribute: false }, registry: { attribute: false }, language: { attribute: false },
     _saved: { state: true }, _services: { state: true }, _enabled: { state: true }, _recipient: { state: true },
     _style: { state: true }, _loading: { state: true }, _saving: { state: true }, _error: { state: true },
     _runtimeConfig: { state: true }, _runtimeError: { state: true }, _dirty: { state: true },
+    _test: { state: true },
   };
   static styles = css`
     :host { display: block; margin-top: 18px; }
@@ -58,6 +61,7 @@ export class CompletionNotifications extends LitElement {
   private _runtimeError = '';
   private _runtimeConfig?: unknown;
   private _dirty = false;
+  private _test?: TestResult;
   private context?: { connection: object; printerId: string; admin?: boolean };
   private generation = 0;
   private runtimeSequence = 0;
@@ -91,6 +95,7 @@ export class CompletionNotifications extends LitElement {
       this._recipient = '';
       this._style = 'android_alarm';
       this._dirty = false;
+      this._test = undefined;
       this._runtimeConfig = undefined;
       this._runtimeError = '';
       this.runtimeId = undefined;
@@ -112,6 +117,7 @@ export class CompletionNotifications extends LitElement {
   private async initialize(generation: number): Promise<void> {
     this._loading = true;
     this._error = '';
+    this._test = undefined;
     const hass = this.hass!;
     try {
       const unsubscribe = await hass.connection.subscribeEvents(() => { void this.verifyRuntime(generation); }, 'automation_reloaded');
@@ -130,6 +136,7 @@ export class CompletionNotifications extends LitElement {
     const printer = this.printer!;
     this._loading = true;
     this._error = '';
+    this._test = undefined;
     try {
       const client = new NotificationClient(hass);
       const [saved, services] = await Promise.all([client.load(printer), client.services()]);
@@ -188,6 +195,25 @@ export class CompletionNotifications extends LitElement {
     }
   }
 
+  private async testNotification(): Promise<void> {
+    if (this._test?.phase === 'sending') return;
+    const generation = this.generation;
+    const printer = this.printer!;
+    const hass = this.hass!;
+    const target = this.targets.find((candidate) => destinationKey(candidate) === this._recipient);
+    const recipient = target?.label || this._recipient;
+    this._test = { phase: 'sending', recipient };
+    try {
+      if (!target?.available) throw new Error(this.t('notifyTargetUnavailable'));
+      await new NotificationClient(hass).test(printer, {
+        target: { kind: target.kind, id: target.id }, style: this._style, language: this.language,
+      });
+      if (generation === this.generation) this._test = { phase: 'submitted', recipient };
+    } catch (error) {
+      if (generation === this.generation) this._test = { phase: 'error', recipient, error: asError(error).message };
+    }
+  }
+
   private runtimeStatus(): Message {
     if (this._saved === undefined) return 'notifyNotLoaded';
     if (this._saved === null) return 'notifyNotConfigured';
@@ -201,7 +227,7 @@ export class CompletionNotifications extends LitElement {
   protected render() {
     if (!this.hass || !this.printer || !this.registry) return nothing;
     const admin = this.hass.user?.is_admin !== false;
-    const busy = this._loading || this._saving;
+    const busy = this._loading || this._saving || this._test?.phase === 'sending';
     const target = this.targets.find((candidate) => destinationKey(candidate) === this._recipient);
     const runtime = runtimeAutomation(this.hass.states, this.printer.id);
     const status = this.runtimeStatus();
@@ -213,14 +239,16 @@ export class CompletionNotifications extends LitElement {
           ${this._loading ? html`<p role="status">${this.t('loading')}</p>` : nothing}
           <label class="check"><input type="checkbox" .checked=${this._enabled} ?disabled=${busy || this._saved === undefined} @change=${(event: Event) => { this._enabled = (event.target as HTMLInputElement).checked; this._dirty = true; }}>${this.t('notifyEnable')}</label>
           <div class="fields">
-            <label>${this.t('notifyStyle')}<select aria-label=${this.t('notifyStyle')} data-value=${this._style} ?disabled=${busy || this._saved === undefined} @change=${(event: Event) => { this._style = (event.target as HTMLSelectElement).value as NotificationStyle; this._recipient = ''; this._dirty = true; }}><option value="android_alarm">${this.t('notifyAlarm')}</option><option value="standard">${this.t('notifyStandard')}</option></select></label>
-            <label>${this.t('notifyRecipient')}<select aria-label=${this.t('notifyRecipient')} data-value=${this._recipient} ?disabled=${busy || this._saved === undefined} @change=${(event: Event) => { this._recipient = (event.target as HTMLSelectElement).value; this._dirty = true; }}>
+            <label>${this.t('notifyStyle')}<select aria-label=${this.t('notifyStyle')} data-value=${this._style} ?disabled=${busy || this._saved === undefined} @change=${(event: Event) => { this._style = (event.target as HTMLSelectElement).value as NotificationStyle; this._recipient = ''; this._dirty = true; this._test = undefined; }}><option value="android_alarm">${this.t('notifyAlarm')}</option><option value="standard">${this.t('notifyStandard')}</option></select></label>
+            <label>${this.t('notifyRecipient')}<select aria-label=${this.t('notifyRecipient')} data-value=${this._recipient} ?disabled=${busy || this._saved === undefined} @change=${(event: Event) => { this._recipient = (event.target as HTMLSelectElement).value; this._dirty = true; this._test = undefined; }}>
               <option value="">${this.t('chooseRecipient')}</option>${this._recipient && !target ? html`<option value=${this._recipient} disabled>${this._recipient} · ${this.t('unavailable')}</option>` : nothing}
               ${this.targets.map((candidate) => html`<option value=${destinationKey(candidate)} title=${candidate.id} ?disabled=${!candidate.available}>${candidate.label} · ${this.t(candidate.kind === 'service' ? 'notifyMobileApp' : 'notifyEntity')}${candidate.available ? '' : ` · ${this.t('unavailable')}`}</option>`)}
             </select></label>
           </div>
           ${!this.targets.length && this._saved !== undefined ? html`<p>${this.t(this._style === 'android_alarm' ? 'notifyNoAlarmTarget' : 'notifyNoTargets')}</p>` : nothing}
-          <div class="footer"><button class="primary" ?disabled=${busy || this._saved === undefined || (!this._recipient) || (this._enabled && !target?.available)} @click=${() => void this.save()}>${this._saving ? this.t('saving') : this.t('saveNotification')}</button><span role="status" class="status ${status === 'notifyActive' ? 'active' : ''}">${this._dirty ? this.t('notifyUnsaved') : this.t(status)}</span></div>
+          <div class="footer"><button class="primary" ?disabled=${busy || this._saved === undefined || (!this._recipient) || (this._enabled && !target?.available)} @click=${() => void this.save()}>${this._saving ? this.t('saving') : this.t('saveNotification')}</button><button class="test-notification" ?disabled=${busy || !target?.available} @click=${() => void this.testNotification()}>${this.t(this._test?.phase === 'sending' ? 'notifyTestSending' : 'notifyTest')}</button><span role="status" class="status ${status === 'notifyActive' ? 'active' : ''}">${this._dirty ? this.t('notifyUnsaved') : this.t(status)}</span></div>
+          <p class="helper">${this.t('notifyTestHelp')}</p>
+          ${this._test ? html`<p class="helper ${this._test.phase === 'error' ? 'error' : ''}" role=${this._test.phase === 'error' ? 'alert' : 'status'}>${this._test.recipient} · ${this._test.phase === 'error' ? `${this.t('notifyTestError')}: ${this._test.error}` : this.t(this._test.phase === 'sending' ? 'notifyTestSending' : 'notifyTestSubmitted')}</p>` : nothing}
           ${this._runtimeError ? html`<div class="error" role="alert">${this.t('notifyRuntimeError')}: ${this._runtimeError}</div>` : nothing}
           ${this._style === 'android_alarm' ? html`<p class="helper">${this.t('notifyAlarmHelp')}</p>` : nothing}
           <p class="helper">${this.t('notifyReliability')}</p>

@@ -17,7 +17,11 @@ Users need a phone reminder after a print completes, including when the dashboar
 - Treat the saved automation as the sole persistent source of settings. Do not add notification settings to card YAML or browser storage.
 - Check the ownership marker and supported configuration before overwriting. Refuse to replace unrelated or manually customized automations.
 - POST success confirms the file write. Confirm the loaded configuration through `automation/config` after `automation_reloaded`, and display actual runtime state separately. Errors remain visible.
-- No browser timer, always-open page, custom HA integration, or notification test send is required.
+- No browser timer, always-open page or custom HA integration is required. Saving settings never sends a test notification.
+
+### Explicit phone test — 2026-10-22
+
+The user requested a button that immediately tests the selected phone and reminder style. Use the same notification action/payload builder for automatic and test messages. Tests send plain text directly through HA's notify action; they do not evaluate automation templates, write settings or enable automations. One click submits one notification, with repeat submissions blocked only while the request is in flight. HA accepting a request is distinct from the user hearing a sound; report the former and ask the user to verify the latter.
 
 ## Consequences
 

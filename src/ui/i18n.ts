@@ -135,6 +135,11 @@ const messages = {
   notifyError: ['Could not load or save reminders', '提醒设置读取或保存失败'],
   notifyRuntimeError: ['Could not verify loaded automation', '无法核验后台自动化'],
   notifyViewAutomation: ['View HA automation', '查看 HA 自动化'],
+  notifyTest: ['Test phone reminder', '测试手机提醒'],
+  notifyTestSending: ['Sending test…', '正在发送测试…'],
+  notifyTestHelp: ['Sends one reminder to the currently selected phone and style. No need to enable or save first.', '点击会按当前选择的手机和提醒方式发送一次提醒，无需先启用或保存。'],
+  notifyTestSubmitted: ['HA accepted the test request. Check whether your phone received it and sounded.', 'HA 已接受测试请求，请确认手机是否收到并响铃。'],
+  notifyTestError: ['Test reminder failed', '测试提醒发送失败'],
 } satisfies Record<string, [string, string]>;
 
 export type Message = keyof typeof messages;
