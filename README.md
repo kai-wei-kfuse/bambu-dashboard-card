@@ -13,6 +13,8 @@ The deliverable includes both the custom frontend component and a complete dashb
 ## Implemented initial version
 
 - Multi-printer overview and a responsive masonry detail workspace with independent camera, job, control, parameter and filament cards.
+- Alert center with HMS/print-error details and official troubleshooting links; device/connection readings, translated task stages and hotend fan speed.
+- One-hour nozzle/bed temperature trends and a 24-hour state-change timeline from HA History, with explicit empty/error states and minute/manual refresh.
 - Drag complete detail cards by their edit-mode handles while neighboring cards make room in real time, or use arrow buttons; save an independent layout for each printer in your HA account.
 - Complete entity and attribute explorer.
 - Camera, light, speed, pause, resume, stop, and sliced-project printing.
@@ -45,6 +47,8 @@ Completion reminders are configured in a printer's detail view by an HA administ
 Requires Home Assistant and ha-bambulab. Initial hardware validation targets A1 printers and AMS Lite. Support for additional models is derived from their registered entities and capabilities, with model-specific behavior documented as it is tested.
 
 The integration's `print_history` endpoint lists **cached project files**, not a complete record of completed prints. The UI must preserve that distinction. Historical cloud task storage is outside the initial release.
+
+Temperature trends and recent events require HA History/Recorder to record the selected printer entities. They read existing HA history; they do not create a complete print archive or change Recorder configuration. See [diagnostics and history](docs/installation.md#diagnostics-and-recorded-history) for data scope and refresh behavior.
 
 ## License
 

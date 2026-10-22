@@ -147,6 +147,47 @@ bambu-detail-layout { display: block; }
 .detail-grid .panel-head { padding: 12px 14px; }
 .detail-grid .panel-head h2 { display: flex; align-items: center; gap: 7px; font-size: 13px; }
 .detail-grid .panel-body { padding: 14px; }
+bambu-printer-diagnostics, bambu-printer-history { display: block; min-width: 0; }
+.job-stage { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 12px; padding: 8px 10px; border-radius: 10px; background: var(--bd-accent-soft); font-size: 11px; }
+.job-stage span { color: var(--bd-muted); }
+.job-stage b { color: var(--bd-accent); overflow-wrap: anywhere; }
+.panel-note { margin: 0; padding: 10px 14px; color: var(--bd-muted); font-size: 10px; border-top: 1px solid var(--bd-line); overflow-wrap: anywhere; }
+.diagnostic-state { font-size: 10px; border-radius: 999px; padding: 4px 8px; background: var(--bd-line); color: var(--bd-muted); }
+.diagnostic-state.clear { color: var(--bd-accent); background: var(--bd-accent-soft); }
+.diagnostic-state.alert, .diagnostic-warning { color: var(--bd-danger); }
+.diagnostic-body { padding: 2px 14px; font-size: 12px; }
+.diagnostic-group { padding: 12px 0; }
+.diagnostic-group + .diagnostic-group { border-top: 1px solid var(--bd-line); }
+.diagnostic-group-title { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+.printer-alert { margin-top: 10px; padding: 10px; background: color-mix(in srgb, var(--bd-danger) 6%, var(--bd-panel)); border: 1px solid color-mix(in srgb, var(--bd-danger) 20%, transparent); border-radius: 12px; overflow-wrap: anywhere; }
+.printer-alert p { margin: 7px 0; }
+.printer-alert a, .printer-alert small { font-size: 11px; }
+.alert-severity { margin-left: 8px; font-size: 10px; color: var(--bd-muted); }
+.device-readings { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; padding: 14px; margin: 0; }
+.device-readings div { min-width: 0; }
+.device-readings dt { font-size: 10px; color: var(--bd-muted); }
+.device-readings dd { margin: 4px 0 0; font-size: 12px; font-weight: 600; overflow-wrap: anywhere; }
+.history-meta { padding: 9px 14px 0; color: var(--bd-muted); font-size: 10px; }
+.history-empty { min-height: 140px; padding: 22px 14px; display: grid; place-content: center; gap: 10px; text-align: center; font-size: 12px; color: var(--bd-muted); }
+.history-empty small { font-size: 10px; }
+.history-error { padding: 12px 14px; display: grid; gap: 7px; font-size: 11px; color: var(--bd-danger); overflow-wrap: anywhere; }
+.history-error .button { justify-self: start; }
+.temperature-chart { padding: 5px 10px 0; }
+.temperature-chart svg { width: 100%; display: block; }
+.chart-axis { fill: var(--bd-muted); font-size: 9px; font-family: inherit; }
+.chart-grid { stroke: var(--bd-line); stroke-width: 1; }
+.chart-legend { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px 12px; padding: 4px 14px 14px; }
+.chart-legend div { display: grid; grid-template-columns: 14px minmax(0, 1fr); align-items: center; gap: 2px 6px; font-size: 10px; }
+.chart-legend b { grid-column: 2; font-size: 11px; overflow-wrap: anywhere; }
+.legend-swatch { height: 0; border-top: 2px solid var(--series-color); }
+.legend-swatch.target { border-top-style: dashed; }
+.printer-event-list { padding: 14px; margin: 0; list-style: none; max-height: 320px; overflow-y: auto; }
+.printer-event-list li { position: relative; display: flex; gap: 11px; padding: 0 0 17px; font-size: 11px; }
+.printer-event-list li:not(:last-child)::after { content: ''; position: absolute; left: 3px; top: 9px; bottom: 0; width: 1px; background: var(--bd-line); }
+.event-dot { flex-shrink: 0; position: relative; z-index: 1; height: 7px; width: 7px; margin-top: 4px; border-radius: 50%; background: var(--bd-accent); }
+.printer-event-list .fault .event-dot { background: var(--bd-danger); }
+.printer-event-list b, .printer-event-list time { display: block; overflow-wrap: anywhere; }
+.printer-event-list time { color: var(--bd-muted); font-size: 10px; margin-top: 4px; }
 .camera-large { position: relative; background: radial-gradient(ellipse at center, var(--bd-accent-soft), transparent); }
 /* A visible loading area keeps the camera's IntersectionObserver active before native media loads. */
 .camera-large bambu-dashboard-camera { width: 100%; height: auto; min-height: 120px; }

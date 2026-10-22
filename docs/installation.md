@@ -38,6 +38,21 @@ Selections are saved per printer and authenticated HA user with native frontend 
 
 Authentication and image/video transport remain HA-native. The existing picture-entity renderer uses HA's reported live-stream capability or automatic image mode. No camera URL, username, password or additional streaming backend is configured in this card. Synthetic tests cover live/image selection and persistence; real external hardware playback, latency and quality remain unverified until a camera is connected.
 
+## Diagnostics and recorded history
+
+Each printer's detail overview includes four additional draggable blocks:
+
+- **Alert center:** HMS and print-error states, reported error codes/details and official Bambu troubleshooting links when provided. The summary is scoped to those reports, not a full hardware inspection. Offline, unknown, missing and disabled diagnostics remain explicit; they cannot produce an all-clear badge. Incompatible diagnostic details remain visible as an error rather than hiding an asserted fault.
+- **Temperature trend:** the past hour of actual and target nozzle/bed temperatures. Targets use dashed lines. Historical °C, °F and K samples normalize to °C per record; unknown/unavailable values or missing units leave gaps. Legend values describe the last recorded sample, while live readings remain in **Live parameters**.
+- **Device & connection:** online state, Wi-Fi, local/cloud connection mode, SD card, nozzle diameter/material, firmware availability and integration-estimated usage. Usage may need calibration and does not represent component lifetime. Unsupported or disabled fields are labeled explicitly.
+- **Recent events:** the past 24 hours of print-status, HMS and print-error changes, newest first. Repeated states are deduplicated and the query's initial carried state is excluded. All events remain accessible by scrolling; this is a state-change timeline, not a complete print archive.
+
+The current job also shows its reported stage, with common stages translated and unfamiliar values preserved. Live parameters include hotend fan speed when reported.
+
+History uses the current authenticated HA session and explicitly filters to the selected printer's entities. HA History/Recorder must be enabled and record these entities. The card does not enable entities, change Recorder exclusions, create automations or collect its own history. Successful queries with no data show an empty-state explanation; transport, permission and schema failures show a separate error with **Retry**. A failed refresh retains the last successful result with its timestamp and an explicit stale-data label.
+
+While detail view is mounted, the workspace minute clock refreshes both history blocks; **Refresh history** requests an immediate update. The displayed **As of** time and event timestamps use HA's configured timezone. There is no extra background history poller after leaving the detail view. Existing saved layouts keep their order, and these newly available blocks append through the same layout resolver.
+
 ## Reorder detail cards
 
 Open a printer's overview and choose **Edit layout**. Drag a card by its added title bar: the complete original card follows the pointer while its grid placeholder and neighboring cards reflow immediately. Release to accept the preview; Escape, pointer cancellation, blur, resize or release outside the grid restores the order from before that gesture. Mouse, pen and touch use the same pointer interaction; dragging near the viewport edge scrolls toward offscreen cards. The **Move earlier/later** arrow buttons also work by touch or keyboard. Card contents are inactive during editing to prevent accidental device commands.
