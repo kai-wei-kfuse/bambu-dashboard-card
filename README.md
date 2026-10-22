@@ -1,0 +1,37 @@
+# Bambu Dashboard Card
+
+A complete multi-printer dashboard for Home Assistant, built with TypeScript and Lit and powered by the existing [ha-bambulab](https://github.com/greghesp/ha-bambulab) integration.
+
+**Development status:** initial implementation. No stable release yet. Real printer controls must be verified on the target hardware before treating a release as production ready.
+
+The deliverable includes both the custom frontend component and a complete dashboard configuration. Device discovery is dynamic; printer IDs, addresses, credentials, and a fixed printer count are not embedded in the source.
+
+## Planned first release
+
+- Multi-printer overview and detailed control workspace.
+- Complete entity and attribute explorer.
+- Camera, light, speed, pause, resume, stop, and sliced-project printing.
+- AMS and external-spool visualization based on registered devices.
+- Cached project browser, downloads, metadata checks, and reprinting through the integration's authenticated APIs.
+- Responsive layout, Home Assistant themes, and a visual configuration editor.
+
+## Development
+
+```sh
+npm ci
+npm run test
+npm run typecheck
+npm run build
+```
+
+The build produces `dist/bambu-dashboard-card.js`. Runtime data and commands use the Home Assistant session. There is no separate MQTT client or service to deploy.
+
+## Scope and compatibility
+
+Requires Home Assistant and ha-bambulab. Initial hardware validation targets A1 printers and AMS Lite. Support for additional models is derived from their registered entities and capabilities, with model-specific behavior documented as it is tested.
+
+The integration's `print_history` endpoint lists **cached project files**, not a complete record of completed prints. The UI must preserve that distinction. Historical cloud task storage is outside the initial release.
+
+## License
+
+MIT. This is a community project, not an official Bambu Lab product.
