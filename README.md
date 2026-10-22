@@ -18,6 +18,7 @@ The deliverable includes both the custom frontend component and a complete dashb
 - AMS and external-spool visualization based on registered devices.
 - Cached project browser, downloads, metadata checks, and reprinting through the integration's authenticated APIs.
 - Responsive layout, Home Assistant themes, and a visual configuration editor.
+- Per-printer completion reminders backed by native HA automations, including Android alarm-stream alerts and standard notification destinations.
 
 ## Development
 
@@ -33,6 +34,8 @@ The build produces `dist/bambu-dashboard-card.js`. Runtime data and commands use
 Run `npm run dev` for a labeled, read-only development preview with synthetic data. Commands are rejected in this preview; it cannot connect to a printer.
 
 See the [installation guide](docs/installation.md) and [complete dashboard configuration](dashboards/bambu-dashboard.yaml). The built JavaScript is committed so a HACS custom repository can install the default branch during development.
+
+Completion reminders are configured in a printer's detail view by an HA administrator. Select a phone, choose a reminder style, enable it and save. HA runs the reminder after the dashboard closes. Android alarm-style alerts use the phone's alarm audio stream; they do not create a Clock-app alarm or continuously repeat. See [phone setup and delivery limits](docs/installation.md#completion-reminders).
 
 ## Scope and compatibility
 

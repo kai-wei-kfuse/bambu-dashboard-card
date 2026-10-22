@@ -15,6 +15,7 @@ import { icon, printerIllustration } from './ui/icons';
 import { syncSelectValues } from './ui/select-values';
 import styles from './ui/styles.css?inline';
 import './ui/media';
+import './ui/completion-notifications';
 import './editor';
 
 type Tab = 'overview' | 'ams' | 'files' | 'parameters';
@@ -298,6 +299,7 @@ export class BambuDashboardCard extends LitElement {
   private renderDetail(printer: Printer) {
     return html`<div class="detail-grid"><section class="panel"><div class="panel-head"><h2>${icon('camera')} ${this.t('camera')}</h2><span class="description">${printer.camera && (Number(printer.camera.state?.attributes.supported_features) & 2) ? this.t('live') : this.t('snapshot')}</span></div><div class="camera-large">${printer.camera ? html`<bambu-dashboard-camera .hass=${this._hass} .entity=${printer.camera.entry.entity_id}></bambu-dashboard-camera>` : html`${printerIllustration()}<span class="preview-caption">${this.t('unsupported')}</span>`}</div></section>
       <section class="panel"><div class="panel-head"><h2>${this.t('controls')}</h2>${this.statusBadge(printer)}</div><div class="panel-body"><div class="job-top">${printer.cover && scalar(printer.cover) ? html`<div class="job-cover"><bambu-dashboard-file-image .hass=${this._hass} .entity=${printer.cover.entry.entity_id} .version=${scalar(printer.cover) || ''}></bambu-dashboard-file-image></div>` : nothing}<div><div class="eyebrow">${this.t('task')}</div><div class="job-name">${scalar(findEntity(printer.entities, 'subtask_name')) || this.t('noTask')}</div></div></div>${this.progress(printer)}<div class="job-summary"><div><span>${this.t('remaining')}</span><b>${this.sensor(printer, 'remaining_time')}</b></div><div><span>${this.t('layers')}</span><b>${this.sensor(printer, 'current_layer')} / ${this.sensor(printer, 'total_layers')}</b></div></div>${this.renderControls(printer)}</div></section></div>
+      <bambu-completion-notifications .hass=${this._hass} .printer=${printer} .registry=${this._catalogState.snapshot} .language=${this.language}></bambu-completion-notifications>
       <div class="metric-grid">${[['nozzle', 'nozzle_temp', 'target_nozzle_temp'], ['bed', 'bed_temp', 'target_bed_temp'], ['fan', 'cooling_fan_speed', ''], ['weight', 'print_weight', ''], ['length', 'print_length', '']].map(([label, key, target]) => html`<div class="panel metric"><div class="metric-top">${icon(label === 'nozzle' || label === 'bed' ? 'heat' : 'tune')}${this.t(label as Message)}</div><strong>${this.sensor(printer, key)}</strong>${target ? html`<small>→ ${this.sensor(printer, target)}</small>` : nothing}</div>`)}</div>${this.renderAms(printer, false)}`;
   }
   private renderControls(printer: Printer) {

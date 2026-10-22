@@ -26,6 +26,7 @@ const thumbnail = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"
 const readOnly = () => { throw new Error('This preview is read-only. Install the card in Home Assistant to control a real printer.'); };
 
 const hass: HomeAssistant = fixtureHass({
+  user: { is_admin: false },
   callService: async () => readOnly(),
   callApi: async <T>(method: string, path: string) => {
     if (method === 'GET' && path === 'bambu_lab/print_history') return { files } as T;

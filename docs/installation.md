@@ -40,3 +40,22 @@ Do not register both the HACS resource and a manual resource at the same time: b
 - New print commands and stop operations use a confirmation dialog. A command response is displayed as submitted until a matching HA state is observed.
 
 No printer credentials, HA tokens, PVE access, or Samba service are required in this component's configuration.
+
+## Completion reminders
+
+1. Connect your phone using the Home Assistant Companion App and allow its notifications.
+2. Open a printer's detail view as an HA administrator, then find **Print completion reminders**.
+3. Select **Alarm-style sound (Android)** or **Standard notification**, and explicitly choose a destination.
+4. Enable the reminder and choose **Save reminder**. Wait for **Saved and enabled in HA**. Each printer has its own settings.
+
+The backend is a native HA automation. Settings survive page closure and HA restart. The saved startup setting and actual runtime state are checked separately; **saved** alone does not mean HA loaded it. A runtime switch changed elsewhere may differ from the startup setting. Save again in the dashboard to reapply it, or change the managed configuration deliberately.
+
+For Android alarm-style sound, choose the specific phone App destination. HA's modern `notify.send_message` entity action supports only message/title in the verified version, so it cannot carry the required alarm channel options. The dashboard uses the phone's `notify.mobile_app_*` action with the documented `channel: alarm_stream`, `priority: high`, and `ttl: 0` payload. The phone uses alarm volume even in silent/vibrate ringer modes. Set an audible alarm volume, allow the HA notification channel, and configure Do Not Disturb bypass on the phone if desired. Phone OS battery restrictions can affect delivery. The channel is created when its first notification arrives.
+
+This is an alarm-style notification, not a scheduled Clock-app alarm, and it does not promise continuous ringing or force maximum volume. The immediate-delivery `ttl: 0` setting follows the Companion documentation: an Android cloud message that cannot be delivered immediately may be dropped instead of ringing later when the phone reconnects.
+
+HA must observe `running` or `pause` changing to `finish`. Startup/reconnect states and failed/stopped prints do not trigger a completion reminder. Completion while HA is stopped or the printer is disconnected is not replayed. Delivery still depends on HA, the phone's connectivity and App permissions. Configure a real print test separately; saving settings never sends a test notification.
+
+Managed automations appear in HA's Automations interface with a `Bambu Dashboard` alias. Use the native trace to inspect runs and notification errors. The dashboard refuses to overwrite unrelated or customized automation actions; duplicate the managed automation if you want to customize it. Deleting a card or dashboard does not delete the backend automation. Disable its reminder or remove it through HA if it is no longer wanted.
+
+Automatic recipient guessing, generic broadcast notification actions, and browser-local completion timers are not used.

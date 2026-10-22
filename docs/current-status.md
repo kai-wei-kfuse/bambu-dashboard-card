@@ -22,3 +22,14 @@ Implemented: complete multi-printer dashboard, device/entity discovery, complete
 Physical control verification with an operator, broader model coverage, clean HACS installation testing, and a versioned release. The GitHub default branch includes a build for development installations; it is not a claim that the hardware controls have passed physical testing.
 
 Public screenshots contain only clearly labeled synthetic data. Real installation screenshots remain local and are not part of this repository.
+
+## Completion reminders — 2026-10-22
+
+Implemented in Stage 2: independent per-printer settings, explicit notification destination selection, standard messages, Android alarm-stream alerts, and authenticated management of persistent native HA automations. Completion detection runs in HA after the frontend closes. The UI distinguishes saved configuration, loaded runtime configuration, runtime switch mismatches, and errors.
+
+- All 41 behavior tests pass (18 added), including ownership, competing edits, API failures, explicit phone targeting, Android payload, startup/reconnect exclusions, persisted disabling, late loads/saves and stale reload callbacks.
+- TypeScript checks and the production build pass.
+- A real HA 2026.10.2 instance discovered an existing Companion phone's dedicated notification service.
+- The dashboard saved a disabled Android alarm reminder through HA's configuration API, confirmed the matching loaded automation and `off` state, and restored the setting after a full page reload.
+- Another printer remained independently unconfigured.
+- No phone notification, test alarm or physical printer command was sent during this verification. Actual sound delivery and phone permissions remain to be validated by a real print test.
