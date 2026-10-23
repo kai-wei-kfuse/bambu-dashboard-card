@@ -12,11 +12,13 @@ The first implementation targets the entity and file API contracts inspected in 
 
 1. In HACS, open **Custom repositories**.
 2. Add `https://github.com/kai-wei-kfuse/bambu-dashboard-card`, type **Dashboard**.
-3. Download the component. Until a release is available, choose the default branch.
+3. Download the component and select release **v0.1.0**. The default branch remains available for development builds.
 4. Check that the resource `/hacsfiles/bambu-dashboard-card/bambu-dashboard-card.js` is registered as a JavaScript module.
 5. Refresh the HA frontend and add **Bambu Dashboard** through the card picker.
 
-HACS default-store inclusion has not been requested. This repository can be used as a custom repository once the built artifact is published.
+Use the [HACS repository link](https://my.home-assistant.io/redirect/hacs_repository/?owner=kai-wei-kfuse&repository=bambu-dashboard-card&category=plugin) to open the project in your own HA instance; HA and HACS must already be installed. Default-store inclusion is a separate review process and has not been approved. See [distribution status](distribution.md).
+
+Release v0.1.0 is a public milestone for early use, not a claim that all hardware controls or models have been physically validated. Its assets include `bambu-dashboard-card.js`, `bambu-dashboard.yaml` and `SHA256SUMS.txt`. Manual users can copy the release JavaScript into HA's `www/bambu-dashboard/` directory and use the dashboard YAML below.
 
 ## Complete dashboard
 
@@ -27,6 +29,51 @@ Automatic discovery includes all registered Bambu printers. The visual editor ca
 The main printer label uses ha-bambulab's **Printer name** sensor. Its HA device name appears as secondary identity; if that sensor is absent, disabled or unavailable, the HA name remains the main label. Parameter search accepts both names. The dashboard does not rename HA devices or alter command targets.
 
 During printing/preparation, the overview and detail show **Estimated finish** below remaining time, calculated from the current clock plus the remaining duration. Dates/times use HA's configured timezone. A paused print needs resuming before a running estimate is shown. This is a changing estimate, not a completed-print timestamp.
+
+The overview filters printers by **All printers**, **Active jobs**, **Faults**, **Idle** or **Offline**, with counts that update from HA. Active jobs include preparation, printing and pauses; idle includes completed jobs with no reported fault. Reported print failures/HMS/print errors count as faults, while offline printers show their last reports as offline. Unknown states are not called healthy. Filters preserve printer order and apply only to the overview. Select a tile's diagnostic strip to open and focus its alert block; hidden or collapsed alert blocks are temporarily revealed without saving layout preferences.
+
+## External HA cameras
+
+Each overview camera has an **External camera** entry; the detail camera header provides the same picker. First connect the external camera through a Home Assistant integration and verify that HA exposes a `camera.*` entity. Open the picker for the desired printer, choose the external entity and select **Save camera**. The overview and detail then use that same entity and label the source as external. Select **Built-in camera** and save to restore the printer's original source.
+
+The list uses camera states accessible to the current HA session, with entity-registry names/status. ha-bambulab's own cameras are excluded from the external list. Newly added entities appear as HA updates arrive. With no external entities, the picker explains how to connect one and links to HA integrations; it does not invent an external source or scan the network.
+
+Selections are saved per printer and authenticated HA user with native frontend user data, restored on opening or refreshing another client. Selection needs no administrator role; installing/configuring an HA camera integration may require an HA administrator. Already-open tabs are not subscribed to live preference changes. Cancel never saves, failed saves keep the draft, and storage errors remain visible. An unavailable, unknown, disabled or removed selected source is shown explicitly, without silently switching back to the built-in camera.
+
+Authentication and image/video transport remain HA-native. The existing picture-entity renderer uses HA's reported live-stream capability or automatic image mode. No camera URL, username, password or additional streaming backend is configured in this card. Synthetic tests cover live/image selection and persistence; real external hardware playback, latency and quality remain unverified until a camera is connected.
+
+## Diagnostics and recorded history
+
+Each printer's detail overview includes four additional draggable blocks:
+
+- **Alert center:** print failure status, HMS and print-error states, reported error codes/details and official Bambu troubleshooting links when provided. The summary is scoped to those reports, not a full hardware inspection. Offline, unknown, missing and disabled diagnostics remain explicit; they cannot produce an all-clear badge. Incompatible diagnostic details remain visible as an error rather than hiding an asserted fault.
+- **Temperature trend:** select the past 1, 6 or 24 hours of actual and target nozzle/bed temperatures. Targets use dashed lines. Historical °C, °F and K samples normalize to °C per record; unknown/unavailable values or missing units leave gaps. Legend values describe the last recorded sample, while live readings remain in **Live parameters**. Click a legend to hide/show that curve; hiding all curves shows an explicit prompt so they can be restored.
+- **Device & connection:** online state, Wi-Fi, local/cloud connection mode, SD card, nozzle diameter/material, firmware availability and integration-estimated usage. Usage may need calibration and does not represent component lifetime. Unsupported or disabled fields are labeled explicitly.
+- **Recent events:** the past 24 hours of print-status, HMS and print-error changes, newest first. Repeated states are deduplicated and the query's initial carried state is excluded. All events remain accessible by scrolling; this is a state-change timeline, not a complete print archive.
+
+The current job also shows its reported stage, with common stages translated and unfamiliar values preserved. Live parameters include hotend fan speed when reported.
+
+Point at or touch the temperature chart to inspect the recorded state at that time, with each value's actual sample timestamp. Readings use the last state at or before the selected time; they do not interpolate over unknown values. The readout floats inside the plot and cannot move the legend or surrounding cards. Focus the chart and use Left/Right to move one minute, Page Up/Down one hour, or Home/End for the range edges. Range and legend selections are local to the mounted view. Wide charts gain horizontal plot space while retaining text size and height.
+
+History uses the current authenticated HA session and explicitly filters to the selected printer's entities. HA History/Recorder must be enabled and record these entities. The card does not enable entities, change Recorder exclusions, create automations or collect its own history. Successful queries with no data show an empty-state explanation; transport, permission and schema failures show a separate error with **Retry**. A failed refresh retains the last successful result with its timestamp and an explicit stale-data label.
+
+While detail view is mounted, the workspace minute clock refreshes both history blocks; **Refresh history** requests an immediate update. The displayed **As of** time and event timestamps use HA's configured timezone. There is no extra background history poller after leaving the detail view. Existing saved layouts keep their order, and these newly available blocks append through the same layout resolver.
+
+## Reorder detail cards
+
+Open a printer's overview and choose **Edit layout**. Drag a card by its added title bar: the complete original card follows the pointer while its grid placeholder and neighboring cards reflow immediately. Release to accept the preview; Escape, pointer cancellation, blur, resize or release outside the grid restores the order from before that gesture. Mouse, pen and touch use the same pointer interaction; dragging near the viewport edge scrolls toward offscreen cards. The **Move earlier/later** arrow buttons also work by touch or keyboard. Card contents are inactive during editing to prevent accidental device commands.
+
+Full-card dragging uses the standard HTML Popover API to display the original live card above HA's containers, without cloning or reparenting cameras/forms. Web Animations smooth the surrounding cards' movement and respect reduced-motion settings. This requires a modern browser supporting those APIs; the interaction has been verified in Edge. Physical touchscreen testing remains separate from automated touch-pointer coverage.
+
+Gaps and empty grid edges retain the current order. Once the pointer enters a target card, its hover region remains anchored while masonry reflows. A margin equal to half the actual grid spacing prevents fine edge/center jitter from repeatedly reversing the move. Move clearly across the insertion boundary or into another card to change the destination. Actual scrolling adjusts the hover coordinates; there is no timing debounce or delay in the floating card's movement. Already-current orders do not restart reflow animations.
+
+Each card's edit controls include **Visible**, **Start collapsed** and **Normal/Wide**. Hidden cards remain available as editable settings tiles. Collapsed cards show an Expand/Collapse summary during normal viewing; opening it temporarily does not change its saved default. Hidden/collapsed content is unmounted, stopping camera/history work and discarding unsaved forms inside that content. Reordering alone preserves live content. Presentation controls are locked while a drag is active. Wide cards span two columns when space fits two 320px columns plus the existing 14px gap; narrow screens retain one column.
+
+Choose **Save layout** to persist order and presentation, or **Cancel** to discard the draft. **Restore default** previews original order, all cards visible/expanded and normal widths; save to keep that reset. The responsive masonry still determines the number of columns and fills available space. Positions represent card order rather than fixed coordinates, so the same order adapts to desktop and phone widths.
+
+Preferences use HA's native frontend user-data store, independently for each printer and authenticated HA user. The same account restores the order when it opens or refreshes the detail view on another client. This does not subscribe already-open tabs to live layout changes. Newly discovered cards append, and temporarily missing feeder cards retain their saved place when they return. Saving layouts does not require HA administrator privileges. Read/write failures appear in the layout toolbar; a failed save retains the draft.
+
+Legacy v1 order-only values load into the v2 presentation schema without changing the saved order or writing during load. The existing storage key remains the sole source. Saving writes v2; older builds that only support v1 cannot read that value, so update/refresh other clients before editing the same printer there.
 
 ## Manual installation / local development
 

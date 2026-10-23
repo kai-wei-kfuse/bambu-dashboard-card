@@ -21,6 +21,10 @@ const paths: Record<string, string> = {
   download: 'M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5',
   close: 'm5 5 14 14M5 19 19 5',
   search: 'M10 3a7 7 0 1 0 0 14 7 7 0 0 0 0-14m5 12 6 6',
+  move: 'M12 3v18M3 12h18m-6-6-3-3-3 3m6 12-3 3-3-3M6 9l-3 3 3 3m12-6 3 3-3 3',
+  grip: 'M8 5h.01M16 5h.01M8 12h.01M16 12h.01M8 19h.01M16 19h.01',
+  chart: 'M3 3v18h18M6 15l4-5 4 3 6-8',
+  connection: 'M3 8a15 15 0 0 1 18 0M6 12a10 10 0 0 1 12 0m-9 4a5 5 0 0 1 6 0m-3 4h.01',
 };
 
 export function icon(name: string) {

@@ -87,6 +87,7 @@ export function fixtureHass(overrides: Partial<HomeAssistant> = {}): HomeAssista
       if (message.type === 'config/device_registry/list') return registry.devices as T;
       if (message.type === 'config/entity_registry/list') return registry.entities as T;
       if (message.type === 'get_services') return {} as T;
+      if (message.type === 'frontend/get_user_data') return { value: null } as T;
       throw new Error(`Unconfigured test WebSocket request: ${String(message.type)}`);
     },
     callService: async () => { throw new Error('Test fixture does not execute printer commands.'); },

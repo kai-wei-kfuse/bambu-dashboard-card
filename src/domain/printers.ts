@@ -45,8 +45,16 @@ export function matchesKey(entry: EntityEntry, key: string): boolean {
   return uniqueId?.endsWith(`_${key.toLowerCase()}`) === true;
 }
 
-export function findEntity(entities: EntityBinding[], key: string, domain = 'sensor'): EntityBinding | undefined {
-  return entities.find(({ entry }) => !entry.disabled_by && domainOf(entry.entity_id) === domain && matchesKey(entry, key));
+export function findEntity(entities: EntityBinding[], key: string, domain = 'sensor', options: { includeDisabled?: boolean } = {}): EntityBinding | undefined {
+  return entities.find(({ entry }) => (options.includeDisabled || !entry.disabled_by) && domainOf(entry.entity_id) === domain && matchesKey(entry, key));
+}
+
+export function entityAvailability(entity?: EntityBinding): 'unsupported' | 'disabled' | 'notLoaded' | 'unavailable' | 'unknown' | 'ready' {
+  if (!entity) return 'unsupported';
+  if (entity.entry.disabled_by) return 'disabled';
+  if (!entity.state) return 'notLoaded';
+  if (entity.state.state === 'unavailable' || entity.state.state === 'unknown') return entity.state.state;
+  return 'ready';
 }
 
 export function isAvailable(entity?: EntityBinding): boolean {

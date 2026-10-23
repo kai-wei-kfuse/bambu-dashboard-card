@@ -2,7 +2,11 @@
 
 一套用于 Home Assistant 的拓竹多机可视化仪表盘，包含可复用的原生自定义卡片和完整仪表盘配置。
 
-**开发状态：第一版实现中，尚未发布稳定版本。真实打印控制需要在设备旁完成验收。**
+**当前版本：[v0.1.0](https://github.com/kai-wei-kfuse/bambu-dashboard-card/releases/tag/v0.1.0)**，首个公开试用版本，作为本阶段功能基线。已在 HA 2026.10.2、ha-bambulab 2.2.26、A1 / AMS Lite 上验证界面和数据；实体打印控制、真实外接摄像头和更多机型仍待验收。
+
+[English](README.md) · [通过 HACS 添加](https://my.home-assistant.io/redirect/hacs_repository/?owner=kai-wei-kfuse&repository=bambu-dashboard-card&category=plugin) · [反馈问题](https://github.com/kai-wei-kfuse/bambu-dashboard-card/issues/new/choose)
+
+当前通过 HACS 的“自定义仓库”安装。要让所有用户直接搜索到，还需申请 HACS 默认仓库收录；发布 Release 不会自动获得收录。详见[安装说明](docs/installation.md)和[分发与推广](docs/distribution.md)。
 
 ![多机开发预览](docs/images/overview.jpg)
 
@@ -12,18 +16,26 @@
 
 - 自动发现多台打印机、关联 AMS 和外置料盘。
 - 多机总览、单机详情、摄像头和耗材状态。
+- 首页可按任务中、异常、空闲、离线筛选；点击告警可直接定位并临时展开对应信息块。
+- 首页和详情均可选择已接入 HA 的外接摄像头，区分自带/外接来源；暂无设备时显示接入指引。
+- 详情信息块支持整块拖动、显隐、默认折叠和普通/宽卡；支持箭头排序、取消及恢复默认，每台打印机的布局独立保存到 HA 账号。
+- 告警中心显示 HMS、打印错误和官方排查链接；设备与连接卡显示 Wi-Fi、连接模式、SD 卡、喷嘴和固件信息。
+- 温度曲线可切换 1/6/24 小时、开关各条曲线，支持鼠标、触摸和键盘读数；状态事件显示最近 24 小时。每分钟或手动刷新，无记录和读取失败分别提示。
+- 当前任务显示打印阶段，实时参数补充热端风扇转速。
 - 所有集成实体和属性的搜索与详情，不把未知值当成零。
 - 开始新打印、暂停、恢复、停止、速度和灯光控制。
 - 缓存项目、下载、3MF 元数据校验、文件检查/上传与再次打印。
 - 响应式布局、HA 明暗主题、可视化配置。
 
-数据和命令统一经过现有 ha-bambulab 集成。卡片不建立额外 MQTT 连接，也不保存打印机密码。
+打印机数据和控制命令经过现有 ha-bambulab 集成，外接画面使用 HA 摄像头实体。卡片不建立额外 MQTT 连接，也不保存打印机或摄像头密码。
 
 请先阅读[安装说明](docs/installation.md)。完整仪表盘配置位于 [dashboards/bambu-dashboard.yaml](dashboards/bambu-dashboard.yaml)。
 
 ## 最近文件与打印历史
 
 文件列表展示插件保留的缓存项目，排序时间是缓存文件修改时间。这不是完整打印历史。完整云端历史与持久化不属于当前版本范围。
+
+温度趋势和近期事件读取 HA History / Recorder 已记录的对应打印机实体。近期事件是状态变化，不是完整打印履历；卡片不会修改 Recorder 配置。累计使用时长来自集成估算，不代表部件寿命。详见[诊断与历史说明](docs/installation.md#diagnostics-and-recorded-history)。
 
 ## 开发
 
