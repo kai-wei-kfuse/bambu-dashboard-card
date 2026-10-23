@@ -1,6 +1,7 @@
 import { LitElement, html, nothing, unsafeCSS } from 'lit';
 import type { PropertyValues } from 'lit';
 import { repeat } from 'lit/directives/repeat.js';
+import { version as CARD_VERSION } from '../package.json';
 import { catalogFor, asError } from './ha/catalog';
 import type { CatalogState } from './ha/catalog';
 import type { CardConfig, HomeAssistant, Unsubscribe } from './ha/types';
@@ -316,7 +317,7 @@ export class BambuDashboardCard extends LitElement {
   private renderSidebar(printers: Printer[]) {
     return html`<aside class="sidebar"><div class="sidebar-label">WORKSPACE</div><button class=${!this._selected ? 'selected' : ''} @click=${() => this.selectPrinter(null)}>${icon('grid')}${this.t('allPrinters')}</button><div class="sidebar-rule"></div><div class="sidebar-label">${this.t('printers')}</div>
       ${repeat(printers, (printer) => printer.id, (printer) => html`<button class="printer-link ${this._selected === printer.id ? 'selected' : ''}" title=${`${printer.name} · ${printer.haName}`} @click=${() => this.selectPrinter(printer.id)}>${icon('printer')}<span class="name">${printer.name}<small class="model">${printer.haName === printer.name ? printer.model : printer.haName}</small></span><span class="dot ${printer.status}"></span></button>`)}
-      <div class="sidebar-foot">Bambu Dashboard Card<br>v0.1 · Community project</div></aside>`;
+      <div class="sidebar-foot">Bambu Dashboard Card<br>v${CARD_VERSION} · Community project</div></aside>`;
   }
   private renderBanners() {
     return html`${this._error ? html`<div class="banner error" role="alert">${icon('alert')}<div class="copy">${this._error}</div><button class="icon-button" aria-label=${this.t('close')} @click=${() => { this._error = ''; }}>${icon('close')}</button></div>` : nothing}
@@ -440,4 +441,4 @@ export class BambuDashboardCard extends LitElement {
 customElements.define('bambu-dashboard-card', BambuDashboardCard);
 window.customCards = window.customCards || [];
 window.customCards.push({ type: 'bambu-dashboard-card', name: 'Bambu Dashboard', preview: true, description: 'Complete multi-printer workspace for ha-bambulab.' });
-console.info('%c BAMBU DASHBOARD %c 0.1.0 ', 'background:#00ae42;color:#08291f;font-weight:bold;padding:4px', 'background:#15201b;color:#cfe9de;padding:4px');
+console.info(`%c BAMBU DASHBOARD %c ${CARD_VERSION} `, 'background:#00ae42;color:#08291f;font-weight:bold;padding:4px', 'background:#15201b;color:#cfe9de;padding:4px');

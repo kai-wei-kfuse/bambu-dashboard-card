@@ -19,7 +19,7 @@ Implemented: complete multi-printer dashboard, device/entity discovery, complete
 
 ## Remaining before a stable release
 
-Physical control verification with an operator, broader model coverage, clean HACS installation testing, and a versioned release. The GitHub default branch includes a build for development installations; it is not a claim that the hardware controls have passed physical testing.
+Physical control verification with an operator, broader model coverage, and clean HACS installation testing remain required before a stable release. The public v0.1.0 milestone is for early use and feedback; its publication is not a claim that hardware controls have passed physical testing.
 
 Public screenshots contain only clearly labeled synthetic data. Real installation screenshots remain local and are not part of this repository.
 
@@ -128,3 +128,9 @@ Temperature charts now offer 1/6/24-hour ranges, independent series toggles and 
 All 145 tests across 20 files, TypeScript checks and production build pass. Nine added cases cover schema migration/presentation, hidden/collapsed lifecycle and restoration, temporary reveal, fleet status changes/navigation, actual-sample inspection, legend switches, range races and width-observer cleanup. Existing graph assertions now explicitly inspect the temperature SVG rather than an icon SVG.
 
 Real HA verified the correct current fleet counts and empty fault filter, direct alert focus, settings Save/reload, temporary expansion of collapsed metrics, and restoration of a hidden alert from its overview strip. A two-column wide temperature card accepted full-card mouse dragging; Cancel restored its order. Actual 1/6/24-hour queries succeeded and both target curves were hidden through the legend. Pointer/keyboard inspection showed recorded values and sample times without moving the legend. Desktop and 312-CSS-pixel layouts had no overlapping or overflowing cards after observer reflow; wide cards became one column and all edit controls fit on narrow screens. Test layout settings were restored to the original default, the other printer's preferences were untouched, and the viewport override was reset. Physical touchscreen interaction remains unverified; synthetic touch events cover inspection. No printer or phone action was sent. Household screenshots remain local.
+
+## v0.1.0 public milestone — 2026-10-23
+
+The user requested a versioned stage milestone for everyday early use. The implemented dashboard scope is frozen for v0.1.0; household-device automation remains a proposal. The runtime banner and console take the version from `package.json`. Release packaging provides the single built module, dashboard YAML and SHA256 checksums. English/Chinese README, changelog, installation/distribution guidance and a structured issue form describe actual capabilities and known validation gaps.
+
+All 145 tests, TypeScript checks and production build pass for the release candidate. GitHub Release publication and asset integrity are recorded on the release page. HACS custom-repository distribution is separate from default-list acceptance; no global search listing or clean-install result is claimed. See [distribution](distribution.md) for requirements and ready-to-use community announcement drafts.

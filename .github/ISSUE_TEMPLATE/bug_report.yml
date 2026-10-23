@@ -1,0 +1,29 @@
+name: Bug report / 问题反馈
+description: Report a reproducible dashboard problem / 反馈可复现的问题
+body:
+  - type: input
+    id: versions
+    attributes:
+      label: Versions / 版本
+      description: Dashboard Card, Home Assistant and ha-bambulab versions
+      placeholder: Card 0.1.0, HA ..., ha-bambulab ...
+    validations:
+      required: true
+  - type: input
+    id: hardware
+    attributes:
+      label: Printer and browser / 打印机与浏览器
+      description: Printer/AMS model, browser and phone/desktop OS
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps, expected and actual result / 复现步骤、预期与实际结果
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Logs or screenshots / 日志或截图
+      description: Remove tokens, passwords, serial numbers and private camera images before attaching.

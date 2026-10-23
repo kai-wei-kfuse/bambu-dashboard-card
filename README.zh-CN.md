@@ -2,7 +2,11 @@
 
 一套用于 Home Assistant 的拓竹多机可视化仪表盘，包含可复用的原生自定义卡片和完整仪表盘配置。
 
-**开发状态：第一版实现中，尚未发布稳定版本。真实打印控制需要在设备旁完成验收。**
+**当前版本：[v0.1.0](https://github.com/kai-wei-kfuse/bambu-dashboard-card/releases/tag/v0.1.0)**，首个公开试用版本，作为本阶段功能基线。已在 HA 2026.10.2、ha-bambulab 2.2.26、A1 / AMS Lite 上验证界面和数据；实体打印控制、真实外接摄像头和更多机型仍待验收。
+
+[English](README.md) · [通过 HACS 添加](https://my.home-assistant.io/redirect/hacs_repository/?owner=kai-wei-kfuse&repository=bambu-dashboard-card&category=plugin) · [反馈问题](https://github.com/kai-wei-kfuse/bambu-dashboard-card/issues/new/choose)
+
+当前通过 HACS 的“自定义仓库”安装。要让所有用户直接搜索到，还需申请 HACS 默认仓库收录；发布 Release 不会自动获得收录。详见[安装说明](docs/installation.md)和[分发与推广](docs/distribution.md)。
 
 ![多机开发预览](docs/images/overview.jpg)
 
