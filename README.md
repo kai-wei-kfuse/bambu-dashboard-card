@@ -5,12 +5,12 @@ A complete multi-printer dashboard for Home Assistant, built with TypeScript and
 **Current release: [v0.1.0](https://github.com/kai-wei-kfuse/bambu-dashboard-card/releases/tag/v0.1.0)** — the first public milestone for early use and feedback. Tested with HA 2026.10.2 and ha-bambulab 2.2.26 on A1 / AMS Lite. Physical printer controls, real external-camera playback and broader models still need validation.
 
 [简体中文](README.zh-CN.md) · [Install with HACS](https://my.home-assistant.io/redirect/hacs_repository/?owner=kai-wei-kfuse&repository=bambu-dashboard-card&category=plugin) · [Report an issue](https://github.com/kai-wei-kfuse/bambu-dashboard-card/issues/new/choose)
-<img width="1940" height="1131" alt="动画30" src="https://github.com/user-attachments/assets/bb583ab1-6dfe-4b76-946e-32de07d8d9e8" />
+
 
 HACS installation currently uses a **custom repository**. Global HACS search requires separate default-store review; publishing a release does not automatically add the project there. See [installation](docs/installation.md) and [distribution status](docs/distribution.md).
 
 ![Multi-printer development preview](docs/images/overview.jpg)
-
+<img width="1940" height="1131" alt="动画30" src="https://github.com/user-attachments/assets/bb583ab1-6dfe-4b76-946e-32de07d8d9e8" />
 The screenshot uses explicitly labeled synthetic devices and camera illustrations. It does not expose a real installation.
 
 The deliverable includes both the custom frontend component and a complete dashboard configuration. Device discovery is dynamic; printer IDs, addresses, credentials, and a fixed printer count are not embedded in the source.
