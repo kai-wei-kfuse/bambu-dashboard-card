@@ -4,7 +4,7 @@ import { catalogFor } from './ha/catalog';
 import type { CatalogState } from './ha/catalog';
 import { discoverPrinters } from './domain/printers';
 import type { CardConfig, HomeAssistant, Unsubscribe } from './ha/types';
-import { text } from './ui/i18n';
+import { languageFor, text } from './ui/i18n';
 import { syncSelectValues } from './ui/select-values';
 
 export class BambuDashboardEditor extends LitElement {
@@ -47,12 +47,12 @@ export class BambuDashboardEditor extends LitElement {
     this.change({ devices });
   }
   protected render() {
-    const language = this.hass?.language.startsWith('zh') ? 'zh' : 'en';
+    const language = languageFor(this.hass?.language);
     const t = (key: Parameters<typeof text>[1]) => text(language, key);
     const devices = this._config.devices || [];
     const printers = this._catalog.snapshot && this.hass ? discoverPrinters(this._catalog.snapshot, this.hass, { ...this._config, discovery: 'auto' }) : [];
     return html`<label>${t('title')}<input type="text" .value=${this._config.title || ''} @input=${(event: Event) => this.change({ title: (event.target as HTMLInputElement).value })}/></label>
-      <label>${t('language')}<select data-value=${this._config.language || 'auto'} @change=${(event: Event) => this.change({ language: (event.target as HTMLSelectElement).value as CardConfig['language'] })}><option value="auto">${t('automatic')}</option><option value="en">English</option><option value="zh">简体中文</option></select></label>
+      <label>${t('language')}<select data-value=${this._config.language || 'auto'} @change=${(event: Event) => this.change({ language: (event.target as HTMLSelectElement).value as CardConfig['language'] })}><option value="auto">${t('automatic')}</option><option value="en">English</option><option value="zh">简体中文</option><option value="da">Dansk</option></select></label>
       <label class="check"><input type="checkbox" .checked=${this._config.discovery === 'selected'} @change=${(event: Event) => this.change({ discovery: (event.target as HTMLInputElement).checked ? 'selected' : 'auto', devices: this._config.devices || [] })}/>${t('selectedDevices')}</label>
       ${this._config.discovery === 'selected' ? html`${printers.map((printer) => html`<div class="row"><label class="check"><input type="checkbox" .checked=${devices.includes(printer.id)} @change=${(event: Event) => this.change({ devices: (event.target as HTMLInputElement).checked ? [...devices, printer.id] : devices.filter((id) => id !== printer.id) })}/>${printer.name} <small>${printer.model}</small></label>${devices.includes(printer.id) ? html`<button aria-label="Move up" @click=${() => this.move(printer.id, -1)}>↑</button><button aria-label="Move down" @click=${() => this.move(printer.id, 1)}>↓</button>` : nothing}</div>`)}` : html`<small>${t('allPrinters')} · ${printers.length}</small>`}
       ${this._catalog.error ? html`<p class="error">${this._catalog.error.message}</p>` : nothing}`;
