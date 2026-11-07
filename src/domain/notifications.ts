@@ -64,11 +64,16 @@ function notificationAction(settings: Pick<NotificationSettings, 'target' | 'sty
   return target.kind === 'entity' ? { action: 'notify.send_message', target: { entity_id: target.id }, data } : { action: target.id, data };
 }
 
+/** Completion titles also identify the saved language when an automation is read back. */
+const COMPLETED_TITLE: Record<Language, string> = { en: '3D print completed', zh: '3D 打印已完成', da: '3D-print færdigt' };
+
 export function buildTestNotification(printer: Printer, settings: Omit<NotificationSettings, 'enabled'>): NotificationAction {
   return notificationAction(settings, {
-    title: settings.language === 'zh' ? '打印提醒测试' : 'Print reminder test',
+    title: settings.language === 'zh' ? '打印提醒测试' : settings.language === 'da' ? 'Test af printpåmindelse' : 'Print reminder test',
     // Direct service calls do not render Jinja; test text must already be plain text.
-    message: settings.language === 'zh' ? `${printer.name}：这是一条测试提醒，请确认手机是否响铃。` : `Test reminder for ${printer.name}. Please check whether your phone sounds.`,
+    message: settings.language === 'zh' ? `${printer.name}：这是一条测试提醒，请确认手机是否响铃。`
+      : settings.language === 'da' ? `Testpåmindelse fra ${printer.name}. Tjek om din telefon giver lyd.`
+      : `Test reminder for ${printer.name}. Please check whether your phone sounds.`,
   });
 }
 
@@ -81,8 +86,10 @@ export function buildNotificationAutomation(printer: Printer, settings: Notifica
   const name = `{{ device_attr('${id}', 'name_by_user') or device_attr('${id}', 'name') or 'Bambu Lab' }}`;
   const project = task ? `{{ states('${sensorId(task.entry.entity_id)}') }}` : '';
   const action = notificationAction(settings, {
-    title: settings.language === 'zh' ? '3D 打印已完成' : '3D print completed',
-    message: settings.language === 'zh' ? `${name} 已完成打印。${project}` : `${name} finished printing. ${project}`,
+    title: COMPLETED_TITLE[settings.language],
+    message: settings.language === 'zh' ? `${name} 已完成打印。${project}`
+      : settings.language === 'da' ? `${name} er færdig med at printe. ${project}`
+      : `${name} finished printing. ${project}`,
   });
   return {
     id: automationId(id), alias: `Bambu Dashboard · Print complete · ${printer.name}`,
@@ -120,7 +127,7 @@ export function parseNotificationAutomation(printer: Printer, value: unknown): S
   const data = action && isRecord(action.data) ? action.data : undefined;
   const style: NotificationStyle = data?.message === 'TTS' && isRecord(data.data) && data.data.media_stream === 'alarm_stream'
     ? 'android_tts' : data?.data !== undefined ? 'android_alarm' : 'standard';
-  const language = title === '3D 打印已完成' ? 'zh' : title === '3D print completed' ? 'en' : undefined;
+  const language = (Object.keys(COMPLETED_TITLE) as Language[]).find((code) => COMPLETED_TITLE[code] === title);
   if (typeof value.initial_state !== 'boolean' || !language || typeof value.alias !== 'string') {
     throw new Error('The managed notification automation was customized or has an unsupported version. Duplicate it before editing.');
   }

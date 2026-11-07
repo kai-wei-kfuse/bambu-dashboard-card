@@ -59,7 +59,7 @@ export interface CardConfig {
   title?: string;
   discovery?: 'auto' | 'selected';
   devices?: string[];
-  language?: 'auto' | 'en' | 'zh';
+  language?: 'auto' | 'en' | 'zh' | 'da';
 }
 
 export interface RegistrySnapshot {
