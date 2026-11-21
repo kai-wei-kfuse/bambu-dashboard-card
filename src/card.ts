@@ -13,7 +13,7 @@ import { fleetCounts, fleetState, matchesFleetFilter } from './domain/fleet';
 import type { FleetFilter } from './domain/fleet';
 import { inspectProject, projectCompatibility, validatePrintOptions } from './domain/projects';
 import type { CachedProject, PrintOptions, ProjectMetadata } from './domain/projects';
-import { text } from './ui/i18n';
+import { languageFor, text } from './ui/i18n';
 import type { Language, Message } from './ui/i18n';
 import { icon } from './ui/icons';
 import { syncSelectValues } from './ui/select-values';
@@ -116,7 +116,7 @@ export class BambuDashboardCard extends LitElement {
 
   private get language(): Language {
     if (this._config.language && this._config.language !== 'auto') return this._config.language;
-    return this._hass?.language.startsWith('zh') ? 'zh' : 'en';
+    return languageFor(this._hass?.language);
   }
   private t(key: Message): string { return text(this.language, key); }
   private get printers(): Printer[] {

@@ -1,4 +1,6 @@
-export type Language = 'en' | 'zh';
+import { da } from './i18n-da';
+
+export type Language = 'en' | 'zh' | 'da';
 
 const messages = {
   workspace: ['Your print workspace', '打印工作台'],
@@ -276,5 +278,13 @@ const messages = {
 
 export type Message = keyof typeof messages;
 export function text(language: Language, key: Message): string {
+  if (language === 'da') return da[key];
   return messages[key][language === 'zh' ? 1 : 0];
+}
+
+/** Map a Home Assistant language code to a supported card language. */
+export function languageFor(code?: string): Language {
+  if (code?.startsWith('zh')) return 'zh';
+  if (code === 'da' || code?.startsWith('da-')) return 'da';
+  return 'en';
 }
