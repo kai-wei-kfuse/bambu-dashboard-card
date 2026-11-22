@@ -8,17 +8,20 @@
 
 The first implementation targets the entity and file API contracts inspected in ha-bambulab v2.2.26. A1 and AMS Lite are the initial hardware targets. Other models require verification; do not assume identical controls or slicing compatibility.
 
-## HACS custom repository
+## HACS installation
 
-1. In HACS, open **Custom repositories**.
-2. Add `https://github.com/kai-wei-kfuse/bambu-dashboard-card`, type **Dashboard**.
-3. Download the component and select release **v0.1.0**. The default branch remains available for development builds.
-4. Check that the resource `/hacsfiles/bambu-dashboard-card/bambu-dashboard-card.js` is registered as a JavaScript module.
-5. Refresh the HA frontend and add **Bambu Dashboard** through the card picker.
+**Recommended — search in HACS**
 
-Use the [HACS repository link](https://my.home-assistant.io/redirect/hacs_repository/?owner=kai-wei-kfuse&repository=bambu-dashboard-card&category=plugin) to open the project in your own HA instance; HA and HACS must already be installed. Default-store inclusion is a separate review process and has not been approved. See [distribution status](distribution.md).
+1. Open HACS and search for **Bambu Dashboard Card** (or open the [HACS repository link](https://my.home-assistant.io/redirect/hacs_repository/?owner=kai-wei-kfuse&repository=bambu-dashboard-card&category=plugin)).
+2. Download the component and select release **v0.1.1**. The default branch remains available for development builds.
+3. Check that the resource `/hacsfiles/bambu-dashboard-card/bambu-dashboard-card.js` is registered as a JavaScript module.
+4. Refresh the HA frontend and add **Bambu Dashboard** through the card picker.
 
-Release v0.1.0 is a public milestone for early use, not a claim that all hardware controls or models have been physically validated. Its assets include `bambu-dashboard-card.js`, `bambu-dashboard.yaml` and `SHA256SUMS.txt`. Manual users can copy the release JavaScript into HA's `www/bambu-dashboard/` directory and use the dashboard YAML below.
+**Fallback — HACS custom repository**
+
+If the project is not yet visible in your local HACS catalog, refresh the catalog or open **HACS → Custom repositories**, add `https://github.com/kai-wei-kfuse/bambu-dashboard-card` with type **Dashboard**, then download **v0.1.1** and follow steps 3–4 above. Default-store inclusion was merged in [hacs/default#12488](https://github.com/hacs/default/pull/12488), though clean HACS installation remains a separate verification task; see [distribution status](distribution.md).
+
+Release v0.1.1 is a public milestone for early use, not a claim that all hardware controls or models have been physically validated. Its assets include `bambu-dashboard-card.js`, `bambu-dashboard.yaml` and `SHA256SUMS.txt`. Manual users can copy the release JavaScript into HA's `www/bambu-dashboard/` directory and use the dashboard YAML below.
 
 ## Complete dashboard
 
@@ -77,7 +80,7 @@ Legacy v1 order-only values load into the v2 presentation schema without changin
 
 ## Manual installation / local development
 
-Build with `npm ci` and `npm run build`. Copy `dist/bambu-dashboard-card.js` into `<HA config>/www/bambu-dashboard/`, then register `/local/bambu-dashboard/bambu-dashboard-card.js` as a JavaScript module. A query parameter such as `?v=0.1.0` can identify a new build after deployment.
+Build with `npm ci` and `npm run build`. Copy `dist/bambu-dashboard-card.js` into `<HA config>/www/bambu-dashboard/`, then register `/local/bambu-dashboard/bambu-dashboard-card.js` as a JavaScript module. A query parameter such as `?v=0.1.1` can identify a new build after deployment.
 
 Do not register both the HACS resource and a manual resource at the same time: both register the same custom element.
 

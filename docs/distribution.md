@@ -2,15 +2,13 @@
 
 ## Public milestone
 
-[v0.1.0](https://github.com/kai-wei-kfuse/bambu-dashboard-card/releases/tag/v0.1.0) is the first public milestone, published for early use and feedback. The release includes the single JavaScript module, complete dashboard YAML and SHA256 checksums. Remaining hardware/model/installation checks are tracked in [current status](current-status.md) and [follow-ups](stage-follow-ups.md).
+[v0.1.1](https://github.com/kai-wei-kfuse/bambu-dashboard-card/releases/tag/v0.1.1) builds on the initial [v0.1.0](https://github.com/kai-wei-kfuse/bambu-dashboard-card/releases/tag/v0.1.0) public milestone, published for early use and feedback. Releases include the single JavaScript module, complete dashboard YAML and SHA256 checksums. Remaining hardware/model/installation checks are tracked in [current status](current-status.md) and [follow-ups](stage-follow-ups.md).
 
 ## HACS availability
 
-Users can install now by adding `https://github.com/kai-wei-kfuse/bambu-dashboard-card` as a **Dashboard** custom repository, or opening the [HACS repository link](https://my.home-assistant.io/redirect/hacs_repository/?owner=kai-wei-kfuse&repository=bambu-dashboard-card&category=plugin). This requires HA and HACS in their own installation.
+The project was added to the HACS default repository list when [hacs/default#12488](https://github.com/hacs/default/pull/12488) was merged on **2026-10-24 at 18:08 UTC**, making HACS search (**Bambu Dashboard Card**) or the [HACS repository link](https://my.home-assistant.io/redirect/hacs_repository/?owner=kai-wei-kfuse&repository=bambu-dashboard-card&category=plugin) the primary installation route.
 
-A custom repository becomes available to the user who adds it. It does not make the project globally searchable in HACS. Global discovery requires an accepted pull request adding `kai-wei-kfuse/bambu-dashboard-card` alphabetically to the `plugin` file in [hacs/default](https://github.com/hacs/default). After merging, HACS includes the repository in its next scheduled scan. Review timing is controlled by HACS; its current documentation describes a backlog of months, not an immediate listing.
-
-The owner or a major contributor must submit the application. Prepare a branch from the upstream default repository's `master`, use its current PR template and allow maintainer edits. The application must accurately report validation; no submission or approval is claimed by this document.
+If a local HACS instance has not yet synced the updated default catalog, users can still add `https://github.com/kai-wei-kfuse/bambu-dashboard-card` as a **Dashboard** custom repository as a fallback. Both routes require HA and HACS in the user's own installation.
 
 Readiness at this milestone:
 
