@@ -273,4 +273,7 @@ export const da: Record<Message, string> = {
   notifyTestHelp: 'Sender én påmindelse til den valgte telefon med den valgte type. Det er ikke nødvendigt at slå til eller gemme først.',
   notifyTestSubmitted: 'HA har modtaget testen. Tjek om telefonen modtog den og gav lyd.',
   notifyTestError: 'Testpåmindelse mislykkedes',
+  printFarm: 'Din printfarm',
+  defaultView: 'Startvisning',
+  defaultViewAuto: 'Automatisk (detaljer ved 1 printer)',
 };

@@ -24,7 +24,7 @@ Release v0.1.0 is a public milestone for early use, not a claim that all hardwar
 
 Create a new blank dashboard in Home Assistant, open its raw configuration editor, and paste [the complete dashboard configuration](../dashboards/bambu-dashboard.yaml). This creates a full-width multi-printer workspace with built-in navigation, not a collection of cards to assemble manually.
 
-Automatic discovery includes all registered Bambu printers. The visual editor can select a subset, change the title/language, and reorder selected devices. Adding a printer through ha-bambulab updates the directory without editing entity IDs.
+Automatic discovery includes all registered Bambu printers. The visual editor can select a subset, change the title/language, and reorder selected devices. Adding a printer through ha-bambulab updates the directory without editing entity IDs. Single-printer setups open directly to that printer's detail view by default; set `default_device` (or **Opening view** in the visual editor) to choose a specific starting printer or force **All printers** (`overview`).
 
 The main printer label uses ha-bambulab's **Printer name** sensor. Its HA device name appears as secondary identity; if that sensor is absent, disabled or unavailable, the HA name remains the main label. Parameter search accepts both names. The dashboard does not rename HA devices or alter command targets.
 
@@ -87,6 +87,7 @@ Do not register both the HACS resource and a manual resource at the same time: b
 - A registered light does not prove the physical printer has a working controllable lamp. This is explicitly a hardware validation item.
 - Speed options come from the actual select entity and are available while printing.
 - The cached-file list is not a complete print log. Missing file APIs produce an explicit compatibility/error message.
+- LAN-mode print previews require `ha-bambulab`'s file cache / FTP to extract `.3mf` cover thumbnails; when HA's image proxy reports no cover image yet (HTTP 500), the card shows the empty preview state until an updated cover arrives.
 - Cached projects are inspected for sliced plates, printer model and nozzle before reprinting. Known SD paths require explicit operator verification.
 - New print commands and stop operations use a confirmation dialog. A command response is displayed as submitted until a matching HA state is observed.
 

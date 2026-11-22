@@ -274,6 +274,9 @@ const messages = {
   notifyTestHelp: ['Sends one reminder to the currently selected phone and style. No need to enable or save first.', '点击会按当前选择的手机和提醒方式发送一次提醒，无需先启用或保存。'],
   notifyTestSubmitted: ['HA accepted the test request. Check whether your phone received it and sounded.', 'HA 已接受测试请求，请确认手机是否收到并响铃。'],
   notifyTestError: ['Test reminder failed', '测试提醒发送失败'],
+  printFarm: ['Your print farm', '你的打印农场'],
+  defaultView: ['Opening view', '默认打开视图'],
+  defaultViewAuto: ['Automatic (detail when 1 printer)', '自动（单台直达详情）'],
 } satisfies Record<string, [string, string]>;
 
 export type Message = keyof typeof messages;

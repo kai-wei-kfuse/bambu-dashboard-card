@@ -59,6 +59,7 @@ export interface CardConfig {
   title?: string;
   discovery?: 'auto' | 'selected';
   devices?: string[];
+  default_device?: string;
   language?: 'auto' | 'en' | 'zh' | 'da';
 }
 

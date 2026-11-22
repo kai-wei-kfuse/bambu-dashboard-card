@@ -93,6 +93,19 @@ describe('completion notification model', () => {
     expect(JSON.stringify(config.actions)).not.toContain('alarm_stream_max');
     expect(() => buildTestNotification(printer, { ...standard, style: 'android_tts' })).toThrow('specific mobile_app');
   });
+
+  it('generates and round-trips Danish completion and test notifications', () => {
+    const danish: NotificationSettings = { ...alarm, language: 'da' };
+    const config = buildNotificationAutomation(printer, danish);
+    expect(config.actions).toEqual([{ action: 'notify.mobile_app_test_phone', data: {
+      title: '3D-print færdigt', message: expect.stringContaining('er færdig med at printe.'), data: { ttl: 0, priority: 'high', channel: 'alarm_stream' },
+    } }]);
+    expect(parseNotificationAutomation(printer, config).settings).toEqual(danish);
+    const testAction = buildTestNotification(printer, danish);
+    expect(testAction.data.title).toBe('Test af printpåmindelse');
+    expect(testAction.data.message).toContain(printer.name);
+    expect(testAction.data.message).not.toContain('{{');
+  });
 });
 
 describe('HA notification configuration API', () => {
