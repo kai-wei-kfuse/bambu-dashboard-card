@@ -35,7 +35,9 @@ export class BambuDashboardEditor extends LitElement {
     this.connection = undefined;
   }
   private change(patch: Partial<CardConfig>): void {
-    this._config = { ...this._config, ...patch };
+    const next: CardConfig = { ...this._config, ...patch };
+    if (!next.default_device || next.default_device === 'auto') delete next.default_device;
+    this._config = next;
     this.dispatchEvent(new CustomEvent('config-changed', { detail: { config: this._config }, bubbles: true, composed: true }));
   }
   private move(id: string, direction: number): void {
@@ -51,10 +53,14 @@ export class BambuDashboardEditor extends LitElement {
     const t = (key: Parameters<typeof text>[1]) => text(language, key);
     const devices = this._config.devices || [];
     const printers = this._catalog.snapshot && this.hass ? discoverPrinters(this._catalog.snapshot, this.hass, { ...this._config, discovery: 'auto' }) : [];
+    const availablePrinters = this._catalog.snapshot && this.hass ? discoverPrinters(this._catalog.snapshot, this.hass, this._config) : [];
+    const defaultDevice = this._config.default_device || 'auto';
+    const customMissing = defaultDevice !== 'auto' && defaultDevice !== 'overview' && !availablePrinters.some((printer) => printer.id === defaultDevice);
     return html`<label>${t('title')}<input type="text" .value=${this._config.title || ''} @input=${(event: Event) => this.change({ title: (event.target as HTMLInputElement).value })}/></label>
       <label>${t('language')}<select data-value=${this._config.language || 'auto'} @change=${(event: Event) => this.change({ language: (event.target as HTMLSelectElement).value as CardConfig['language'] })}><option value="auto">${t('automatic')}</option><option value="en">English</option><option value="zh">简体中文</option><option value="da">Dansk</option></select></label>
       <label class="check"><input type="checkbox" .checked=${this._config.discovery === 'selected'} @change=${(event: Event) => this.change({ discovery: (event.target as HTMLInputElement).checked ? 'selected' : 'auto', devices: this._config.devices || [] })}/>${t('selectedDevices')}</label>
       ${this._config.discovery === 'selected' ? html`${printers.map((printer) => html`<div class="row"><label class="check"><input type="checkbox" .checked=${devices.includes(printer.id)} @change=${(event: Event) => this.change({ devices: (event.target as HTMLInputElement).checked ? [...devices, printer.id] : devices.filter((id) => id !== printer.id) })}/>${printer.name} <small>${printer.model}</small></label>${devices.includes(printer.id) ? html`<button aria-label="Move up" @click=${() => this.move(printer.id, -1)}>↑</button><button aria-label="Move down" @click=${() => this.move(printer.id, 1)}>↓</button>` : nothing}</div>`)}` : html`<small>${t('allPrinters')} · ${printers.length}</small>`}
+      <label>${t('defaultView')}<select aria-label=${t('defaultView')} data-value=${defaultDevice} @change=${(event: Event) => this.change({ default_device: (event.target as HTMLSelectElement).value })}><option value="auto">${t('defaultViewAuto')}</option><option value="overview">${t('allPrinters')}</option>${customMissing ? html`<option value=${defaultDevice}>${defaultDevice}</option>` : nothing}${availablePrinters.map((printer) => html`<option value=${printer.id}>${printer.name} · ${printer.model}</option>`)}</select></label>
       ${this._catalog.error ? html`<p class="error">${this._catalog.error.message}</p>` : nothing}`;
   }
 }

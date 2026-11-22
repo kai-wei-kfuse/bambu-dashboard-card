@@ -74,4 +74,56 @@ describe('authenticated media lifecycle', () => {
     document.body.append(media);
     await vi.waitFor(() => expect(request).toHaveBeenCalledTimes(2));
   });
+
+  it('falls back to slotted empty state when an HA image entity returns HTTP 500 or empty bytes and recovers on reload', async () => {
+    const request = vi.fn()
+      .mockResolvedValueOnce(new Response('', { status: 500 }))
+      .mockResolvedValueOnce(new Response(new Uint8Array(), { status: 200 }))
+      .mockResolvedValueOnce(new Response(new Uint8Array([137, 80, 78, 71]), { status: 200, headers: { 'Content-Type': 'image/png' } }));
+    const media = new BambuFileImage();
+    media.entity = 'image.one_cover_image';
+    media.version = 'v1';
+    media.hass = fixtureHass({ fetchWithAuth: request });
+    const fallback = document.createElement('div');
+    fallback.className = 'preview-empty';
+    fallback.textContent = 'No print preview available';
+    media.append(fallback);
+    document.body.append(media);
+
+    await vi.waitFor(() => expect(media.empty).toBe(true));
+    expect(media.hasAttribute('empty')).toBe(true);
+    expect(media.shadowRoot!.querySelector('.error')).toBeNull();
+    expect(media.shadowRoot!.querySelector('slot')).not.toBeNull();
+    expect(media.textContent).toContain('No print preview available');
+
+    media.version = 'v2';
+    await vi.waitFor(() => expect(request).toHaveBeenCalledTimes(2));
+    await vi.waitFor(() => expect(media.empty).toBe(true));
+    expect(media.shadowRoot!.querySelector('.error')).toBeNull();
+
+    media.version = 'v3';
+    await vi.waitFor(() => expect(media.shadowRoot!.querySelector('img')).not.toBeNull());
+    expect(media.empty).toBe(false);
+    expect(media.hasAttribute('empty')).toBe(false);
+  });
+
+  it('keeps auth and file-cache HTTP errors visible instead of treating them as empty', async () => {
+    const request = vi.fn()
+      .mockResolvedValueOnce(new Response('', { status: 401 }))
+      .mockResolvedValueOnce(new Response('', { status: 500 }));
+
+    const imageMedia = new BambuFileImage();
+    imageMedia.entity = 'image.one_cover_image';
+    imageMedia.hass = fixtureHass({ fetchWithAuth: request });
+    document.body.append(imageMedia);
+    await vi.waitFor(() => expect(imageMedia.shadowRoot!.querySelector('.error')?.textContent).toContain('Image: HTTP 401'));
+    expect(imageMedia.empty).toBe(false);
+
+    const cacheMedia = new BambuFileImage();
+    cacheMedia.path = 'SYNTHETIC/prints/preview.png';
+    cacheMedia.hass = fixtureHass({ fetchWithAuth: request });
+    document.body.append(cacheMedia);
+    await vi.waitFor(() => expect(cacheMedia.shadowRoot!.querySelector('.error')?.textContent).toContain('Image: HTTP 500'));
+    expect(cacheMedia.empty).toBe(false);
+  });
 });

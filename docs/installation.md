@@ -8,23 +8,26 @@
 
 The first implementation targets the entity and file API contracts inspected in ha-bambulab v2.2.26. A1 and AMS Lite are the initial hardware targets. Other models require verification; do not assume identical controls or slicing compatibility.
 
-## HACS custom repository
+## HACS installation
 
-1. In HACS, open **Custom repositories**.
-2. Add `https://github.com/kai-wei-kfuse/bambu-dashboard-card`, type **Dashboard**.
-3. Download the component and select release **v0.1.0**. The default branch remains available for development builds.
-4. Check that the resource `/hacsfiles/bambu-dashboard-card/bambu-dashboard-card.js` is registered as a JavaScript module.
-5. Refresh the HA frontend and add **Bambu Dashboard** through the card picker.
+**Recommended — search in HACS**
 
-Use the [HACS repository link](https://my.home-assistant.io/redirect/hacs_repository/?owner=kai-wei-kfuse&repository=bambu-dashboard-card&category=plugin) to open the project in your own HA instance; HA and HACS must already be installed. Default-store inclusion is a separate review process and has not been approved. See [distribution status](distribution.md).
+1. Open HACS and search for **Bambu Dashboard Card** (or open the [HACS repository link](https://my.home-assistant.io/redirect/hacs_repository/?owner=kai-wei-kfuse&repository=bambu-dashboard-card&category=plugin)).
+2. Download the component and select release **v0.1.1**. The default branch remains available for development builds.
+3. Check that the resource `/hacsfiles/bambu-dashboard-card/bambu-dashboard-card.js` is registered as a JavaScript module.
+4. Refresh the HA frontend and add **Bambu Dashboard** through the card picker.
 
-Release v0.1.0 is a public milestone for early use, not a claim that all hardware controls or models have been physically validated. Its assets include `bambu-dashboard-card.js`, `bambu-dashboard.yaml` and `SHA256SUMS.txt`. Manual users can copy the release JavaScript into HA's `www/bambu-dashboard/` directory and use the dashboard YAML below.
+**Fallback — HACS custom repository**
+
+If the project is not yet visible in your local HACS catalog, refresh the catalog or open **HACS → Custom repositories**, add `https://github.com/kai-wei-kfuse/bambu-dashboard-card` with type **Dashboard**, then download **v0.1.1** and follow steps 3–4 above. Default-store inclusion was merged in [hacs/default#12488](https://github.com/hacs/default/pull/12488), though clean HACS installation remains a separate verification task; see [distribution status](distribution.md).
+
+Release v0.1.1 is a public milestone for early use, not a claim that all hardware controls or models have been physically validated. Its assets include `bambu-dashboard-card.js`, `bambu-dashboard.yaml` and `SHA256SUMS.txt`. Manual users can copy the release JavaScript into HA's `www/bambu-dashboard/` directory and use the dashboard YAML below.
 
 ## Complete dashboard
 
 Create a new blank dashboard in Home Assistant, open its raw configuration editor, and paste [the complete dashboard configuration](../dashboards/bambu-dashboard.yaml). This creates a full-width multi-printer workspace with built-in navigation, not a collection of cards to assemble manually.
 
-Automatic discovery includes all registered Bambu printers. The visual editor can select a subset, change the title/language, and reorder selected devices. Adding a printer through ha-bambulab updates the directory without editing entity IDs.
+Automatic discovery includes all registered Bambu printers. The visual editor can select a subset, change the title/language, and reorder selected devices. Adding a printer through ha-bambulab updates the directory without editing entity IDs. Single-printer setups open directly to that printer's detail view by default; set `default_device` (or **Opening view** in the visual editor) to choose a specific starting printer or force **All printers** (`overview`).
 
 The main printer label uses ha-bambulab's **Printer name** sensor. Its HA device name appears as secondary identity; if that sensor is absent, disabled or unavailable, the HA name remains the main label. Parameter search accepts both names. The dashboard does not rename HA devices or alter command targets.
 
@@ -77,7 +80,7 @@ Legacy v1 order-only values load into the v2 presentation schema without changin
 
 ## Manual installation / local development
 
-Build with `npm ci` and `npm run build`. Copy `dist/bambu-dashboard-card.js` into `<HA config>/www/bambu-dashboard/`, then register `/local/bambu-dashboard/bambu-dashboard-card.js` as a JavaScript module. A query parameter such as `?v=0.1.0` can identify a new build after deployment.
+Build with `npm ci` and `npm run build`. Copy `dist/bambu-dashboard-card.js` into `<HA config>/www/bambu-dashboard/`, then register `/local/bambu-dashboard/bambu-dashboard-card.js` as a JavaScript module. A query parameter such as `?v=0.1.1` can identify a new build after deployment.
 
 Do not register both the HACS resource and a manual resource at the same time: both register the same custom element.
 
@@ -87,6 +90,7 @@ Do not register both the HACS resource and a manual resource at the same time: b
 - A registered light does not prove the physical printer has a working controllable lamp. This is explicitly a hardware validation item.
 - Speed options come from the actual select entity and are available while printing.
 - The cached-file list is not a complete print log. Missing file APIs produce an explicit compatibility/error message.
+- LAN-mode print previews require `ha-bambulab`'s file cache / FTP to extract `.3mf` cover thumbnails; when HA's image proxy reports no cover image yet (HTTP 500), the card shows the empty preview state until an updated cover arrives.
 - Cached projects are inspected for sliced plates, printer model and nozzle before reprinting. Known SD paths require explicit operator verification.
 - New print commands and stop operations use a confirmation dialog. A command response is displayed as submitted until a matching HA state is observed.
 

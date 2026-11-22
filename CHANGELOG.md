@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.1.1 — 2026-11-23
+
+Patch release with LAN cover preview fallback, single-printer opening view, Danish localization and updated HACS installation docs.
+
+- LAN cover preview fallback (`#3`): fall back to the empty preview state (and hide `.job-cover` in detail view) when Home Assistant's `/api/image_proxy/<entity_id>` returns HTTP 500/404 or empty bytes before `ha-bambulab` populates a `.3mf` cover, recover automatically when a cover arrives, and keep auth (`401`/`403`) and `/api/bambu_lab/file_cache/...` errors visible.
+- Single-printer opening view (`#5`): open directly to the sole printer's detail view on initial load when `printers.length === 1` without overriding subsequent manual navigation to **All printers**; add `default_device` (`'auto' | 'overview' | <device_id>`), **Opening view** in the visual editor, and localized `Your print farm` eyebrow across English, Chinese and Danish.
+- Danish (`da` / `da-DK`) localization (`#4`, contributed by `@briis`): full UI and completion-reminder translations, narrow-screen `.project-preview` caption ellipsis and empty-state text wrapping, automated Danish locale and notification round-trip tests, and rebuilt distribution bundle.
+- Documentation: update HACS installation instructions across `README.md`, `README.zh-CN.md`, `docs/installation.md` and `docs/distribution.md` to reflect HACS default-store inclusion ([hacs/default#12488](https://github.com/hacs/default/pull/12488)), keeping custom-repository setup as a fallback.
+- Validation: 152 behavior tests across 20 files, TypeScript, production build, GitHub HACS validation, and Chromium desktop/narrow-screen preview verification pass. Note: LAN cover fallback was verified against `ha-bambulab` v2.2.26 / HA Core source behavior and synthetic tests rather than physical Bambu Lab P2S hardware (local validation hardware is A1 / AMS Lite).
+
 ## 0.1.0 — 2026-10-23
 
 First public milestone for early use. This release freezes the implemented dashboard scope; household-device automation remains a later proposal.

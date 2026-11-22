@@ -1,5 +1,10 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { BambuDashboardCard } from '../src/card';
+import type { BambuDashboardEditor } from '../src/editor';
+import type { CardConfig } from '../src/ha/types';
+import { da } from '../src/ui/i18n-da';
+import { languageFor } from '../src/ui/i18n';
+import type { BambuFileImage } from '../src/ui/media';
 import { fixtureHass, fixtureRegistry, project, slicedProject } from './fixtures';
 
 afterEach(() => { document.body.replaceChildren(); vi.useRealTimers(); });
@@ -165,5 +170,109 @@ describe('complete dashboard', () => {
     await card.updateComplete;
     expect(card.shadowRoot!.querySelector('.dialog-target')!.textContent).toContain('Studio A1');
     expect(card.shadowRoot!.querySelector('input[placeholder="0,1,2"]')).toBeNull();
+  });
+
+  it('hides HTTP 500 cover-image proxy errors behind the empty preview placeholder in overview and detail', async () => {
+    const registry = fixtureRegistry();
+    registry.entities.push({ entity_id: 'image.one_cover_image', device_id: 'printer-one', platform: 'bambu_lab', translation_key: 'cover_image', unique_id: 'SYNTHETIC_one_cover_image' });
+    const fetchWithAuth = vi.fn().mockImplementation(async () => new Response('', { status: 500 }));
+    const hass = fixtureHass({
+      callWS: async <T>(message: Record<string, unknown>) => {
+        if (message.type === 'config/device_registry/list') return registry.devices as T;
+        if (message.type === 'config/entity_registry/list') return registry.entities as T;
+        if (message.type === 'get_services') return {} as T;
+        if (message.type === 'frontend/get_user_data') return { value: null } as T;
+        throw new Error(`Unexpected request: ${String(message.type)}`);
+      },
+      fetchWithAuth,
+    });
+    hass.states['image.one_cover_image'] = { entity_id: 'image.one_cover_image', state: '2026-11-04T08:35:00Z', attributes: {} };
+    const card = new BambuDashboardCard();
+    card.hass = hass;
+    document.body.append(card);
+    await vi.waitFor(() => expect(card.shadowRoot!.querySelectorAll('.printer-card')).toHaveLength(2));
+    const workshopTile = [...card.shadowRoot!.querySelectorAll<HTMLElement>('.printer-card')].find((tile) => tile.textContent!.includes('Workshop A1'))!;
+    const tilePreview = workshopTile.querySelector<BambuFileImage>('.project-preview bambu-dashboard-file-image')!;
+    await vi.waitFor(() => expect(tilePreview.hasAttribute('empty')).toBe(true));
+    expect(workshopTile.querySelector('.project-preview')!.textContent).toContain('No print preview available');
+    expect(tilePreview.shadowRoot!.querySelector('.error')).toBeNull();
+
+    [...card.shadowRoot!.querySelectorAll<HTMLButtonElement>('.printer-link')].find((button) => button.textContent!.includes('Workshop A1'))!.click();
+    await card.updateComplete;
+    const jobCover = card.shadowRoot!.querySelector<BambuFileImage>('.job-cover')!;
+    await vi.waitFor(() => expect(jobCover.hasAttribute('empty')).toBe(true));
+    expect(jobCover.shadowRoot!.querySelector('.error')).toBeNull();
+  });
+
+  it('opens directly to the printer when only one is configured without overriding manual overview navigation', async () => {
+    const hass = fixtureHass();
+    const card = new BambuDashboardCard();
+    card.setConfig({ type: 'custom:bambu-dashboard-card', discovery: 'selected', devices: ['printer-one'] });
+    card.hass = hass;
+    document.body.append(card);
+    await vi.waitFor(() => expect(card.shadowRoot!.querySelector('.detail-grid')).not.toBeNull());
+    expect(card.shadowRoot!.querySelector('h1')!.textContent).toBe('Workshop A1');
+
+    const allPrinters = [...card.shadowRoot!.querySelectorAll<HTMLButtonElement>('.sidebar button')].find((button) => button.textContent!.includes('All printers'))!;
+    allPrinters.click();
+    await card.updateComplete;
+    expect(card.shadowRoot!.querySelector('.printer-grid')).not.toBeNull();
+    expect(card.shadowRoot!.querySelector('.detail-grid')).toBeNull();
+
+    card.hass = { ...hass, states: { ...hass.states } };
+    await card.updateComplete;
+    expect(card.shadowRoot!.querySelector('.printer-grid')).not.toBeNull();
+    expect(card.shadowRoot!.querySelector('.detail-grid')).toBeNull();
+  });
+
+  it('supports default_device in config and the visual editor', async () => {
+    const secondCard = new BambuDashboardCard();
+    secondCard.setConfig({ type: 'custom:bambu-dashboard-card', default_device: 'printer-two' });
+    secondCard.hass = fixtureHass();
+    document.body.append(secondCard);
+    await vi.waitFor(() => expect(secondCard.shadowRoot!.querySelector('.detail-grid')).not.toBeNull());
+    expect(secondCard.shadowRoot!.querySelector('h1')!.textContent).toBe('Studio A1');
+    secondCard.remove();
+
+    const overviewCard = new BambuDashboardCard();
+    overviewCard.setConfig({ type: 'custom:bambu-dashboard-card', discovery: 'selected', devices: ['printer-one'], default_device: 'overview' });
+    overviewCard.hass = fixtureHass();
+    document.body.append(overviewCard);
+    await vi.waitFor(() => expect(overviewCard.shadowRoot!.querySelectorAll('.printer-card')).toHaveLength(1));
+    expect(overviewCard.shadowRoot!.querySelector('.detail-grid')).toBeNull();
+    overviewCard.remove();
+
+    const editor = document.createElement('bambu-dashboard-card-editor') as BambuDashboardEditor;
+    const emitted: CardConfig[] = [];
+    editor.addEventListener('config-changed', (event) => emitted.push((event as CustomEvent<{ config: CardConfig }>).detail.config));
+    editor.setConfig({ type: 'custom:bambu-dashboard-card' });
+    editor.hass = fixtureHass();
+    document.body.append(editor);
+    await vi.waitFor(() => expect(editor.shadowRoot!.querySelector('select[aria-label="Opening view"] option[value="printer-two"]')).not.toBeNull());
+    const select = editor.shadowRoot!.querySelector<HTMLSelectElement>('select[aria-label="Opening view"]')!;
+    select.value = 'printer-two';
+    select.dispatchEvent(new Event('change', { bubbles: true }));
+    expect(emitted.at(-1)?.default_device).toBe('printer-two');
+
+    select.value = 'auto';
+    select.dispatchEvent(new Event('change', { bubbles: true }));
+    expect(emitted.at(-1)?.default_device).toBeUndefined();
+    expect('default_device' in (emitted.at(-1) || {})).toBe(false);
+  });
+
+  it('maps HA language codes and renders complete Danish translations', async () => {
+    expect(languageFor('da')).toBe('da');
+    expect(languageFor('da-DK')).toBe('da');
+    expect(languageFor('zh-Hans')).toBe('zh');
+    expect(languageFor('fr')).toBe('en');
+    expect(Object.values(da).every((value) => typeof value === 'string' && value.trim().length > 0)).toBe(true);
+
+    const card = new BambuDashboardCard();
+    card.hass = fixtureHass({ language: 'da-DK' });
+    document.body.append(card);
+    await vi.waitFor(() => expect(card.shadowRoot!.querySelectorAll('.printer-card')).toHaveLength(2));
+    expect(card.shadowRoot!.textContent).toContain('Dit printværksted');
+    expect(card.shadowRoot!.textContent).toContain('Din printfarm');
+    expect(card.shadowRoot!.textContent).toContain('Alle printere');
   });
 });

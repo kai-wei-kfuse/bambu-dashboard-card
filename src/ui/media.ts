@@ -71,12 +71,13 @@ export class BambuCamera extends LitElement {
 }
 
 export class BambuFileImage extends LitElement {
-  static properties = { hass: { attribute: false }, path: {}, entity: {}, version: {}, _url: { state: true }, _error: { state: true } };
+  static properties = { hass: { attribute: false }, path: {}, entity: {}, version: {}, empty: { type: Boolean, reflect: true }, _url: { state: true }, _error: { state: true } };
   static styles = css`:host{display:block;width:100%;height:100%} img{display:block;width:100%;height:100%;object-fit:contain} .error{font-size:11px;padding:10px;color:var(--error-color,#d25454)}`;
   hass?: HomeAssistant;
   path = '';
   entity = '';
   version = '';
+  empty = false;
   private _url = '';
   private _error = '';
   private request?: AbortController;
@@ -104,6 +105,7 @@ export class BambuFileImage extends LitElement {
     if (this._url) URL.revokeObjectURL(this._url);
     this._url = '';
     this._error = '';
+    this.empty = false;
     if ((!this.path && !this.entity) || !this.hass) return;
     const request = this.request = new AbortController();
     try {
@@ -111,8 +113,18 @@ export class BambuFileImage extends LitElement {
       const basePath = this.entity ? `/api/image_proxy/${encodeURIComponent(this.entity)}` : fileApiPath(this.path);
       const requestPath = this.version ? `${basePath}?v=${encodeURIComponent(this.version)}` : basePath;
       const response = await this.hass.fetchWithAuth(requestPath, { signal: request.signal });
-      if (!response.ok) throw new Error(`Image: HTTP ${response.status}`);
+      if (!response.ok) {
+        if (this.entity && (response.status === 500 || response.status === 404)) {
+          if (!request.signal.aborted) this.empty = true;
+          return;
+        }
+        throw new Error(`Image: HTTP ${response.status}`);
+      }
       const blob = await response.blob();
+      if (this.entity && blob.size === 0) {
+        if (!request.signal.aborted) this.empty = true;
+        return;
+      }
       if (!request.signal.aborted) this._url = URL.createObjectURL(blob);
     } catch (error) {
       if (!request.signal.aborted) this._error = asError(error).message;
@@ -120,7 +132,9 @@ export class BambuFileImage extends LitElement {
   }
 
   protected render() {
-    return this._url ? html`<img src=${this._url} alt="Project preview"/>` : this._error ? html`<span class="error">${this._error}</span>` : nothing;
+    if (this._url) return html`<img src=${this._url} alt="Project preview"/>`;
+    if (this._error) return html`<span class="error">${this._error}</span>`;
+    return this.empty ? html`<slot></slot>` : nothing;
   }
 }
 
